@@ -49,3 +49,8 @@ Nice to have
 
 Shouldn't do
  * MUL (Rd := Rm * Rs)
+
+## Flags
+ * Carry
+ * Compare
+ * ??
