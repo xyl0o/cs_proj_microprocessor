@@ -25,30 +25,34 @@
 
 (https://iitd-plos.github.io/col718/ref/arm-instructionset.pdf)
 
-Not without
+### Instructions we want to support
+
+Three-op layout:
  * ADC (A := B + OP + Carry)
  * ADD (A := B + OP)
+ * SBC (A := B - OP - 1 + Carry)
+ * SUB (A := B - OP)
+ * SL  (A := B << OP)
+ * SRA (A := B >>> OP)
+ * SRL (A := B >> OP)
  * AND (A := B AND OP)
- * B (PC := address if compare)
- * CMP (CPSR flags := Rn - Op2)
- * LDR (Rd := address)
- * MOV (Rd : = Op2)
- * MRS (Rn := PSR)
- * MSR (PSR := Rm)
- * ORR (Rd := Rn OR Op2)
- * SBC (Rd := Rn - Op2 - 1 + Carry)
- * SL (shift left)
- * SRA (shift right arithmetic)
- * SRL (shift right logic)
- * STR (<address> := Rd)
- * SUB (Rd := Rn - Op2)
- * XOR (Rd := (Rn AND NOT Op2)OR (op2 AND NOT Rn))
+ * OR  (A := B OR OP)
+ * XOR (A := (B AND NOT OP) OR (OP AND NOT B))
+ * LDR (A := address[B + OP])
+ * STR (address[B + OP] := A)
 
-Nice to have
- * SWP (Rd := [Rn], [Rn] := Rm)
+Two-op layout:
+ * CMPEQ (CMPR := A == OP)
+ * CMPGT (CMPR := A - OP > 0)
+ * MOV (A := OP)
 
-Shouldn't do
- * MUL (Rd := Rm * Rs)
+One-op layout:
+ * B   (PC := OP if compare)
+ * MRS (A := FLAGS)
+ * MSR (FLAGS := A)
+
+No-op layout:
+ * NOP (Do nothing)
 
 ## Flags
  * Carry
