@@ -1,0 +1,32 @@
+       00000I ## one-op
+B      00001I
+MRS    00010I
+MSR    00011I
+       00100I
+       00101I
+       00110I
+       00111I
+       01000I ## two-op
+CMPEQ  01001I
+CMPGT  01010I
+MOV    01011I
+       01100I
+       01101I
+       01110I
+       01111I
+       10000I ## three-op
+ADC    10001I
+ADD    10010I
+SBC    10011I
+SUB    10100I
+SL     10101I
+SRA    10110I
+SRL    10111I
+AND    11000I
+ORR    11001I
+XOR    11010I
+LDR    11011I
+STR    11100I
+       11101I
+       11110I
+NOP    11111I
