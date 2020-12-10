@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+
+from util import set_flag, get_flag
+
+
 register = {}  # add zero register
 memory_inst = {}
 memory_data = {}
@@ -10,36 +15,6 @@ two_op = [
     "CMPEQ", "CMPGT", "MOV"].map(op_encode)
 one_op = [
     "B", "MRS", "MSR"].map(op_encode)
-
-
-# Flags register:
-# 00000000000000000000000000000000
-#                                ^compare
-#                               ^carry
-#                              ^overflow
-def set_flag(flag_reg, flag):
-    if flag == 'CMP':
-        return flag_reg | 1 << 0
-    elif flag == 'CARRY':
-        return flag_reg | 1 << 1
-    elif flag == 'OF':
-        return flag_reg | 1 << 2
-
-def unset_flag(flag_reg, flag):
-    if flag == 'CMP':
-        return flag_reg & bitwise_not(1 << 0)
-    elif flag == 'CARRY':
-        return flag_reg & bitwise_not(1 << 1)
-    elif flag == 'OF':
-        return flag_reg & bitwise_not(1 << 2)
-
-def get_flag(flag_reg, flag):
-    if flag == 'CMP':
-        return flag_reg>>0 & 1
-    elif flag == 'CARRY':
-        return flag_reg>>1 & 1
-    elif flag == 'OF':
-        return flag_reg>>2 & 1
 
 def inst_fetch():
     cmd = memory_inst.get(
@@ -119,16 +94,10 @@ def execute(op_code, target, op_1, op_2, flags):
         result = op_1 + op_2
 
     elif op_code == "CMPEQ":
-        if op_1 - op_2 == 0:
-            flags = set_flag(flags, "CMP")
-        else:
-            flags = unset_flag(flags, "CMP")
+        flags = set_flag(flags, "CMP", bool(op_1 - op_2 == 0))
 
     elif op_code == "CMPGT":
-        if  op_1 - op_2 > 0:  ## todo
-            flags = set_flag(flags, "CMP")
-        else:
-            flags = unset_flag(flags, "CMP")
+        flags = set_flag(flags, "CMP", bool(op_1 - op_2 > 0))
 
     elif op_code == "MOV":
         result = op_2
