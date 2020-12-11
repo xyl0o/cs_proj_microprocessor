@@ -1,0 +1,16 @@
+
+https://inst.eecs.berkeley.edu/~cs152/sp20/lectures/L03-Pipelining.pdf
+
+https://inst.eecs.berkeley.edu/~cs152/sp20/lectures/L04-PipeliningII.pdf
+
+https://tams.informatik.uni-hamburg.de/research/vlsi/vhdl/doc/ajmMaterial/introCArch.pdf
+
+https://www-inst.eecs.berkeley.edu/~cs61c/sp19/lectures/lec13.pdf
+
+https://www.uni-ulm.de/fileadmin/website_uni_ulm/iui.inst.050/vorlesungen/sose14/gdbs/GdBS-falk-SS14-7_MIPS_Assembler.pdf
+
+http://imrannazar.com/ARM-Opcode-Map
+
+http://kitoslab-eng.blogspot.com/2012/10/armv8-aarch64-instruction-encoding.html
+
+https://github.com/CAS-Atlantic/AArch64-Encoding/blob/master/AArch64_ops.pdf
