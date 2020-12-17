@@ -3,71 +3,75 @@
 from util import set_flag, get_flag
 
 
+
+reg_zero = "R0"
+reg_flags = "R1"
+reg_link = "R30"
+reg_pc = "R31"
+
 register = {}  # add zero register
 memory_inst = {}
 memory_data = {}
 
-three_op = [
-    "ADC", "ADD", "SBC", "SUB", "SL",
-    "SRA", "SRL", "AND", "OR", "XOR",
-    "LDR", "STR"].map(op_encode)
-two_op = [
-    "CMPEQ", "CMPGT", "MOV"].map(op_encode)
-one_op = [
-    "B", "MRS", "MSR"].map(op_encode)
-
 def inst_fetch():
-    cmd = memory_inst.get(
-        register.get('PC'))
+    pc = register.get(reg_pc)
+    cmd = memory_inst.get(pc)
 
     if not cmd:
-        raise()
+        raise
 
-    return cmd
+    return cmd, pc + 4
 
-def inst_decode(cmd):
+def inst_decode(cmd, next_seq_pc):
 
     op_code = cmd[31:26]
 
     immediate = bool(cmd[26] == 1)
 
-    if op_code[31:26] == NOP:
-        return #nop
+    if op_code == "NOP":
+        return
 
-    elif op_code[31:26] == STR:  # do we have to do this?
+    elif op_code == "STR":  # do we have to do this?
         target = register.get(cmd[25:20])
         op_1 = register.get(cmd[20:15])
         op_2 = cmd[15:] if immediate else register.get(cmd[15:10])
 
+    # three op cmd
     elif op_code[31] == 1:
         target = cmd[25:20]
         op_1 = register.get(cmd[20:15])
         op_2 = cmd[15:] if immediate else register.get(cmd[15:10])
 
+    # two op cmd
     elif op_code[30] == 1:
         target = cmd[20:15]
         op_1 = register.get(cmd[20:15])
         op_2 = cmd[15:] if immediate else register.get(cmd[15:10])
+
+    # one op cmd
     else:
         target = cmd[15:] if immediate else register.get(cmd[15:10])
         op_1 = None
         op_2 = None
 
-    return op_code, target, op_1, op_2, flags
+    flags = register.get(reg_flags)
+
+    return op_code, target, op_1, op_2, flags, next_seq_pc
 
 # TODO: set carry/overflow bits accordingly
-def execute(op_code, target, op_1, op_2, flags):
-    if op_code == "ADC":
-        result = op_1 + op_2 + flags['Carry']
+def execute(op_code, target, op_1, op_2, flags, next_seq_pc):
 
-    elif op_code == "ADD":
+    if op_code == "NOP":
+        return
+
+    elif op_code == ["ADD", "SUB", "LDR", "STR", "B", "JMP"]:
         result = op_1 + op_2
+
+    elif op_code == "ADC":
+        result = op_1 + op_2 + flags['Carry']
 
     elif op_code == "SBC":
         result = op_1 - op_2 - 1 + flags['Carry']
-
-    elif op_code == "SUB":
-        result = op_1 - op_2
 
     elif op_code == "SL":
         result = shift_left(op_1, op_2)
@@ -87,12 +91,6 @@ def execute(op_code, target, op_1, op_2, flags):
     elif op_code == "XOR":
         result = op_1 ^ op_2
 
-    elif op_code == "LDR":
-        result = op_1 + op_2
-
-    elif op_code == "STR":
-        result = op_1 + op_2
-
     elif op_code == "CMPEQ":
         flags = set_flag(flags, "CMP", bool(op_1 - op_2 == 0))
 
@@ -102,33 +100,47 @@ def execute(op_code, target, op_1, op_2, flags):
     elif op_code == "MOV":
         result = op_2
 
-    return op_code, target, result, flags
+    return op_code, target, op_1, op_2, result, flags, next_seq_pc
 
-def mem_access(op_code, target, result, flags):
+def mem_access(op_code, target, op_1, op_2, result, flags, next_seq_pc):
 
-    if op_code == "LDR":
+    register['PC'] = next_seq_pc
+
+    if op_code == "NOP":
+        return
+
+    elif op_code == "JMP":
+        register['PC'] = result
+
+    elif op_code == "B":
+        if get_flag(flags, "CMP"):
+            register['PC'] = result
+
+    elif op_code == "LDR":
         result = memory_data.get(op_2)
 
     elif op_code == "STR":
         memory_data[result] = target
 
-    return op_code, target, result, flags
+    return op_code, target, result, flags, next_seq_pc
 
-def write_back(op_code, target, result, flags):
+def write_back(op_code, target, result, flags, next_seq_pc):
+
+    if op_code == "NOP":
+        return
 
     register_address = target
 
     if op_code in [
             "ADC", "ADD", "SBC", "SUB",
             "SL", "SRA", "SRL", "AND",
-            "OR", "XOR", "LDR",
-            "MOV", "MRS"]:
+            "OR", "XOR", "LDR", "MOV"]:
+        register[target] = result
 
     elif op_code in ["CMPEQ", "CMPGT"]:
-        result
+        register[reg_flags] = result
 
-    elif op_code == "MSR":
-        flags = result
-    #"B", "NOP"
+    elif op_code in ["JMP", "B"]:
+        register[reg_link] = next_seq_pc
 
     return register_address, value
