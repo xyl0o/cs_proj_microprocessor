@@ -59,3 +59,26 @@ No-op layout:
  * Compare
  * ??
  *
+
+## Registers
+
+Special purpose: R0,R1,R30,R31
+
+We've decided that we need a jump op that set's R30 and R31 accordingly. (Because we introduced the Link Register.)
+
+### R0 Always zero
+ * Won't accept writes
+
+### R1 Flags Register
+ * Will be written to by ALU
+
+### R30 Link Register
+ * Won't accept writes
+ * Will be set by jump
+ * Is stored in Register File
+
+### R31 Program Counter
+ * Won't accept writes
+ * Will be set by jump
+ * Is not stored in Register File
+ * Handed from MEM to IF
