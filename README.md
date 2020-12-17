@@ -44,10 +44,11 @@ Three-op layout:
 Two-op layout:
  * CMPEQ (CMPR := A == OP)
  * CMPGT (CMPR := A - OP > 0)
- * MOV (A := OP)
+ * MOV   (A := OP)
+ * B     (PC := A + OP if compare)
+ * JMP   (PC := A + OP)
 
 One-op layout:
- * B   (PC := OP if compare)
  * MRS (A := FLAGS)
  * MSR (FLAGS := A)
 

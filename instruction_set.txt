@@ -1,5 +1,5 @@
        00000I ## one-op
-B      00001I
+       00001I
 MRS    00010I
 MSR    00011I
        00100I
@@ -10,8 +10,8 @@ MSR    00011I
 CMPEQ  01001I
 CMPGT  01010I
 MOV    01011I
-       01100I
-       01101I
+JMP    01100I
+B      01101I
        01110I
        01111I
        10000I ## three-op
