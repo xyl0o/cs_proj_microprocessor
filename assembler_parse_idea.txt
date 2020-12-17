@@ -1,0 +1,35 @@
+.start
+    add r2 0x1
+    sub r5 r2
+    jmp .foo
+.foo
+    cmp r5 r2
+    jmp .start
+
+CMD(".start")
+CMD("add", "r2", "0x1")
+CMD("sub", "r5", r2)
+CMD("jmp", ".foo")
+CMD(".foo")
+CMD("cmp", "r5", "r2")
+CMD("jmp", ".start")
+
+LABEL(".start")
+ADD(Register("r2"), Immediate("0x1"))
+SUB(Register("r5"), Register("r2"))
+JMP(LABEL(".foo"))
+LABEL(".foo")
+CMP(Register("r5"), Register("r2"))
+JMP(Label(".start"))
+
+ADD .. LABELED_START
+SUB ..
+JMP REF_foo
+CMP .. LABELED_START
+JMP REF_start
+
+ADD ..
+SUB ..
+JMP 0xC
+CMP ..
+JMP 0x0
