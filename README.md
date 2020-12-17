@@ -49,8 +49,6 @@ Two-op layout:
  * JMP   (PC := A + OP)
 
 One-op layout:
- * MRS (A := FLAGS)
- * MSR (FLAGS := A)
 
 No-op layout:
  * NOP (Do nothing)
