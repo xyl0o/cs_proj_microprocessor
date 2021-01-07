@@ -56,7 +56,7 @@ No-op layout:
 ## Flags
  * Carry
  * Compare
- * ??
+ * Overflow
  *
 
 ## Registers
