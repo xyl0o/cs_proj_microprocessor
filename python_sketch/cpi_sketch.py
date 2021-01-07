@@ -13,6 +13,48 @@ register = {}  # add zero register
 memory_inst = {}
 memory_data = {}
 
+
+def alu_decode(op_code):
+
+    if op_code == "NOP":
+        return '00000'
+
+    elif op_code == ["ADD", "SUB", "LDR", "STR", "B", "JMP"]:
+        return '00001'  # result = op_1 + op_2
+
+    elif op_code == "ADC":
+        return '00010'  # result = op_1 + op_2 + flags['Carry']
+
+    elif op_code == "SBC":
+        return '00011'  # result = op_1 - op_2 - 1 + flags['Carry']
+
+    elif op_code == "SL":
+        return '00100'  # result = shift_left(op_1, op_2)
+
+    elif op_code == "SRA":
+        return '00101'  # result = shift_right_arith(op_1, op_2)
+
+    elif op_code == "SRL":
+        return '00110'  # result = shift_right_logic(op_1, op_2)
+
+    elif op_code == "AND":
+        return '00111'  # result = op_1 & op_2
+
+    elif op_code == "OR":
+        return '01000'  # result = op_1 | op_2
+
+    elif op_code == "XOR":
+        return '01001'  # result = op_1 ^ op_2
+
+    elif op_code == "CMPEQ":
+        return '01010'  # flags = set_flag(flags, "CMP", bool(op_1 - op_2 == 0))
+
+    elif op_code == "CMPGT":
+        return '01011'  # flags = set_flag(flags, "CMP", bool(op_1 - op_2 > 0))
+
+    elif op_code == "MOV":
+        return '01100'  # result = op_2
+
 def inst_fetch():
     pc = register.get(reg_pc)
     cmd = memory_inst.get(pc)
@@ -56,48 +98,50 @@ def inst_decode(cmd, next_seq_pc):
 
     flags = register.get(reg_flags)
 
-    return op_code, target, op_1, op_2, flags, next_seq_pc
+    op_sel = alu_decode(op_code)
+
+    return op_code, op_sel, target, op_1, op_2, flags, next_seq_pc
 
 # TODO: set carry/overflow bits accordingly
-def execute(op_code, target, op_1, op_2, flags, next_seq_pc):
+def execute(op_code, op_sel, target, op_1, op_2, flags, next_seq_pc):
 
-    if op_code == "NOP":
+    if op_sel == '00000':
         return
 
-    elif op_code == ["ADD", "SUB", "LDR", "STR", "B", "JMP"]:
+    elif op_sel == '00001':
         result = op_1 + op_2
 
-    elif op_code == "ADC":
+    elif op_sel == '00010':
         result = op_1 + op_2 + flags['Carry']
 
-    elif op_code == "SBC":
+    elif op_sel == '00011':
         result = op_1 - op_2 - 1 + flags['Carry']
 
-    elif op_code == "SL":
+    elif op_sel == '00100':
         result = shift_left(op_1, op_2)
 
-    elif op_code == "SRA":
+    elif op_sel == '00101':
         result = shift_right_arith(op_1, op_2)
 
-    elif op_code == "SRL":
+    elif op_sel == '00110':
         result = shift_right_logic(op_1, op_2)
 
-    elif op_code == "AND":
+    elif op_sel == '00111':
         result = op_1 & op_2
 
-    elif op_code == "OR":
+    elif op_sel == '01000':
         result = op_1 | op_2
 
-    elif op_code == "XOR":
+    elif op_sel == '01001':
         result = op_1 ^ op_2
 
-    elif op_code == "CMPEQ":
+    elif op_sel == '01010':
         flags = set_flag(flags, "CMP", bool(op_1 - op_2 == 0))
 
-    elif op_code == "CMPGT":
+    elif op_sel == '01011':
         flags = set_flag(flags, "CMP", bool(op_1 - op_2 > 0))
 
-    elif op_code == "MOV":
+    elif op_sel == '01100':
         result = op_2
 
     return op_code, target, op_1, op_2, result, flags, next_seq_pc
