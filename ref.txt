@@ -14,3 +14,5 @@ http://imrannazar.com/ARM-Opcode-Map
 http://kitoslab-eng.blogspot.com/2012/10/armv8-aarch64-instruction-encoding.html
 
 https://github.com/CAS-Atlantic/AArch64-Encoding/blob/master/AArch64_ops.pdf
+
+https://github.com/plorefice/vhdl-simple-processor/blob/master/src/alu.vhd
