@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 
+from numbers import Integral
+
 from util import twos_comp
+
+
+class Register:
+
 
 
 class Register(int):
@@ -24,6 +30,35 @@ class Register(int):
     @property
     def signed(self):
         return twos_comp(int(self), self._size)
+
+    def __len__(self):
+        return self._size
+
+
+    def _handle_key(self, key):
+        if isinstance(key, slice):
+            raise TypeError
+
+        if not isinstance(key, Integral):
+            raise TypeError
+
+        key = int(key)
+
+        if key > self._size:
+            raise IndexError
+
+        return key
+
+    def __getitem__(self, key):
+        key = self._handle_key(key)
+
+        return bool(int(self)>>key & 1)
+
+    def __setitem__(self, key, value):
+        key = self._handle_key(key)
+
+    def __reversed__(self):
+        return NotImplemented
 
     # binary +
     def __add__(self, other):
@@ -119,9 +154,6 @@ class Register(int):
     def __invert__(self):
         return self.__class__(super().__invert__())
 
-    def __bool__(self, other):
-        return self.__class__(super().__bool__(other))
-
     # binary <
     def __lt__(self, other):
         return NotImplemented
@@ -145,16 +177,3 @@ class Register(int):
     # binary >=
     def __ge__(self, other):
         return NotImplemented
-
-
-# self[key]
-# object.__getitem__(self, key)
-#         if isinstance(subscript, slice):
-
-# sel[key] = foo
-# object.__setitem__(self, key, value)
-#         if isinstance(subscript, slice):
-
-# object.__reversed__(self)
-
-# object.__len__(self)
