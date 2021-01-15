@@ -1,29 +1,10 @@
-GHDL=ghdl
-GHDLFLAGS=
+TOPLEVEL_LANG ?= vhdl
 
-TESTS=\
-	adder_tb
+PWD=$(shell pwd)
 
-# Express dependencies here
-adder_tb: adder
+VHDL_SOURCES = $(PWD)/adder.vhdl
 
-# Binary depends on the object file
-%: %.o
-	$(GHDL) -e $(GHDLFLAGS) $@
+TOPLEVEL := adder
+MODULE   := test_adder
 
-# Object file depends on source
-%.o: %.vhdl
-	$(GHDL) -a $(GHDLFLAGS) $<
-
-.PHONY: clean test
-
-test: $(TESTS)
-	for t in $^; do ./$$t --wave=$$t.ghw ; done
-
-clean:
-	echo "Cleaning up..."
-	rm -f *.o *_tb work*.cf e*.lst $(BINARIES)
-
-cleanall:
-	echo "Cleaning up everything..."
-	find ./* -type f -not -name '*.vhdl' -not -name 'Makefile' -delete
+include $(shell cocotb-config --makefiles)/Makefile.sim
