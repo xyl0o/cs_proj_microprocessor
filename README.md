@@ -1,3 +1,4 @@
+# Planning
 
 ## Ziel??
  * Datentypen:
@@ -81,3 +82,8 @@ We've decided that we need a jump op that set's R30 and R31 accordingly. (Becaus
  * Will be set by jump
  * Is not stored in Register File
  * Handed from MEM to IF
+
+# VHDL
+
+## Build
+[Managing VHDL Models with Makefiles](www.pldworld.com/_hdl/1/resources/QUALIS/library/mb004.pdf)
