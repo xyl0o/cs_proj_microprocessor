@@ -33,7 +33,7 @@ begin
 		variable uop_1: unsigned := unsigned(op_1);
 		variable uop_2: unsigned := unsigned(op_2);
 	begin
-		case sel is
+		case alu_op_sel is
 			when aluADD =>
 				tmp_result := uop_1 + uop_2;
 			when aluADC =>
