@@ -96,4 +96,14 @@ Some testing/verification frameworks pop up repeatedly:
 
 * [UVVM](https://bitvis.no/dev-tools/uvvm/)
 * [cocotb](https://docs.cocotb.org/en/stable/)
-* [VUnit](https://vunit.github.io/about.html)
+* [VUnit](http://vunit.github.io/)
+
+Some more information:
+
+ * https://www.linkedin.com/pulse/whos-using-uvm-fpga-development-why-lars-asplund
+ * https://www.reddit.com/r/FPGA/comments/amntc7/cocotb_vunit_or_cocotb_vs_vunit/
+ * https://vunit.github.io/blog/2015_10_08_who_is_using_UVM.html
+
+### cocotb
+
+[Quickstart](https://docs.cocotb.org/en/stable/quickstart.html)
