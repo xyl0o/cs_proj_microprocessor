@@ -85,5 +85,15 @@ We've decided that we need a jump op that set's R30 and R31 accordingly. (Becaus
 
 # VHDL
 
+We are using [GHDL](https://github.com/ghdl/ghdl) for building and testing the vhdl source.
+
 ## Build
 [Managing VHDL Models with Makefiles](www.pldworld.com/_hdl/1/resources/QUALIS/library/mb004.pdf)
+[GHDL - Design rebuilding commands](https://ghdl.readthedocs.io/en/latest/using/InvokingGHDL.html#design-rebuilding-commands)
+
+## Testing
+Some testing/verification frameworks pop up repeatedly:
+
+* [UVVM](https://bitvis.no/dev-tools/uvvm/)
+* [cocotb](https://docs.cocotb.org/en/stable/)
+* [VUnit](https://vunit.github.io/about.html)
