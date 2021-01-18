@@ -53,7 +53,7 @@ begin
 			when aluXOR =>
 				tmp_result := uop_1 xor uop_2;
 			when aluCMPEQ =>
-				tmp_compare <= to_integer(uop_1) == to_integer(uop_2);
+				tmp_compare <= to_integer(uop_1) = to_integer(uop_2);
 			when aluCMPGT =>
 				tmp_compare <= to_integer(uop_1) > to_integer(uop_2);
 			when aluIDOP2 =>
