@@ -2,8 +2,10 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
+use work.constants.op_code_len;
+
 package op_codes is
-	subtype t_op_code is std_logic_vector(4 downto 0);
+	subtype t_op_code is std_logic_vector(op_code_len - 1 downto 0);
 	constant op_CMPEQ: t_op_code := "01001";
 	constant op_CMPGT: t_op_code := "01010";
 	constant op_MOV:   t_op_code := "01011";
