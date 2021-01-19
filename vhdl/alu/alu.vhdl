@@ -42,7 +42,7 @@ begin
 			when aluSL =>
 				tmp_result := shift_left(uop_1, uop_2);
 			when aluSRA =>
-				tmp_result := uop_1(w) & shift_right(uop_1, uop_2)(w downto 1);
+				tmp_result := uop_1(data_len) & shift_right(uop_1, uop_2)(data_len downto 1);
 			when aluSRL =>
 				tmp_result := shift_right(uop_1, uop_2);
 			when aluAND =>
@@ -62,8 +62,8 @@ begin
 			when others =>
 				null;
 
-			result <= tmp_result(w downto 0);
-			carryout <= tmp_result(w + 1);
+			result <= tmp_result(data_len - 1 downto 0);
+			carryout <= tmp_result(data_len);
 			compare <= tmp_compare;
 		end case;
 	end process arithmetic;
