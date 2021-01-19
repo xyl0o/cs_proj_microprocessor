@@ -98,9 +98,9 @@ We are using [GHDL](https://github.com/ghdl/ghdl) for building and testing the v
 ## Testing
 Some testing/verification frameworks pop up repeatedly:
 
-* [UVVM](https://bitvis.no/dev-tools/uvvm/)
-* [cocotb](https://docs.cocotb.org/en/stable/)
-* [VUnit](http://vunit.github.io/)
+ * [UVVM](https://bitvis.no/dev-tools/uvvm/)
+ * [cocotb](https://docs.cocotb.org/en/stable/)
+ * [VUnit](http://vunit.github.io/)
 
 Some more information:
 
