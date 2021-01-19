@@ -10,7 +10,7 @@ entity alu is
 		data_len: integer -- data width
 	);
 	port (
-		alu_op_sel: in t_alu_op_sel;
+		alu_op_code: in t_alu_op_code;
 
 		op_1: in std_logic_vector(data_len - 1 downto 0);
 		op_2: in std_logic_vector(data_len - 1 downto 0);
@@ -26,13 +26,13 @@ end alu;
 architecture alu_arc of alu is
 
 begin
-	arithmetic : process (op_1, op_2, alu_op_sel)
+	arithmetic : process (op_1, op_2, alu_op_code)
 		variable tmp_result: std_logic_vector(data_len downto 0) := '0'; -- TODO
 		variable tmp_compare: std_logic := '0';
 		variable uop_1: unsigned(data_len - 1 downto 0) := unsigned(op_1);
 		variable uop_2: unsigned(data_len - 1 downto 0) := unsigned(op_2);
 	begin
-		case alu_op_sel is
+		case alu_op_code is
 			when aluADD =>
 				tmp_result := uop_1 + uop_2;
 			when aluADC =>
