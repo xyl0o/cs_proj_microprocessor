@@ -63,7 +63,7 @@ begin
 			when others =>
 				null;
 
-			result <= tmp_result(data_len - 1 downto 0);
+			result <= std_logic_vector(tmp_result(data_len - 1 downto 0));
 			carryout <= tmp_result(data_len);
 			compare <= tmp_compare;
 		end case;
