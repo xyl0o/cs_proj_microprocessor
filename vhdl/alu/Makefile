@@ -2,7 +2,7 @@ TOPLEVEL_LANG ?= vhdl
 
 PWD=$(shell pwd)
 
-VHDL_SOURCES = $(PWD)/alu.vhdl
+VHDL_SOURCES = $(PWD)/*.vhdl
 
 TOPLEVEL := alu
 MODULE   := test_alu
