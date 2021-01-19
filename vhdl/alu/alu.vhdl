@@ -14,9 +14,10 @@ entity alu is
 
 		op_1: in std_logic_vector(data_len - 1 downto 0);
 		op_2: in std_logic_vector(data_len - 1 downto 0);
-		
+		carryin: in std_logic;
+
 		result: out std_logic_vector(data_len - 1 downto 0);
-		carry: out std_logic;
+		carryout: out std_logic;
 		overflow: out std_logic;
 		compare: out std_logic
 	);
@@ -35,9 +36,9 @@ begin
 			when aluADD =>
 				tmp_result := uop_1 + uop_2;
 			when aluADC =>
-				tmp_result := uop_1 + uop_2 + unsigned(carry);
+				tmp_result := uop_1 + uop_2 + unsigned(carryin);
 			when aluSBC =>
-				tmp_result := uop_1 - uop_2 - 1 + unsigned(carry);
+				tmp_result := uop_1 - uop_2 - 1 + unsigned(carryin);
 			when aluSL =>
 				tmp_result := shift_left(uop_1, uop_2);
 			when aluSRA =>
@@ -62,7 +63,7 @@ begin
 				null;
 
 			result <= tmp_result(w downto 0);
-			carry <= tmp_result(w + 1);
+			carryout <= tmp_result(w + 1);
 			compare <= tmp_compare;
 		end case;
 	end process arithmetic;

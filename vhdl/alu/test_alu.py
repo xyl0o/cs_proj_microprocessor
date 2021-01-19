@@ -23,11 +23,12 @@ alu_in_ports = [
     "alu_op_sel",
     "op_1",
     "op_2",
+    "carryin",
 ]
 
 alu_out_ports = [
     "result",
-    "carry",
+    "carryout",
     "overflow",
     "compare",
 ]
@@ -59,10 +60,11 @@ async def test_NOOP(dut)
             "alu_op_sel": alu_op_sel,
             "op_1": "0"
             "op_2": "1"
+            "carryin": "0"
         },
         out_ports={
             "result": "0"
-            "carry": "0"
+            "carryout": "0"
             "overflow": "0"
             "compare": "0"
         },
