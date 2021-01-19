@@ -54,9 +54,9 @@ begin
 			when aluop_XOR =>
 				tmp_result := uop_1 xor uop_2;
 			when aluop_CMPEQ =>
-				tmp_compare <= to_integer(uop_1) = to_integer(uop_2);
+				tmp_compare := to_integer(uop_1) = to_integer(uop_2);
 			when aluop_CMPGT =>
-				tmp_compare <= to_integer(uop_1) > to_integer(uop_2);
+				tmp_compare := to_integer(uop_1) > to_integer(uop_2);
 			when aluop_IDOP2 =>
 				tmp_result := uop_2;
 			when aluop_NOOP =>
