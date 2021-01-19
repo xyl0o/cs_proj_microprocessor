@@ -2,9 +2,8 @@
 library ieee;
 use ieee.std_logic_1164.all;
 
-use work.constants.alu_op_code_len;
-
 package alu_op_codes is
+	constant alu_op_code_len: integer := 5;
 	subtype t_alu_op_code is std_logic_vector(alu_op_code_len - 1 downto 0);
 	constant aluop_NOOP:  t_alu_op_code := "00000";
 	constant aluop_ADD:   t_alu_op_code := "00001";
