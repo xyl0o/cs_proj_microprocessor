@@ -36,9 +36,10 @@ begin
 			when aluop_ADD =>
 				tmp_result := uop_1 + uop_2;
 			when aluop_ADC =>
-				tmp_result := uop_1 + uop_2 + unsigned(carryin);
+			    -- https://electronics.stackexchange.com/questions/463586/vhdl-convert-std-logic-to-std-logic-vector
+				tmp_result := uop_1 + uop_2 + unsigned('0' & carryin);
 			when aluop_SBC =>
-				tmp_result := uop_1 - uop_2 - 1 + unsigned(carryin);
+				tmp_result := uop_1 - uop_2 - 1 + unsigned('0' & carryin);
 			when aluop_SL =>
 				tmp_result := shift_left(uop_1, uop_2);
 			when aluop_SRA =>
