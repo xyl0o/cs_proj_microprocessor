@@ -2,6 +2,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+-- https://www.csee.umbc.edu/portal/help/VHDL/packages/numeric_std.vhd
 
 use work.alu_op_codes.all;
 
