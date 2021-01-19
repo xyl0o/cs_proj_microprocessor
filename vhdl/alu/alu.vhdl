@@ -33,31 +33,31 @@ begin
 		variable uop_2: unsigned(data_len - 1 downto 0) := unsigned(op_2);
 	begin
 		case alu_op_code is
-			when aluADD =>
+			when aluop_ADD =>
 				tmp_result := uop_1 + uop_2;
-			when aluADC =>
+			when aluop_ADC =>
 				tmp_result := uop_1 + uop_2 + unsigned(carryin);
-			when aluSBC =>
+			when aluop_SBC =>
 				tmp_result := uop_1 - uop_2 - 1 + unsigned(carryin);
-			when aluSL =>
+			when aluop_SL =>
 				tmp_result := shift_left(uop_1, uop_2);
-			when aluSRA =>
+			when aluop_SRA =>
 				tmp_result := uop_1(data_len) & shift_right(uop_1, uop_2)(data_len downto 1);
-			when aluSRL =>
+			when aluop_SRL =>
 				tmp_result := shift_right(uop_1, uop_2);
-			when aluAND =>
+			when aluop_AND =>
 				tmp_result := uop_1 and uop_2;
-			when aluORR =>
+			when aluop_ORR =>
 				tmp_result := uop_1 or uop_2;
-			when aluXOR =>
+			when aluop_XOR =>
 				tmp_result := uop_1 xor uop_2;
-			when aluCMPEQ =>
+			when aluop_CMPEQ =>
 				tmp_compare <= to_integer(uop_1) = to_integer(uop_2);
-			when aluCMPGT =>
+			when aluop_CMPGT =>
 				tmp_compare <= to_integer(uop_1) > to_integer(uop_2);
-			when aluIDOP2 =>
+			when aluop_IDOP2 =>
 				tmp_result := uop_2;
-			when aluNOOP =>
+			when aluop_NOOP =>
 				null;
 			when others =>
 				null;
