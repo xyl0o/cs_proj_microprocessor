@@ -13,11 +13,11 @@ entity alu is
 	);
 	port (
 		alu_op_sel: in t_alu_op_sel;
-		op_1: in t_data;
-		op_2: in t_data;
 
-		result: out t_data;
+		op_1: in std_logic_vector(data_len - 1 downto 0);
+		op_2: in std_logic_vector(data_len - 1 downto 0);
 		
+		result: out std_logic_vector(data_len - 1 downto 0);
 		carry: out std_logic;
 		overflow: out std_logic;
 		compare: out std_logic
