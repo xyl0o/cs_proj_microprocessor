@@ -92,8 +92,8 @@ We are using [GHDL](https://github.com/ghdl/ghdl) for building and testing the v
  * [VHDL: Convert `std_logic` to `std_logic_vector`](https://electronics.stackexchange.com/questions/463586/vhdl-convert-std-logic-to-std-logic-vector)
 
 ## Build
-[Managing VHDL Models with Makefiles](www.pldworld.com/_hdl/1/resources/QUALIS/library/mb004.pdf)
-[GHDL - Design rebuilding commands](https://ghdl.readthedocs.io/en/latest/using/InvokingGHDL.html#design-rebuilding-commands)
+ * [Managing VHDL Models with Makefiles](www.pldworld.com/_hdl/1/resources/QUALIS/library/mb004.pdf)
+ * [GHDL - Design rebuilding commands](https://ghdl.readthedocs.io/en/latest/using/InvokingGHDL.html#design-rebuilding-commands)
 
 ## Testing
 Some testing/verification frameworks pop up repeatedly:
