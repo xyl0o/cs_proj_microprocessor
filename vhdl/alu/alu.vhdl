@@ -3,9 +3,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
-use work.reg_types.all;
-use work.op_codes.all;
-use work.alu_op_sel.all;
+use work.alu_op_codes.all;
 
 entity alu is
 	generic (
