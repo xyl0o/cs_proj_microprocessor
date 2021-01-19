@@ -36,29 +36,6 @@ begin
 		case alu_op_code is
 			when aluop_ADD =>
 				tmp_result := uop_1 + uop_2;
-			when aluop_ADC =>
-			    -- https://electronics.stackexchange.com/questions/463586/vhdl-convert-std-logic-to-std-logic-vector
-				tmp_result := uop_1 + uop_2 + "0" & carryin;
-			when aluop_SBC =>
-				tmp_result := uop_1 - uop_2 - 1 + "0" & carryin;
-			when aluop_SL =>
-				tmp_result := shift_left(uop_1, to_integer(uop_2));
-			when aluop_SRA =>
-				tmp_result := uop_1(data_len) & shift_right(uop_1, to_integer(uop_2))(data_len downto 1);
-			when aluop_SRL =>
-				tmp_result := shift_right(uop_1, to_integer(uop_2));
-			when aluop_AND =>
-				tmp_result := uop_1 and uop_2;
-			when aluop_ORR =>
-				tmp_result := uop_1 or uop_2;
-			when aluop_XOR =>
-				tmp_result := uop_1 xor uop_2;
-			when aluop_CMPEQ =>
-				tmp_compare := to_integer(uop_1) = to_integer(uop_2);
-			when aluop_CMPGT =>
-				tmp_compare := to_integer(uop_1) > to_integer(uop_2);
-			when aluop_IDOP2 =>
-				tmp_result := uop_2;
 			when aluop_NOOP =>
 				null;
 			when others =>
