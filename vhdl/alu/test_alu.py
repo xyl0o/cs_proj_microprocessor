@@ -2,6 +2,7 @@ from operator import attrgetter
 
 import cocotb
 from cocotb.triggers import Timer
+from cocotb.binary import BinaryValue, BinaryRepresentation
 
 output_wait = 10  # ns
 
@@ -32,6 +33,39 @@ alu_out_ports = [
     "overflow",
     "compare",
 ]
+
+
+def encode_integer(value, unsigned=False, bits=32):
+    if unsigned:
+        bin_rep = BinaryRepresentation.UNSIGNED
+    else:
+        bin_rep = BinaryRepresentation.TWOS_COMPLEMENT
+
+    v = BinaryValue(
+        n_bits=bits,
+        bigEndian=False,
+        binaryRepresentation=bin_rep
+    )
+
+    v.integer = value
+    return v
+
+
+def decode_integer(value, unsigned=False, bits=32):
+    if unsigned:
+        bin_rep = BinaryRepresentation.UNSIGNED
+    else:
+        bin_rep = BinaryRepresentation.TWOS_COMPLEMENT
+
+    v = BinaryValue(
+        n_bits=bits,
+        bigEndian=False,
+        binaryRepresentation=bin_rep
+    )
+
+    v.binstr = value.binstr
+    return v.integer
+
 
 async def in_wait_out_assert(dut, in_ports, out_ports, wait):
 
