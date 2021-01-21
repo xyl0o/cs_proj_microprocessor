@@ -1,4 +1,3 @@
-from operator import attrgetter
 
 import cocotb
 from cocotb.triggers import Timer
