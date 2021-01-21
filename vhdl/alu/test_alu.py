@@ -1,7 +1,12 @@
 
+from functools import partial
+
 import cocotb
 from cocotb.triggers import Timer
-from cocotb.binary import BinaryValue, BinaryRepresentation
+from cocotb.binary import BinaryValue as bval
+from cocotb.binary import BinaryRepresentation as brep
+
+bval32 = partial(bval, n_bits=32, bigEndian=False, binaryRepresentation=brep.TWOS_COMPLEMENT)
 
 output_wait = 10  # ns
 
@@ -34,45 +39,26 @@ alu_out_ports = [
 ]
 
 
-def encode_integer(value, unsigned=False, bits=32):
-    if unsigned:
-        bin_rep = BinaryRepresentation.UNSIGNED
-    else:
-        bin_rep = BinaryRepresentation.TWOS_COMPLEMENT
-
-    v = BinaryValue(
-        n_bits=bits,
-        bigEndian=False,
-        binaryRepresentation=bin_rep
-    )
-
-    v.integer = value
-    return v
-
-
-def decode_integer(value, unsigned=False, bits=32):
-    if unsigned:
-        bin_rep = BinaryRepresentation.UNSIGNED
-    else:
-        bin_rep = BinaryRepresentation.TWOS_COMPLEMENT
-
-    v = BinaryValue(
-        n_bits=bits,
-        bigEndian=False,
-        binaryRepresentation=bin_rep
-    )
-
-    v.binstr = value.binstr
-    return v.integer
-
-
 async def in_wait_out_assert(dut, in_ports, out_ports, wait):
+    """This function accepts a design under test (dut),
+    in and out port dictionaries and a wait time in ns.
+
+    All inputs are assigned to the dut and all outputs are asserted.
+
+    It uses the cocotb.binary.BinaryValue class
+    to handle signed/unsigned values.
+
+    All values will be compared as signed integers."""
 
     for p in alu_in_ports:
         if p not in in_ports:
             continue
 
-        getattr(dut, p) <= in_ports[p]
+        val = in_ports[p]
+        if not isinstance(val, bval):
+            val = bval(val)
+
+        getattr(dut, p) <= in_ports[p].integer
 
     await Timer(wait, units='ns')
 
@@ -80,16 +66,19 @@ async def in_wait_out_assert(dut, in_ports, out_ports, wait):
         if p not in out_ports:
             continue
 
-        got = int(getattr(dut, p).value)
         exp = out_ports[p]
-        comp = got == exp
+        if not isinstance(exp, bval):
+            exp = bval(exp)
 
-        assert comp, f"Signal mismatch: {p} should be {exp} but is {got}"
+        exp = exp.signed_integer
+        got = getattr(dut, p).value.signed_integer
+
+        assert got == exp, f"Signal mismatch: {p} should be {exp} but is {got}"
 
 
 # @cocotb.test()
 # async def test_NOOP(dut):
-#     alu_op_code = 0b00000
+#     alu_op_code = bval("00000")
 
 
 # @cocotb.test()
@@ -99,55 +88,55 @@ async def in_wait_out_assert(dut, in_ports, out_ports, wait):
 
 # @cocotb.test()
 # async def test_ADC(dut):
-#     alu_op_code = 0b00010
+#     alu_op_code = bval("00010")
 
 
 # @cocotb.test()
 # async def test_SBC(dut):
-#     alu_op_code = 0b00011
+#     alu_op_code = bval("00011")
 
 
 # @cocotb.test()
 # async def test_SL(dut):
-#     alu_op_code = 0b00100
+#     alu_op_code = bval("00100")
 
 
 # @cocotb.test()
 # async def test_SRA(dut):
-#     alu_op_code = 0b00101
+#     alu_op_code = bval("00101")
 
 
 # @cocotb.test()
 # async def test_SRL(dut):
-#     alu_op_code = 0b00110
+#     alu_op_code = bval("00110")
 
 
 # @cocotb.test()
 # async def test_AND(dut):
-#     alu_op_code = 0b00111
+#     alu_op_code = bval("00111")
 
 
 # @cocotb.test()
 # async def test_ORR(dut):
-#     alu_op_code = 0b01000
+#     alu_op_code = bval("01000")
 
 
 # @cocotb.test()
 # async def test_XOR(dut):
-#     alu_op_code = 0b01001
+#     alu_op_code = bval("01001")
 
 
 # @cocotb.test()
 # async def test_CMPEQ(dut):
-#     alu_op_code = 0b01010
+#     alu_op_code = bval("01010")
 
 
 # @cocotb.test()
 # async def test_CMPGT(dut):
-#     alu_op_code = 0b01011
+#     alu_op_code = bval("01011")
 
 
 # @cocotb.test()
 # async def test_IDOP2(dut):
-#     alu_op_code = 0b01100
+#     alu_op_code = bval("01100")
 
