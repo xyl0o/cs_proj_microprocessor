@@ -33,7 +33,7 @@ alu_out_ports = [
     "compare",
 ]
 
-def in_wait_out_assert(dut, in_ports, out_ports, wait):
+async def in_wait_out_assert(dut, in_ports, out_ports, wait):
 
     for p in alu_in_ports:
         if p in in_ports
