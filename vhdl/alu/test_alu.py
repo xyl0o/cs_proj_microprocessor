@@ -50,27 +50,10 @@ async def in_wait_out_assert(dut, in_ports, out_ports, wait):
         )
 
 
-@cocotb.test()
-async def test_NOOP(dut)
-    alu_op_code = "00000"
 
-    in_wait_out_assert(
-        dut,
-        in_ports={
-            "alu_op_code": alu_op_code,
-            "op_1": "0"
-            "op_2": "1"
-            "carryin": "0"
-        },
-        out_ports={
-            "result": "0"
-            "carryout": "0"
-            "overflow": "0"
-            "compare": "0"
-        },
-        wait=10,
-    )
-
+# @cocotb.test()
+# async def test_NOOP(dut):
+#     alu_op_code = 0b00000
 
 
 # @cocotb.test()
