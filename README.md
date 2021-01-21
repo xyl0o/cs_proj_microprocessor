@@ -91,6 +91,10 @@ We are using [GHDL](https://github.com/ghdl/ghdl) for building and testing the v
  * [VHDL Operators](https://technobyte.org/operators-vhdl/)
  * [VHDL: Convert `std_logic` to `std_logic_vector`](https://electronics.stackexchange.com/questions/463586/vhdl-convert-std-logic-to-std-logic-vector)
 
+## Project setup
+
+All stuff related VHDL resides in the `vhdl/` directory. In there every entity has its own directory (`alu/` for example). Every entity should be self contained and be testable independantly. Only the cpu entity shall cross reference other entities.
+
 ## Build
  * [Managing VHDL Models with Makefiles](www.pldworld.com/_hdl/1/resources/QUALIS/library/mb004.pdf)
  * [GHDL - Design rebuilding commands](https://ghdl.readthedocs.io/en/latest/using/InvokingGHDL.html#design-rebuilding-commands)
