@@ -8,7 +8,7 @@ use work.alu_op_codes.all;
 
 entity alu is
 	generic (
-		data_len: integer -- data width
+		data_len: integer := 32 -- data width
 	);
 	port (
 		alu_op_code: in t_alu_op_code;
