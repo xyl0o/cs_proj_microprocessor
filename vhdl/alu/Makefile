@@ -1,4 +1,5 @@
 TOPLEVEL_LANG ?= vhdl
+SIM ?= ghdl
 
 PWD=$(shell pwd)
 
