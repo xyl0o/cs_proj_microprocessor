@@ -57,9 +57,17 @@ begin
 			when aluop_XOR =>
 				tmp_result := uop_1 xor uop_2;
 			when aluop_CMPEQ =>
-				tmp_compare := to_integer(uop_1) = to_integer(uop_2);
+				if to_integer(uop_1) = to_integer(uop_2) then
+					tmp_compare := '1';
+				else
+					tmp_compare := '0';
+				end if;
 			when aluop_CMPGT =>
-				tmp_compare := to_integer(uop_1) > to_integer(uop_2);
+				if to_integer(uop_1) > to_integer(uop_2) then
+					tmp_compare := '1';
+				else
+					tmp_compare := '0';
+				end if;
 			when aluop_IDOP2 =>
 				tmp_result := uop_2;
 			when aluop_NOOP =>
