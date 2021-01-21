@@ -28,11 +28,14 @@ architecture alu_arc of alu is
 
 begin
 	arithmetic : process (op_1, op_2, alu_op_code)
-		variable tmp_result: unsigned(data_len downto 0) := "0"; -- TODO
-		variable tmp_compare: std_logic := '0';
-		variable uop_1: unsigned(data_len - 1 downto 0) := unsigned(op_1);
-		variable uop_2: unsigned(data_len - 1 downto 0) := unsigned(op_2);
+		variable tmp_result: unsigned(data_len downto 0);
+		variable tmp_compare: std_logic;
+		variable uop_1: unsigned(data_len - 1 downto 0);
+		variable uop_2: unsigned(data_len - 1 downto 0);
 	begin
+		uop_1 := unsigned(op_1);
+		uop_2 := unsigned(op_2);
+
 		case alu_op_code is
 			when aluop_ADD =>
 				tmp_result := uop_1 + uop_2;
