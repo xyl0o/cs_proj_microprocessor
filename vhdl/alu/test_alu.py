@@ -80,10 +80,74 @@ async def in_wait_out_assert(dut, in_ports, out_ports, wait):
 # async def test_NOOP(dut):
 #     alu_op_code = bval("00000")
 
+@cocotb.test()
+async def test_ADD_single_digit(dut):
+    alu_op_code = bval("00001")
 
-# @cocotb.test()
-# async def test_ADD(dut):
-#     alu_op_code = 0b00001
+    await in_wait_out_assert(
+        dut,
+        in_ports={"alu_op_code": alu_op_code, "op_1": bval(0), "op_2": bval(0)},
+        out_ports={"carryout": bval(0), "result": bval32("00")},
+        wait=output_wait,
+    )
+
+    await in_wait_out_assert(
+        dut,
+        in_ports={"alu_op_code": alu_op_code, "op_1": bval(0), "op_2": bval(1)},
+        out_ports={"carryout": bval(0), "result": bval32("01")},
+        wait=output_wait,
+    )
+
+    await in_wait_out_assert(
+        dut,
+        in_ports={"alu_op_code": alu_op_code, "op_1": bval(1), "op_2": bval(0)},
+        out_ports={"carryout": bval(0), "result": bval32("01")},
+        wait=output_wait,
+    )
+
+    await in_wait_out_assert(
+        dut,
+        in_ports={"alu_op_code": alu_op_code, "op_1": bval(1), "op_2": bval(1)},
+        out_ports={"carryout": bval(0), "result": bval32("10")},
+        wait=output_wait,
+    )
+
+
+@cocotb.test()
+async def test_ADD_negative_operand(dut):
+    alu_op_code = bval("00001")
+
+    cases = [
+        (bval32(-1), bval32(1)),
+        (bval32(-10), bval32(-2)),
+        (bval32(19657), bval32(-71961946))]
+
+    for op_1, op_2 in cases:
+        await in_wait_out_assert(
+            dut,
+            in_ports={"alu_op_code": alu_op_code, "op_1": op_1, "op_2": op_2},
+            out_ports={"result": bval32(op_1.signed_integer + op_2.signed_integer)},
+            wait=output_wait,
+        )
+
+
+@cocotb.test()
+async def test_ADD_full_number(dut):
+    alu_op_code = bval("00001")
+
+    await in_wait_out_assert(
+        dut,
+        in_ports={
+            "alu_op_code": alu_op_code,
+            "op_1": bval("00001010"),
+            "op_2": bval("01001101"),
+        },
+        out_ports={
+            "result": bval("01010111"),
+            "carryout": 0,
+        },
+        wait=output_wait,
+    )
 
 
 # @cocotb.test()
