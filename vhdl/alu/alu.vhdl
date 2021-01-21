@@ -30,15 +30,15 @@ begin
 	arithmetic : process (op_1, op_2, alu_op_code)
 		variable tmp_result: unsigned(data_len downto 0);
 		variable tmp_compare: std_logic;
-		variable uop_1: unsigned(data_len - 1 downto 0);
-		variable uop_2: unsigned(data_len - 1 downto 0);
+		variable uop_1: unsigned(data_len downto 0);
+		variable uop_2: unsigned(data_len downto 0);
 	begin
-		uop_1 := unsigned(op_1);
-		uop_2 := unsigned(op_2);
+		uop_1 := '0' & unsigned(op_1);
+		uop_2 := '0' & unsigned(op_2);
 
 		case alu_op_code is
 			when aluop_ADD =>
-				tmp_result := ('0' & uop_1) + ('0' & uop_2);
+				tmp_result := uop_1 + uop_2;
 			when aluop_ADC =>
 			    -- https://electronics.stackexchange.com/questions/463586/vhdl-convert-std-logic-to-std-logic-vector
 				tmp_result := uop_1 + uop_2 + "0" & carryin;
