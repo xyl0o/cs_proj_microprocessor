@@ -70,19 +70,22 @@ def decode_integer(value, unsigned=False, bits=32):
 async def in_wait_out_assert(dut, in_ports, out_ports, wait):
 
     for p in alu_in_ports:
-        if p in in_ports
-            getattr(dut, p) <= in_ports[p]
+        if p not in in_ports:
+            continue
+
+        getattr(dut, p) <= in_ports[p]
 
     await Timer(wait, units='ns')
 
     for p in alu_out_ports:
-        sig_is = getattr(dut, p)
-        sig_should = out_ports[p]
-        assert (
-            sig_is == sig_should,
-            f"Signal mismatch: {p} should be {sig_should} but is {sig_is}"
-        )
+        if p not in out_ports:
+            continue
 
+        got = int(getattr(dut, p).value)
+        exp = out_ports[p]
+        comp = got == exp
+
+        assert comp, f"Signal mismatch: {p} should be {exp} but is {got}"
 
 
 # @cocotb.test()
