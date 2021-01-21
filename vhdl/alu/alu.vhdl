@@ -38,7 +38,7 @@ begin
 
 		case alu_op_code is
 			when aluop_ADD =>
-				tmp_result := uop_1 + uop_2;
+				tmp_result := ('0' & uop_1) + ('0' & uop_2);
 			when aluop_NOOP =>
 				null;
 			when others =>
