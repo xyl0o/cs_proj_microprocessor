@@ -129,6 +129,45 @@ Some more information:
  * https://www.reddit.com/r/FPGA/comments/amntc7/cocotb_vunit_or_cocotb_vs_vunit/
  * https://vunit.github.io/blog/2015_10_08_who_is_using_UVM.html
 
+We are using cocotb to run/test our design.
+
 ### cocotb
 
+cocotb is a testing framework for VHDL/Verilog/etc. It uses python coroutines extensively.
+
 [Quickstart](https://docs.cocotb.org/en/stable/quickstart.html)
+
+### Setup
+
+cocotb is responsible for building and running the whole test suite. To install it follow the [installation instructions](https://docs.cocotb.org/en/stable/install.html).
+
+For Windows `conda` is recommended.
+
+For Debian-based systems one might install Prerequisites like this:
+```bash
+sudo apt-get install make gcc g++ python3 python3-dev python3-pip
+```
+
+Now either install it directly:
+```bash
+pip install cocotb
+```
+
+Or use a virtualenv (you should do this!!!)
+```bash
+python3 -m venv venv
+venv/bin/pip install cocotb
+```
+
+Archlinux:
+```
+yay -S python-cocotb
+```
+
+### How to run tests for an entity
+
+If you are fine with the defaults just run `make` inside an enitity.
+
+### How to run the whole processor
+
+TBD
