@@ -93,7 +93,7 @@ We are using [GHDL](https://github.com/ghdl/ghdl) for building and testing the v
 
 ## Project setup
 
-All stuff related VHDL resides in the `vhdl/` directory. In there every entity has its own directory (`alu/` for example). Every entity should be self contained and be testable independantly. Only the cpu entity shall cross reference other entities.
+All stuff related VHDL resides in the `vhdl/` directory. In there every entity has its own directory (`alu/` for example). Every entity should be self contained and be testable independantly. Only the cpu entity shall cross reference other entities. Every entity shall contain a `Makefile` to build it and run tests against it.
 
 ## Build
  * [Managing VHDL Models with Makefiles](www.pldworld.com/_hdl/1/resources/QUALIS/library/mb004.pdf)
