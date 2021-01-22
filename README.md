@@ -99,6 +99,23 @@ All stuff related VHDL resides in the `vhdl/` directory. In there every entity h
  * [Managing VHDL Models with Makefiles](www.pldworld.com/_hdl/1/resources/QUALIS/library/mb004.pdf)
  * [GHDL - Design rebuilding commands](https://ghdl.readthedocs.io/en/latest/using/InvokingGHDL.html#design-rebuilding-commands)
 
+We decided on GHDL for the time being. GHDL is easy to install and freely available. This might not be the tool for synthesis.
+
+To install it this might help:
+
+ * [Debian package](https://packages.debian.org/stable/electronics/ghdl-llvm)
+ * `sudo pacman -S ghdl-llvm`
+ * [Building GHDL from Sources](https://ghdl.readthedocs.io/en/latest/getting/index.html)
+
+In principle these three commands are necessary to build and run a entity:
+```bash
+ghdl -a YOURFILE.vhdl # This analyses the file(s)
+ghdl -e YOURENTITY # This creates a executable with that entity
+ghdl -r YOURENTITY --wave=wave.ghw # This simulates the entity (and outputs a wave.ghw file)
+```
+
+See below for cocotb integration.
+
 ## Testing
 Some testing/verification frameworks pop up repeatedly:
 
