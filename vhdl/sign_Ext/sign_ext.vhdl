@@ -1,7 +1,7 @@
 library ieee;
 use ieee.numeric_std.all;
 use ieee.std_logic_1164.all;
-use.ieee.std.logic_unsigned.all;
+
 
 
 
@@ -13,31 +13,32 @@ entity sign_ext is
 		data_len: integer := 32 -- data width
 	);
 	port (
-		imm_in: in t_op_imm;
-		op_out: out t_data
+		imm_in: in std_logic_vector(15 downto 0);
+		op_out: out std_logic_vector(data_len-1 downto 0)
 	);
 end sign_ext;
 
 
-variable u_imm_in: unsigned(imm_in);
-variable tmp_result: unsigned(data_len downto 0);
+
 
 architecture behave of sign_ext is
 
 	begin
  
-	process(Input)
+	process(imm_in)
 
-		signal u_imm_in: unsigned(imm_in);
-		signal tmp_result: unsigned(data_len downto 0);
+		variable u_imm_in: unsigned(imm_in'length downto 0);
+		variable tmp_result: unsigned(data_len downto 0);
 
 		begin
 
-			temp_result <= '0000000000000000' & u_imm_in;
-			op_out <= std_logic_vector(temp_result);
-	
-		end
+			u_imm_in := unsigned(imm_in);
 
-	end
+			tmp_result := u_imm_in(u_imm_in'length -1) & "000000000000000" & u_imm_in(u_imm_in'length -2 downto 0);
+			op_out <= std_logic_vector(tmp_result);
+	
+		
+
+		end process;
 
 end behave;
