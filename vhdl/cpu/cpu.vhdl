@@ -92,6 +92,7 @@ architecture cpu_arc of cpu is
     signal indec_flags_comp  : std_logic;
     signal indec_flags_carry : std_logic;
     signal indec_flags_of    : std_logic;
+    signal indec_reg_write_enable : std_logic;
     signal indec_next_seq_pc : t_data;
 
     --execute
@@ -102,6 +103,7 @@ architecture cpu_arc of cpu is
     signal exec_flags_comp   : std_logic;
     signal exec_flags_carry  : std_logic;
     signal exec_flags_of     : std_logic;
+    signal exec_reg_write_enable  : std_logic;
     signal exec_next_seq_pc  : t_data;
 
     --mem_access
@@ -111,6 +113,7 @@ architecture cpu_arc of cpu is
     signal macc_flags_comp   : std_logic;
     signal macc_flags_carry  : std_logic;
     signal macc_flags_of     : std_logic;
+    signal macc_reg_write_enable  : std_logic;
     signal macc_next_seq_pc  : t_data;
 
     --write_back
@@ -155,6 +158,7 @@ begin
             indec_flags_comp <= "0";
             indec_flags_carry <= "0";
             indec_flags_of <= "0";
+            indec_reg_write_enable <= decoder.write_en;
             indec_next_seq_pc <= fetch_next_seq_pc;
         end if;
     end process decode;
@@ -180,6 +184,8 @@ begin
             exec_flags_carry <= alu.carry_out;
             exec_flags_of <= alu.of_out;
 
+            exec_reg_write_enable <= indec_reg_write_enable;
+
             exec_result <= alu.result;
 
         end if;
@@ -197,6 +203,8 @@ begin
             macc_flags_comp <= exec_flags_comp;
             macc_flags_carry <= exec_flags_carry;
             macc_flags_of <= exec_flags_of;
+
+            macc_reg_write_enable <= exec_reg_write_enable;
 
             case op_code is
                 when "JMP" =>
@@ -233,7 +241,7 @@ begin
             flag_carry  <= macc_flags_carry;
             flag_of     <= macc_flags_of;
 
-            if write_en then
+            if macc_reg_write_enable then
                 --TODO : add write enable for flags too decode
                 regAarray(to_integer(unsigned(macc_target))) <= macc_result;
 
