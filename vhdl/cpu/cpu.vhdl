@@ -104,6 +104,21 @@ begin
         op2_sel      => indec_op2_sel
     );
 
+    alu: alu port map (
+        alu_op_code => indec_op_sel,
+        op_1        => indec_op_1,
+        op_2        => indec_op_2,
+        carry_in    => indec_flags_carry,
+        of_in       => indec_flags_of,
+        comp_in     => indec_flags_comp,
+
+        -- Outputs
+        result      => exec_result,
+        carry_out   => exec_flags_carry,
+        of_out      => exec_flags_of,
+        comp_out    => exec_flags_comp
+    );
+
     fetch: process (clk) is
         if risingEdge(clk) then
             fetch_cmd <= PC;
@@ -151,27 +166,29 @@ begin
     execute: process (clk) is
     begin
         if risingEdge(clk) then
-            exec_opcode <=      indec_opcode;
-            exec_target <=      indec_target;
-            exec_datastore <=   indec_datastore;
-            exec_next_seq_pc <= indec_exec_next_seq_pc;
-            
-            
-            alu.op_1 <= indec_op_1
-		    alu.op_2 <= indec_op_2
-            alu.carryin <= indec_flags_;
-            alu.overflow_in <= indec_flags_of
-            alu.compare_in <= indec_flags_comp;
-
-            wait
-
-            exec_flags_comp <=  alu.comp_out;
-            exec_flags_carry <= alu.carry_out;
-            exec_flags_of <= alu.of_out;
-
+            exec_opcode           <= indec_opcode;
+            exec_target           <= indec_target;
+            exec_datastore        <= indec_datastore;
+            exec_next_seq_pc      <= indec_exec_next_seq_pc;
             exec_reg_write_enable <= indec_reg_write_enable;
 
-            exec_result <= alu.result;
+            --alu.alu_op_sel <= indec_op_sel;
+            
+            
+            --alu.op_1 <= indec_op_1
+		    --alu.op_2 <= indec_op_2
+            --alu.carry_in <= indec_flags_carry;
+            --alu.of_in <= indec_flags_of
+            --alu.comp_in <= indec_flags_comp;
+
+            --wait;
+
+            --exec_flags_carry <= alu.carry_out;
+            --exec_flags_of <= alu.of_out;
+            --exec_flags_comp <=  alu.comp_out;
+
+
+            --exec_result <= alu.result;
 
         end if;
     end process execute;
