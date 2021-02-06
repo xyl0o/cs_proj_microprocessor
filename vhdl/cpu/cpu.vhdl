@@ -122,16 +122,16 @@ architecture cpu_arc of cpu is
 begin
 
     fetch: process (clk) is
-        if risingEdge then
+        if risingEdge(clk) then
             fetch_cmd <= PC;
             fetch_next_seq_pc <= std_logic_vector(unsigned(PC) + 4);
         end if;
     begin
     end process fetch;
 
-    inst_decode: process is
+    inst_decode: process (clk) is
     begin
-        if risingEdge then
+        if risingEdge(clk) then
             decoder.instr <= instr;
 
             wait;
@@ -165,9 +165,9 @@ begin
         end if;
     end process decode;
 
-    execute: process is
+    execute: process (clk) is
     begin
-        if risingEdge then
+        if risingEdge(clk) then
             exec_opcode <=      indec_opcode;
             exec_target <=      indec_target;
             exec_datastore <=   indec_datastore;
@@ -193,12 +193,9 @@ begin
         end if;
     end process execute;
 
-
-
-
-    mem_access: process is
+    mem_access: process (clk) is
     begin
-        if risingEdge then
+        if risingEdge(clk) then
             macc_op_code <= exec_op_code;
             macc_target <= exec_target;
             macc_result <= exec_result;
@@ -235,9 +232,9 @@ begin
         end if;
     end process mem_access;
 
-    write_back: process is
+    write_back: process (clk) is
     begin
-        if risingEdge then
+        if risingEdge(clk) then
             
             flag_comp   <= macc_flags_comp;
             flag_carry  <= macc_flags_carry;
@@ -251,7 +248,6 @@ begin
             
         end if;
     end process write_back;
-
 begin
     
     
