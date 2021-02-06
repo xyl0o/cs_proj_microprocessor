@@ -209,7 +209,6 @@ begin
                         link_reg <= exec_next_seq_pc;
                     else
                         PC <= exec_next_seq_pc;
-                        
                     end if;
                 when "LDR" =>
                     result <= memory_get(result);
