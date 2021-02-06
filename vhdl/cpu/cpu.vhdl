@@ -135,23 +135,24 @@ begin
 
             wait;
 
-            if decoder.op2_sel then
-                indec_op_2 <= register_files.reg_out_2;
-            else
-                -- sign extend
-                indec_op_2 <= sign_extend(decode.immediate);
-
 
             indec_op_code <= decoder.op_code;
             indec_op_sel <= decoder.alu_op_sel;
-            indec_target <= ;
-            indec_datastore <= ;
-            indec_op_1 <= ;
-            indec_op_2 <= ;
-            indec_flags_comp <= ;
-            indec_flags_carry <= ;
-            indec_flags_of <= ;
-            indec_next_seq_pc <= ;
+            indec_target <= decoder.reg_target;
+            indec_datastore <= decoder.reg_select_3;
+            indec_op_1 <= regAarray(to_integer(unsigned(decoder.reg_select_1)));
+
+            if decoder.op2_sel then
+                indec_op_2 <= regAarray(to_integer(unsigned(decoder.reg_select_2)));
+            else
+                -- sign extend
+                indec_op_2 <= sign_extend(decode.immediate);
+            end if;
+
+            indec_flags_comp <= "0";
+            indec_flags_carry <= "0";
+            indec_flags_of <= "0";
+            indec_next_seq_pc <= fetch_next_seq_pc;
         end if;
     end process decode;
 
