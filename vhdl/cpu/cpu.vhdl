@@ -35,50 +35,50 @@ end cpu;
 
 architecture cpu_arc of cpu is
 
-    signal PC : t_data;
-    signal flag_carry:  std_logic;
-    signal flag_of:     std_logic;
-    signal flag_comp:   std_logic;
+    signal PC                     : t_data;
+    signal flag_carry             : std_logic;
+    signal flag_of                : std_logic;
+    signal flag_comp              : std_logic;
 
     -- fetch
-    signal fetch_cmd         : t_data;
-    signal fetch_next_seq_pc : t_data;
+    signal fetch_cmd              : t_data;
+    signal fetch_next_seq_pc      : t_data;
 
-    --inst_decode
-    signal indec_op_code     : t_op_code;
-    signal indec_op_sel      : t_alu_op_sel;
-    signal indec_target      : t_reg_sel;
-    signal indec_datastore   : t_data;
-    signal indec_op_1        : t_data;
-    signal indec_op_2        : t_data;
-    signal indec_flags_comp  : std_logic;
-    signal indec_flags_carry : std_logic;
-    signal indec_flags_of    : std_logic;
+    -- inst_decode
+    signal indec_op_code          : t_op_code;
+    signal indec_op_sel           : t_alu_op_sel;
+    signal indec_target           : t_reg_sel;
+    signal indec_datastore        : t_data;
+    signal indec_op_1             : t_data;
+    signal indec_op_2             : t_data;
+    signal indec_flags_comp       : std_logic;
+    signal indec_flags_carry      : std_logic;
+    signal indec_flags_of         : std_logic;
     signal indec_reg_write_enable : std_logic;
-    signal indec_next_seq_pc : t_data;
+    signal indec_next_seq_pc      : t_data;
 
-    --execute
-    signal exec_op_code      : t_op_code;
-    signal exec_target       : t_data;
-    signal exec_datastore    : t_data;
-    signal exec_result       : t_data;
-    signal exec_flags_comp   : std_logic;
-    signal exec_flags_carry  : std_logic;
-    signal exec_flags_of     : std_logic;
+    -- execute
+    signal exec_op_code           : t_op_code;
+    signal exec_target            : t_data;
+    signal exec_datastore         : t_data;
+    signal exec_result            : t_data;
+    signal exec_flags_comp        : std_logic;
+    signal exec_flags_carry       : std_logic;
+    signal exec_flags_of          : std_logic;
     signal exec_reg_write_enable  : std_logic;
-    signal exec_next_seq_pc  : t_data;
+    signal exec_next_seq_pc       : t_data;
 
-    --mem_access
-    signal macc_op_code      : t_op_code;
-    signal macc_target       : t_data;
-    signal macc_result       : t_data;
-    signal macc_flags_comp   : std_logic;
-    signal macc_flags_carry  : std_logic;
-    signal macc_flags_of     : std_logic;
+    -- mem_access
+    signal macc_op_code           : t_op_code;
+    signal macc_target            : t_data;
+    signal macc_result            : t_data;
+    signal macc_flags_comp        : std_logic;
+    signal macc_flags_carry       : std_logic;
+    signal macc_flags_of          : std_logic;
     signal macc_reg_write_enable  : std_logic;
-    signal macc_next_seq_pc  : t_data;
+    signal macc_next_seq_pc       : t_data;
 
-    --write_back
+    -- write_back
 
 
 begin
