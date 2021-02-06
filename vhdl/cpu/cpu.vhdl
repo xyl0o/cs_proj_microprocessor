@@ -188,7 +188,33 @@ begin
     mem_access: process is
     begin
         if risingEdge then
+            macc_op_code <= exec_op_code;
+            macc_target <= exec_target;
+            macc_result <= exec_result;
+            macc_flags_comp <= exec_flags_comp;
+            macc_flags_carry <= exec_flags_carry;
+            macc_flags_of <= exec_flags_of;
 
+            case op_code is
+                when "JMP" =>
+                    PC <= exec_result;
+                    macc_next_seq_pc <= exec_result;
+
+                when "B" =>
+                    if exec_flags_comp then
+                        PC <= exec_result;
+                        macc_next_seq_pc <= exec_result;
+                    else
+                        PC <= exec_next_seq_pc
+                        macc_next_seq_pc <= exec_next_seq_pc;
+                    end if;
+                when "LDR" =>
+                    result <= memory_get(result);
+                when "STR" =>
+                    memory_write(result, datastore); --addr then value
+                when others =>
+                    null;
+            end case;
         end if;
     end process mem_access;
 
