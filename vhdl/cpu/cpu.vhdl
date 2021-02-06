@@ -159,9 +159,31 @@ begin
     execute: process is
     begin
         if risingEdge then
+            exec_opcode <=      indec_opcode;
+            exec_target <=      indec_target;
+            exex_datastore <=   indec_datastore;
+            exec_next_seq_pc <= indec_exec_next_seq_pc;
+            
+            
+            alu.op_1 <= indec_op_1
+		    alu.op_2 <= indec_op_2
+            alu.carryin <= indec_flags_;
+            alu.overflow_in <= indec_flags_of
+            alu.compare_in <= indec_flags_comp;
+
+            wait
+
+            exec_flags_comp <=  alu.comp_out;
+            exec_flags_carry <= alu.carry_out;
+            exec_flags_of <= alu.of_out;
+            
+            exec_result <= alu.result;
 
         end if;
     end process execute;
+
+
+
 
     mem_access: process is
     begin
