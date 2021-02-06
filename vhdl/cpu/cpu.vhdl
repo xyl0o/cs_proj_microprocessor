@@ -74,6 +74,9 @@ architecture cpu_arc of cpu is
     end component;
 
     signal PC : t_data;
+    signal flag_carry:  std_logic;
+    signal flag_of:     std_logic;
+    signal flag_comp:   std_logic;
 
     -- fetch
     signal fetch_cmd         : t_data;
@@ -176,7 +179,7 @@ begin
             exec_flags_comp <=  alu.comp_out;
             exec_flags_carry <= alu.carry_out;
             exec_flags_of <= alu.of_out;
-            
+
             exec_result <= alu.result;
 
         end if;
@@ -198,22 +201,27 @@ begin
             case op_code is
                 when "JMP" =>
                     PC <= exec_result;
-                    macc_next_seq_pc <= exec_result;
+                    link_reg <= exec_next_seq_pc;
 
                 when "B" =>
                     if exec_flags_comp then
                         PC <= exec_result;
-                        macc_next_seq_pc <= exec_result;
+                        link_reg <= exec_next_seq_pc;
                     else
-                        PC <= exec_next_seq_pc
-                        macc_next_seq_pc <= exec_next_seq_pc;
+                        PC <= exec_next_seq_pc;
+                        
                     end if;
                 when "LDR" =>
                     result <= memory_get(result);
+                    PC <= exec_next_seq_pc;
+                    
                 when "STR" =>
                     memory_write(result, datastore); --addr then value
+                    PC <= exec_next_seq_pc;
+                    
                 when others =>
-                    null;
+                    PC <= exec_next_seq_pc;
+                    
             end case;
         end if;
     end process mem_access;
@@ -221,10 +229,21 @@ begin
     write_back: process is
     begin
         if risingEdge then
+            
+            flag_comp   <= macc_flags_comp;
+            flag_carry  <= macc_flags_carry;
+            flag_of     <= macc_flags_of;
 
+            if write_en then
+                --TODO : add write enable for flags too decode
+                regAarray(to_integer(unsigned(macc_target))) <= macc_result;
+
+            end if; 
+            
         end if;
     end process write_back;
 
 begin
     
     
+  
