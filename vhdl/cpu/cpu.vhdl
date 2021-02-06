@@ -152,7 +152,9 @@ begin
                 indec_op_2 <= regAarray(to_integer(unsigned(decoder.reg_select_2)));
             else
                 -- sign extend
-                indec_op_2 <= sign_extend(decoder.immediate);
+                --indec_op_2 <= sign_extend(decoder.immediate);
+                indec_op_2(15 downto 0) <=  decoder.immediate;
+                indec_op_2(31 downto 16) <= (others => decoder.immediate(15));
             end if;
 
             indec_flags_comp <= "0";
