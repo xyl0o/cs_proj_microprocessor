@@ -129,12 +129,12 @@ begin
     inst_decode: process is
     begin
         if risingEdge then
-            decode.instr <= instr;
+            decoder.instr <= instr;
 
             wait;
 
-            register_files.reg_select_1 <= decode.reg_select_1;
-            register_files.reg_select_2 <= decode.reg_select_2;
+            register_files.reg_select_1 <= decoder.reg_select_1;
+            register_files.reg_select_2 <= decoder.reg_select_2;
 
             wait;
 
@@ -149,7 +149,7 @@ begin
                 indec_op_2 <= regAarray(to_integer(unsigned(decoder.reg_select_2)));
             else
                 -- sign extend
-                indec_op_2 <= sign_extend(decode.immediate);
+                indec_op_2 <= sign_extend(decoder.immediate);
             end if;
 
             indec_flags_comp <= "0";
