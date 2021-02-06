@@ -214,12 +214,20 @@ begin
                         instr_addr_out <= exec_next_seq_pc;
                     end if;
                 when "LDR" =>
-                    result <= memory_get(result);
+                    --macc_result <= memory_get(result);
+                    data_we <= "0";
+                    data_addr_out <= exec_result;
+                    macc_result <= data_in;  -- TODO does this work (-> timing)?
+
                     PC <= exec_next_seq_pc;
                     instr_addr_out <= exec_next_seq_pc;
                     
                 when "STR" =>
-                    memory_write(result, exec_datastore); --addr then value
+                    --memory_write(result, exec_datastore); --addr then value
+                    data_addr_out <= exec_result;
+                    data_out <= exec_datastore;
+                    data_we <= "1";
+
                     PC <= exec_next_seq_pc;
                     instr_addr_out <= exec_next_seq_pc;
                     
