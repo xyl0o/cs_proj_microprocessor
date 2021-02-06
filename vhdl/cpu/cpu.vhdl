@@ -168,7 +168,7 @@ begin
         if risingEdge then
             exec_opcode <=      indec_opcode;
             exec_target <=      indec_target;
-            exex_datastore <=   indec_datastore;
+            exec_datastore <=   indec_datastore;
             exec_next_seq_pc <= indec_exec_next_seq_pc;
             
             
@@ -223,7 +223,7 @@ begin
                     PC <= exec_next_seq_pc;
                     
                 when "STR" =>
-                    memory_write(result, datastore); --addr then value
+                    memory_write(result, exec_datastore); --addr then value
                     PC <= exec_next_seq_pc;
                     
                 when others =>
