@@ -1,11 +1,15 @@
 library ieee;
 use ieee.numeric_std.all;
 
+use work.decoder_pkg.all;
+use work.alu_pkg.all;
 
--- was muss die CPU können:
+package cpu_pkg is
+    constant data_len: integer := 32;
+    subtype t_data is std_logic_vector(data_len - 1 downto 0);
+end package cpu_pkg;
 
-
-
+use work.cpu_pkg.all;
 
 entity cpu is
         generic (
