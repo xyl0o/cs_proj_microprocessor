@@ -74,36 +74,40 @@ def inst_decode(cmd, next_seq_pc):
         return
 
     elif op_code == "STR":  # do we have to do this?
-        target = register.get(cmd[25:20])
+        target = None
         op_1 = register.get(cmd[20:15])
         op_2 = cmd[15:] if immediate else register.get(cmd[15:10])
+        datastore = register.get(cmd[25:20])
 
     # three op cmd
     elif op_code[31] == 1:
         target = cmd[25:20]
         op_1 = register.get(cmd[20:15])
         op_2 = cmd[15:] if immediate else register.get(cmd[15:10])
+        datastore = None
 
     # two op cmd
     elif op_code[30] == 1:
         target = cmd[20:15]
         op_1 = register.get(cmd[20:15])
         op_2 = cmd[15:] if immediate else register.get(cmd[15:10])
+        datastore = None
 
     # one op cmd
     else:
         target = cmd[15:] if immediate else register.get(cmd[15:10])
         op_1 = None
         op_2 = None
+        datastore = None
 
     flags = register.get(reg_flags)
 
     op_sel = alu_decode(op_code)
 
-    return op_code, op_sel, target, op_1, op_2, flags, next_seq_pc
+    return op_code, op_sel, target, datastore, op_1, op_2, flags, next_seq_pc
 
 # TODO: set carry/overflow bits accordingly
-def execute(op_code, op_sel, target, op_1, op_2, flags, next_seq_pc):
+def execute(op_code, op_sel, target, datastore, op_1, op_2, flags, next_seq_pc):
 
     if op_sel == '00000':
         return
@@ -144,9 +148,9 @@ def execute(op_code, op_sel, target, op_1, op_2, flags, next_seq_pc):
     elif op_sel == '01100':
         result = op_2
 
-    return op_code, target, op_1, op_2, result, flags, next_seq_pc
+    return op_code, target, datastore, op_1, op_2, result, flags, next_seq_pc
 
-def mem_access(op_code, target, op_1, op_2, result, flags, next_seq_pc):
+def mem_access(op_code, target, datastore, op_1, op_2, result, flags, next_seq_pc):
 
     register['PC'] = next_seq_pc
 
@@ -161,10 +165,10 @@ def mem_access(op_code, target, op_1, op_2, result, flags, next_seq_pc):
             register['PC'] = result
 
     elif op_code == "LDR":
-        result = memory_data.get(op_2)
+        result = memory_data.get(result)
 
     elif op_code == "STR":
-        memory_data[result] = target
+        memory_data[result] = datastore
 
     return op_code, target, result, flags, next_seq_pc
 

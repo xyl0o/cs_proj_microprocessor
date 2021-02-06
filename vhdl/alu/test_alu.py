@@ -150,19 +150,107 @@ async def test_ADD_full_number(dut):
     )
 
 
-# @cocotb.test()
-# async def test_ADC(dut):
-#     alu_op_code = bval("00010")
+@cocotb.test()
+async def test_ADC(dut):
+    alu_op_code = bval("00010")
+
+    def model(a, b, c):
+        return a + b + c
+
+    cases = [
+        (bval32(-1), bval32(1), bval(0)),
+        (bval32(-1), bval32(1), bval(1)),
+        (bval32(-10), bval32(-2), bval(0)),
+        (bval32(-10), bval32(-2), bval(1)),
+        (bval32(19657), bval32(-71961946), bval(0)),
+        (bval32(19657), bval32(-71961946), bval(1)),
+    ]
+
+    for op_1, op_2, carry_in in cases:
+        await in_wait_out_assert(
+            dut,
+            in_ports={
+                "alu_op_code": alu_op_code,
+                "op_1": op_1,
+                "op_2": op_2,
+                "carryin": carry_in
+            },
+            out_ports={
+                "result": bval32(model(
+                        op_1.signed_integer,
+                        op_2.signed_integer,
+                        carry_in.signed_integer,
+                ))},
+            wait=output_wait,
+        )
 
 
-# @cocotb.test()
-# async def test_SBC(dut):
-#     alu_op_code = bval("00011")
+@cocotb.test()
+async def test_SBC(dut):
+    alu_op_code = bval("00011")
+
+    def model(a, b, c):
+        return a - b - 1 + c
+
+    cases = [
+        (bval32(-1), bval32(1), bval(0)),
+        (bval32(-1), bval32(1), bval(1)),
+        (bval32(-10), bval32(-2), bval(0)),
+        (bval32(-10), bval32(-2), bval(1)),
+        (bval32(19657), bval32(-71961946), bval(0)),
+        (bval32(19657), bval32(-71961946), bval(1)),
+    ]
+
+    for op_1, op_2, carry_in in cases:
+        await in_wait_out_assert(
+            dut,
+            in_ports={
+                "alu_op_code": alu_op_code,
+                "op_1": op_1,
+                "op_2": op_2,
+                "carryin": carry_in
+            },
+            out_ports={
+                "result": bval32(model(
+                        op_1.signed_integer,
+                        op_2.signed_integer,
+                        carry_in.signed_integer,
+                ))},
+            wait=output_wait,
+        )
 
 
-# @cocotb.test()
-# async def test_SL(dut):
-#     alu_op_code = bval("00100")
+@cocotb.test()
+async def test_SL(dut):
+    alu_op_code = bval("00100")
+
+    def model(a, b, c):
+        return a - b - 1 + c
+
+    cases = [
+        (bval32(-1), bval32(1), bval(0)),
+        (bval32(-1), bval32(1), bval(1)),
+        (bval32(-10), bval32(-2), bval(0)),
+        (bval32(-10), bval32(-2), bval(1)),
+        (bval32(19657), bval32(-71961946), bval(0)),
+        (bval32(19657), bval32(-71961946), bval(1)),
+    ]
+
+    for op_1, op_2 in cases:
+        await in_wait_out_assert(
+            dut,
+            in_ports={
+                "alu_op_code": alu_op_code,
+                "op_1": op_1,
+                "op_2": op_2,
+            },
+            out_ports={
+                "result": bval32(model(
+                        op_1.signed_integer,
+                        op_2.signed_integer,
+                ))},
+            wait=output_wait,
+        )
 
 
 # @cocotb.test()
