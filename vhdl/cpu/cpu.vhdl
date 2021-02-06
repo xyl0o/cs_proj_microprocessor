@@ -132,13 +132,6 @@ begin
         if risingEdge(clk) then
             --decoder.instr <= instr_in;
 
-            wait;
-
-            register_files.reg_select_1 <= decoder.reg_select_1;
-            register_files.reg_select_2 <= decoder.reg_select_2;
-
-            wait;
-
             --indec_op_code <= decoder.op_code;
             --indec_op_sel <= decoder.alu_op_sel;
             --indec_target <= decoder.reg_target;
