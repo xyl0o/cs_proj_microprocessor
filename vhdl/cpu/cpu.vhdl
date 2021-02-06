@@ -41,7 +41,7 @@ architecture cpu_arc of cpu is
         );
     end component;
 
-    component decoder 
+    component decoder
         port(
             instr: in t_data;
             op_code: out t_op_code
