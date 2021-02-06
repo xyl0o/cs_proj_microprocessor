@@ -145,7 +145,7 @@ begin
             indec_op_code <= decoder.op_code;
             indec_op_sel <= decoder.alu_op_sel;
             indec_target <= decoder.reg_target;
-            indec_datastore <= decoder.reg_select_3;
+            indec_datastore <= regAarray(to_integer(unsigned(decoder.reg_select_3)));
             indec_op_1 <= regAarray(to_integer(unsigned(decoder.reg_select_1)));
 
             if decoder.op2_sel then
