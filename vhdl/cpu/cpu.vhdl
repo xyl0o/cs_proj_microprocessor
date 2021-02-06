@@ -202,25 +202,31 @@ begin
                 when "JMP" =>
                     PC <= exec_result;
                     link_reg <= exec_next_seq_pc;
+                    instr_addr_out <= exec_result;
 
                 when "B" =>
                     if exec_flags_comp then
                         PC <= exec_result;
                         link_reg <= exec_next_seq_pc;
+                        instr_addr_out <= exec_result;
                     else
                         PC <= exec_next_seq_pc;
+                        instr_addr_out <= exec_next_seq_pc;
                     end if;
                 when "LDR" =>
                     result <= memory_get(result);
                     PC <= exec_next_seq_pc;
+                    instr_addr_out <= exec_next_seq_pc;
                     
                 when "STR" =>
                     memory_write(result, exec_datastore); --addr then value
                     PC <= exec_next_seq_pc;
+                    instr_addr_out <= exec_next_seq_pc;
                     
                 when others =>
                     PC <= exec_next_seq_pc;
-                    
+                    instr_addr_out <= exec_next_seq_pc;
+
             end case;
         end if;
     end process mem_access;
