@@ -57,6 +57,13 @@ architecture cpu_arc of cpu is
     signal indec_reg_write_enable : std_logic;
     signal indec_next_seq_pc      : t_data;
 
+    -- internal signals to inst_decode
+    signal indec_reg_select_1     : t_data;
+    signal indec_reg_select_2     : t_data;
+    signal indec_reg_select_3     : t_data;
+    signal indec_op2_sel          : t_data;
+    signal indec_immediate        : t_op_imm;
+
     -- execute
     signal exec_op_code           : t_op_code;
     signal exec_target            : t_data;
@@ -83,6 +90,20 @@ architecture cpu_arc of cpu is
 
 begin
 
+    decoder: decoder port map (
+        instr        => instr_in,
+
+        op_code      => indec_op_code,
+        alu_op_sel   => indec_op_sel,
+        reg_select_1 => indec_reg_select_1,
+        reg_select_2 => indec_reg_select_2,
+        reg_select_3 => indec_reg_select_3,
+        reg_target   => indec_target,
+        write_en     => indec_reg_write_enable,
+        immediate    => indec_immediate,
+        op2_sel      => indec_op2_sel
+    );
+
     fetch: process (clk) is
         if risingEdge(clk) then
             fetch_cmd <= PC;
@@ -94,7 +115,7 @@ begin
     inst_decode: process (clk) is
     begin
         if risingEdge(clk) then
-            decoder.instr <= instr;
+            --decoder.instr <= instr_in;
 
             wait;
 
@@ -103,26 +124,26 @@ begin
 
             wait;
 
+            --indec_op_code <= decoder.op_code;
+            --indec_op_sel <= decoder.alu_op_sel;
+            --indec_target <= decoder.reg_target;
+            indec_datastore <= regAarray(to_integer(unsigned(indec_reg_select_3)));
+            indec_op_1 <= regAarray(to_integer(unsigned(indec_reg_select_1)));
 
-            indec_op_code <= decoder.op_code;
-            indec_op_sel <= decoder.alu_op_sel;
-            indec_target <= decoder.reg_target;
-            indec_datastore <= regAarray(to_integer(unsigned(decoder.reg_select_3)));
-            indec_op_1 <= regAarray(to_integer(unsigned(decoder.reg_select_1)));
-
-            if decoder.op2_sel then
-                indec_op_2 <= regAarray(to_integer(unsigned(decoder.reg_select_2)));
+            if indec_op2_sel then
+                indec_op_2 <= regAarray(to_integer(unsigned(indec_reg_select_2)));
             else
                 -- sign extend
                 --indec_op_2 <= sign_extend(decoder.immediate);
-                indec_op_2(15 downto 0) <=  decoder.immediate;
-                indec_op_2(31 downto 16) <= (others => decoder.immediate(15));
+                indec_op_2(15 downto 0)  <= indec_immediate;
+                indec_op_2(31 downto 16) <= (others => indec_immediate(15));
             end if;
 
-            indec_flags_comp <= "0";
-            indec_flags_carry <= "0";
-            indec_flags_of <= "0";
-            indec_reg_write_enable <= decoder.write_en;
+            indec_flags_carry <= flag_carry;
+            indec_flags_of <= flag_of;
+            indec_flags_comp <= flag_comp;
+
+            --indec_reg_write_enable <= decoder.write_en;
             indec_next_seq_pc <= fetch_next_seq_pc;
         end if;
     end process decode;
