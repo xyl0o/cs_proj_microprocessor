@@ -1,131 +1,284 @@
 library ieee;
-
 use ieee.std_logic_1164.all;
-use.ieee.std.logic_unsigned.all;
+
+package decoder_pkg is
+  component decoder is
+      port(
+        instr                 : in std_logic_vector(31 downto 0);
+        op_code               : out std_logic_vector(31 downto 0);
+        alu_op_sel            : out std_logic_vector(31 downto 0);
+        reg_select_1          : out std_logic_vector(7 downto 0);
+        reg_select_2          : out std_logic_vector(7 downto 0);
+        reg_select_3          : out std_logic_vector(7 downto 0);
+        reg_target            : out std_logic_vector(7 downto 0);
+        immediate             : out std_logic_vector(15 downto 0);
+        op2_sel               : out std_logic_vector(31 downto 0);
+        write_en              : out std_logic;                -- write in register 
+      );
+  end component decoder;
+end package decoder_pkg;
+
+-----------------------------------------------------------------------------------
+
+library ieee;
+use ieee.std_logic_1164.all;
+use work.decoder_pkg.all;
 
 entity decoder is
-
-    port   (
-            -- clock : in std_logic;
-            dataOut : std_logic_vector ( 31 down to 0);
-            instruction : out std_logic_vector ( 4 down to 0);
-            immediat : out std_logic_vector ( 15 down to 0);
-            operator1 : out std_logic_vector ( 7 down to 0);
-            operator2 : out std_logic_vector ( 7 down to 0);
-            operator3 : out std_logic_vector ( 7 down to 0);
-            )
-
+    port(
+        instr                 : in std_logic_vector(31 downto 0);
+        op_code               : out std_logic_vector(31 downto 0);
+        alu_op_sel            : out std_logic_vector(31 downto 0);
+        reg_select_1          : out std_logic_vector(7 downto 0);
+        reg_select_2          : out std_logic_vector(7 downto 0);
+        reg_select_3          : out std_logic_vector(7 downto 0);
+        reg_target            : out std_logic_vector(7 downto 0);
+        immediate             : out std_logic_vector(15 downto 0);
+        op2_sel               : out std_logic_vector(31 downto 0);
+        write_en              : out std_logic;
+    )
 end entity decoder;
 
-architecture decode of decoder is
+architecture decoding of decoder is
+begin
 
+    decoding_process: process (instr) is
+
+        variable op_code_i  : std_logic_vector(5 downto 0);
 
     begin
 
-        instruction <= dataOut(31 to 27);
+        op_code_i <= instr(31 downto 26)
 
-        if (instructuin = 1)
-            then
-                if dataOut(26) = x"1" ....
-                else ...
+        case po_code_i is
+            -- when "000000" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X;
+            -- when "000001" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X;
 
-        elseif (instructuin = x)
-            then
-                if dataOut(26) = x"1" ....
-                else ...
 
-        elseif(instructuin=2)
-            then
-                if dataOut(26) = x"1"....
-                else ...
+            when "010010" => -- CMPEQ
+            when "010011" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X;
 
-        elseif(instructuin=3)
-            then
-                if dataOut(26) = x"1"....
-                else ...
+            when "010100" => -- CMPGT
+            when "010101" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X;
 
-        elseif(instructuin=4)
-            then
-                if dataOut(26) = x"1"....
-                else ...
+            when "010110" => -- MOV
+            when "010111" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X;
 
-        elseif(instructuin=5)
-            then
-                if dataOut(26) = x"1"....
-                else ...
+            when "011000" => -- JMP
+            when "011001" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X;
 
-        elseif(instructuin=6)
-            then
-                if dataOut(26) = x"1"....
-                else ...
+            when "011010" => -- B 
+            when "011011" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X;
 
-        elseif(instructuin=7)
-            then
-                if dataOut(26) = x"1"....
-                else ...
+            when "100010" => -- ADC 
+            when "100011" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X;
 
-        elseif(instructuin=8)
-            then
-                if dataOut(26) = x"1"....
-                else ...
+            when "100100" => -- ADD 
+            when "100101" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X; 
 
-        elseif(instructuin=9)
-            then
-                if dataOut(26) = x"1"....
-                else ...
+            when "100110" => -- SBC
+            when "100111" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X; 
 
-        elseif(instructuin=10)
-            then
-                if dataOut(26) = x"1"....
-                else ...
+            when "101000" => -- SUB 
+            when "101001" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X; 
 
-        elseif(instructuin=11)
-            then
-                if dataOut(26) = x"1"....
-                else ...
+            when "101010" => -- SL
+            when "101011" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X; 
 
-        elseif(instructuin=12)
-            then
-                if dataOut(26) = x"1"....
-                else ...
+            when "101100" => -- SRA
+            when "101101" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X;
 
-        elseif(instructuin=13)
-            then
-                if dataOut(26) = x"1"....
-                else ...
+            when "101110" => -- SRL
+            when "101111" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X;
 
-        elseif(instructuin=14)
-            then
-                if dataOut(26) = x"1"....
-                else ...
+            when "110000" => -- AND
+            when "110001" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X;
 
-        elseif(instructuin=15)
-            then
-                if dataOut(26) = x"1"....
-                else ...
+            when "110010" => -- ORR
+            when "110011" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X;
 
-        elseif(instructuin=16)
-            then
-                if dataOut(26) = x"1"....
-                else ...
+            when "110100" => -- XOR
+            when "110101" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X;
 
-        elseif(instructuin=17)
-            then
-                if dataOut(26) = x"1"....
-                else ...
+            when "110110" => -- LDR
+            when "110111" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X;
 
-        elseif(instructuin=18)
-            then
-                if dataOut(26) = x"1"....
-                else ...
+            when "111000" => -- STR
+            when "111001" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X;
 
-        elseif
+            when "111110" => -- NOP
+            when "111111" => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X;
 
--- elseif(instructuin=XXXXX)
--- then
--- if dataOut(26) = x"1"....
--- else ...
+            when others => op_code <= op_code_i(5 downto 1);
+            --                    alu_op_sel <= XXX;
+            --                    reg_select_1 <= XXX;
+            --                    reg_select_2 <= XXX;
+            --                    reg_select_3 <= XXX;
+            --                    reg_target <= XXX;
+            --                    immediate <= XXX;
+            --                    op2_sel <= XXX;
+            --                    write_en <= X;
 
-    end
+    end process decoding_process;
+end architecture decoding;
 
-end architecture decode;
