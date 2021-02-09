@@ -42,7 +42,6 @@ architecture cpu_arc of cpu is
 
     subtype t_data is std_logic_vector(data_len - 1 downto 0);
 
-    signal PC                     : t_data;
     signal register_file          : array(0 to reg_count - 1) of t_data;
 
     -- fetch
@@ -134,8 +133,12 @@ begin
     fetch: process (clk) is
     begin
         if risingEdge(clk) then
-            fetch_cmd <= PC;
-            fetch_next_seq_pc <= std_logic_vector(unsigned(PC) + 4);
+
+            fetch_cmd <= register_file(to_integer(unsigned(reg_addr_pc)));
+
+            fetch_next_seq_pc <= std_logic_vector(unsigned(
+                register_file(to_integer(unsigned(reg_addr_pc)))) + 4);
+
         end if;
     end process fetch;
 
@@ -220,17 +223,17 @@ begin
 
             case op_code is
                 when "JMP" =>
-                    PC <= exec_result;
-                    link_reg <= exec_next_seq_pc;
+                    register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_result;
+                    register_file(to_integer(unsigned(reg_addr_link))) <= exec_next_seq_pc;
                     instr_addr <= exec_result;
 
                 when "B" =>
                     if exec_flags_comp then
-                        PC <= exec_result;
-                        link_reg <= exec_next_seq_pc;
+                        register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_result;
+                        register_file(to_integer(unsigned(reg_addr_link))) <= exec_next_seq_pc;
                         instr_addr <= exec_result;
                     else
-                        PC <= exec_next_seq_pc;
+                        register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
                         instr_addr <= exec_next_seq_pc;
                     end if;
                 when "LDR" =>
@@ -239,7 +242,7 @@ begin
                     data_addr <= exec_result;
                     macc_result <= data_in;  -- TODO does this work (-> timing)?
 
-                    PC <= exec_next_seq_pc;
+                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
                     instr_addr <= exec_next_seq_pc;
                     
                 when "STR" =>
@@ -248,11 +251,11 @@ begin
                     data_out <= exec_datastore;
                     data_we <= "1";
 
-                    PC <= exec_next_seq_pc;
+                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
                     instr_addr <= exec_next_seq_pc;
                     
                 when others =>
-                    PC <= exec_next_seq_pc;
+                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
                     instr_addr <= exec_next_seq_pc;
 
             end case;
