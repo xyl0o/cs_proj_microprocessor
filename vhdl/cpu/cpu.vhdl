@@ -9,7 +9,7 @@ package cpu_pkg is
     constant reg_addr_zero  : t_reg_addr := "00000"; -- R0
     constant reg_addr_flags : t_reg_addr := "00001"; -- R1
     constant reg_addr_link  : t_reg_addr := "11110"; -- R30
-    constant reg_addr_pc    : t_reg_addr := "11111";  -- R31
+    constant reg_addr_pc    : t_reg_addr := "11111"; -- R31
 
     component cpu_comp is
         generic (
