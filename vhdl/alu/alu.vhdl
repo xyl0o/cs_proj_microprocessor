@@ -45,23 +45,6 @@ package alu_pkg is
 end package alu_pkg;
 
 entity alu is
-	generic (
-		data_len: integer := 32 -- data width
-	);
-	port (
-		alu_op_code: in t_alu_op_code;
-
-		op_1: in std_logic_vector(data_len - 1 downto 0);
-		op_2: in std_logic_vector(data_len - 1 downto 0);
-		carry_in: in std_logic;
-		of_in: in std_logic;
-		comp_in: in std_logic;
-
-		result: out std_logic_vector(data_len - 1 downto 0);
-		carry_out: out std_logic;
-		of_out: out std_logic;
-		comp_out: out std_logic
-	);
 end alu;
 
 architecture alu_arc of alu is

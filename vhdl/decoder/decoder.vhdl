@@ -26,18 +26,6 @@ end package decoder_pkg;
 -----------------------------------------------------------------------------------
 
 entity decoder is
-    port(
-        instr                 : in std_logic_vector(31 downto 0);
-        op_code               : out t_op_code;
-        alu_op_sel            : out t_alu_op_code;
-        reg_select_1          : out t_reg_addr;
-        reg_select_2          : out t_reg_addr;
-        reg_select_3          : out t_reg_addr;
-        reg_target            : out t_reg_addr;
-        immediate             : out std_logic_vector(15 downto 0);
-        op2_sel               : out std_logic;
-        write_en              : out std_logic
-    );
 end entity decoder;
 
 architecture decoding of decoder is
