@@ -18,20 +18,21 @@ end entity processor;
 
 
 architecture processor_tb of processor is
+    subtype t_data is std_logic_vector(data_len - 1 downto 0);
 
     signal clk                   : std_logic;
     signal const0, const1        : std_logic;
     signal data_nwe, data_we     : std_logic;
 
-    signal instr_addr            : std_logic_vector(31 downto 0);
+    signal instr_addr            : t_data;
     signal instr_short_addr      : std_logic_vector(instr_addr_len - 1 downto 0);
-    signal instr_fromcpu         : std_logic_vector(31 downto 0);
-    signal instr_tocpu           : std_logic_vector(31 downto 0);
+    signal instr_fromcpu         : t_data;
+    signal instr_tocpu           : t_data;
 
-    signal data_addr             : std_logic_vector(31 downto 0);
+    signal data_addr             : t_data;
     signal data_short_addr       : std_logic_vector(data_addr_len - 1 downto 0);
-    signal data_fromcpu          : std_logic_vector(31 downto 0);
-    signal data_tocpu            : std_logic_vector(31 downto 0);
+    signal data_fromcpu          : t_data;
+    signal data_tocpu            : t_data;
 
     signal instr_ctrl, data_ctrl : fileIOty;
 
