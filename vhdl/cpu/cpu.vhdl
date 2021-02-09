@@ -128,11 +128,11 @@ begin
         );
 
     fetch: process (clk) is
+    begin
         if risingEdge(clk) then
             fetch_cmd <= PC;
             fetch_next_seq_pc <= std_logic_vector(unsigned(PC) + 4);
         end if;
-    begin
     end process fetch;
 
     inst_decode: process (clk) is
