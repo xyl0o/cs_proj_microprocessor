@@ -5,35 +5,36 @@ use work.decoder_pkg.all;
 use work.alu_pkg.all;
 
 package cpu_pkg is
-    constant data_len: integer := 32;
-    subtype t_data is std_logic_vector(data_len - 1 downto 0);
+    constant data_len: positive := 32;
 end package cpu_pkg;
 
 use work.cpu_pkg.all;
 
 entity cpu is
-        generic (
-            data_len: integer := 32
-        );
-        port (
-            clk: in std_logic;
+    generic (
+        data_len: positive := data_len
+    );
 
-            -- instruction memory
-            instr_in: in t_data;
+    port (
+        clk: in std_logic;
 
-            instr_addr_out: out t_data;
+        -- instruction memory
+        instr_in: in std_logic_vector(data_len - 1 downto 0);
 
-            -- data memory
-            data_in: in t_data;
+        instr_addr: out std_logic_vector(data_len - 1 downto 0);
 
-            data_out: out t_data;
-            data_addr_out: out t_data;
-            data_we: out std_logic
+        -- data memory
+        data_in: in std_logic_vector(data_len - 1 downto 0);
 
-        );
+        data_out: out std_logic_vector(data_len - 1 downto 0);
+        data_addr: out std_logic_vector(data_len - 1 downto 0);
+        data_we: out std_logic
+    );
 end cpu;
 
 architecture cpu_arc of cpu is
+
+    subtype t_data is std_logic_vector(data_len - 1 downto 0);
 
     signal PC                     : t_data;
     signal flag_carry             : std_logic;
@@ -87,44 +88,51 @@ architecture cpu_arc of cpu is
 
     -- write_back
 
-
 begin
 
-    decoder: decoder port map (
-        instr        => instr_in,
+    decoder: decoder
+        generic map (
+            data_len => data_len
+        )
+        port map (
+            instr        => instr_in,
 
-        op_code      => indec_op_code,
-        alu_op_sel   => indec_op_sel,
-        reg_select_1 => indec_reg_select_1,
-        reg_select_2 => indec_reg_select_2,
-        reg_select_3 => indec_reg_select_3,
-        reg_target   => indec_target,
-        write_en     => indec_reg_write_enable,
-        immediate    => indec_immediate,
-        op2_sel      => indec_op2_sel
-    );
+            op_code      => indec_op_code,
+            alu_op_sel   => indec_op_sel,
+            reg_select_1 => indec_reg_select_1,
+            reg_select_2 => indec_reg_select_2,
+            reg_select_3 => indec_reg_select_3,
+            reg_target   => indec_target,
+            write_en     => indec_reg_write_enable,
+            immediate    => indec_immediate,
+            op2_sel      => indec_op2_sel
+        );
 
-    alu: alu port map (
-        alu_op_code => indec_op_sel,
-        op_1        => indec_op_1,
-        op_2        => indec_op_2,
-        carry_in    => indec_flags_carry,
-        of_in       => indec_flags_of,
-        comp_in     => indec_flags_comp,
+    alu: alu
+        generic map (
+            data_len => data_len
+        )
+        port map (
+            alu_op_code => indec_op_sel,
+            op_1        => indec_op_1,
+            op_2        => indec_op_2,
+            carry_in    => indec_flags_carry,
+            of_in       => indec_flags_of,
+            comp_in     => indec_flags_comp,
 
-        -- Outputs
-        result      => exec_result,
-        carry_out   => exec_flags_carry,
-        of_out      => exec_flags_of,
-        comp_out    => exec_flags_comp
-    );
+            -- Outputs
+            result      => exec_result,
+            carry_out   => exec_flags_carry,
+            of_out      => exec_flags_of,
+            comp_out    => exec_flags_comp
+        );
 
     fetch: process (clk) is
+    begin
         if risingEdge(clk) then
             fetch_cmd <= PC;
             fetch_next_seq_pc <= std_logic_vector(unsigned(PC) + 4);
         end if;
-    begin
     end process fetch;
 
     inst_decode: process (clk) is
@@ -154,7 +162,7 @@ begin
             --indec_reg_write_enable <= decoder.write_en;
             indec_next_seq_pc <= fetch_next_seq_pc;
         end if;
-    end process decode;
+    end process inst_decode;
 
     execute: process (clk) is
     begin
@@ -202,38 +210,38 @@ begin
                 when "JMP" =>
                     PC <= exec_result;
                     link_reg <= exec_next_seq_pc;
-                    instr_addr_out <= exec_result;
+                    instr_addr <= exec_result;
 
                 when "B" =>
                     if exec_flags_comp then
                         PC <= exec_result;
                         link_reg <= exec_next_seq_pc;
-                        instr_addr_out <= exec_result;
+                        instr_addr <= exec_result;
                     else
                         PC <= exec_next_seq_pc;
-                        instr_addr_out <= exec_next_seq_pc;
+                        instr_addr <= exec_next_seq_pc;
                     end if;
                 when "LDR" =>
                     --macc_result <= memory_get(result);
                     data_we <= "0";
-                    data_addr_out <= exec_result;
+                    data_addr <= exec_result;
                     macc_result <= data_in;  -- TODO does this work (-> timing)?
 
                     PC <= exec_next_seq_pc;
-                    instr_addr_out <= exec_next_seq_pc;
+                    instr_addr <= exec_next_seq_pc;
                     
                 when "STR" =>
                     --memory_write(result, exec_datastore); --addr then value
-                    data_addr_out <= exec_result;
+                    data_addr <= exec_result;
                     data_out <= exec_datastore;
                     data_we <= "1";
 
                     PC <= exec_next_seq_pc;
-                    instr_addr_out <= exec_next_seq_pc;
+                    instr_addr <= exec_next_seq_pc;
                     
                 when others =>
                     PC <= exec_next_seq_pc;
-                    instr_addr_out <= exec_next_seq_pc;
+                    instr_addr <= exec_next_seq_pc;
 
             end case;
         end if;
@@ -255,7 +263,5 @@ begin
             
         end if;
     end process write_back;
-begin
-    
-    
-  
+
+end cpu_arc;
