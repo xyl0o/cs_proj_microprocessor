@@ -40,7 +40,7 @@ begin
 
     data_nwe <= not data_we;
 
-    instr_mem: sram2
+    instr_mem_instance: sram2
         generic map (
             addrWd  => data_len,
             dataWd  => data_len,
@@ -57,7 +57,7 @@ begin
             fileIO  => instr_ctrl
         );
 
-    data_mem: sram2
+    data_mem_instance: sram2
         generic map (
             addrWd  => data_len,
             dataWd  => data_len,
@@ -74,7 +74,7 @@ begin
             fileIO  => data_ctrl
         );
 
-    cpu: cpu
+    cpu_instance: cpu
         generic map (
             data_len   => data_len
         )

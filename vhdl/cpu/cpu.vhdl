@@ -82,7 +82,7 @@ begin
     -- implement zero register
     register_file(to_integer(unsigned(reg_addr_zero))) <= '0';
 
-    decoder: decoder
+    decoder_instance: decoder
         generic map (
             data_len => data_len
         )
@@ -100,7 +100,7 @@ begin
             op2_sel      => indec_op2_sel
         );
 
-    alu: alu
+    alu_instance: alu
         generic map (
             data_len => data_len
         )
