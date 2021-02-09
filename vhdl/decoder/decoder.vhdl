@@ -31,7 +31,7 @@ begin
 
     begin
 
-        op_code_i <= instr(31 downto 26);
+        op_code_i := instr(31 downto 26);
 
         case op_code_i is
             -- when "000000" =>   op_code <= op_code_i(5 downto 1);
