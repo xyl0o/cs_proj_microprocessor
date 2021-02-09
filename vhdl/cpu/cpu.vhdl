@@ -7,6 +7,11 @@ use work.alu_pkg.all;
 package cpu_pkg is
     constant data_len: positive := 32;
     constant reg_count: positive := 32;
+
+    constant reg_addr_zero  : positive := "00000"; -- R0
+    constant reg_addr_flags : positive := "00001"; -- R1
+    constant reg_addr_link  : positive := "11110"; -- R30
+    constant reg_addr_pc    : positive := "11111";  -- R31
 end package cpu_pkg;
 
 use work.cpu_pkg.all;
