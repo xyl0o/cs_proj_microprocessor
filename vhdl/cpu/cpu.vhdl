@@ -219,15 +219,18 @@ begin
                     register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_result;
                     register_file(to_integer(unsigned(reg_addr_link))) <= exec_next_seq_pc;
                     instr_addr <= exec_result;
-
                 when op_B =>
-                    if exec_flags_comp then
+                    if exec_flags_comp = '1' then
                         register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_result;
                         register_file(to_integer(unsigned(reg_addr_link))) <= exec_next_seq_pc;
                         instr_addr <= exec_result;
-                    else
+                    elsif exec_flags_comp = '0' then
                         register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
                         instr_addr <= exec_next_seq_pc;
+                    else
+                        -- TODO is just else sufficient?
+                        report "indec_op2_sel was neither 0 nor 1"
+                        severity error;
                     end if;
                 when op_LDR =>
                     --macc_result <= memory_get(result);
