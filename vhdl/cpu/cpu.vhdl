@@ -121,7 +121,7 @@ begin
 
     fetch: process (clk) is
     begin
-        if risingEdge(clk) then
+        if rising_edge(clk) then
 
             fetch_cmd <= register_file(to_integer(unsigned(reg_addr_pc)));
 
@@ -133,7 +133,7 @@ begin
 
     inst_decode: process (clk) is
     begin
-        if risingEdge(clk) then
+        if rising_edge(clk) then
             --decoder.instr <= instr_in;
 
             --indec_op_code <= decoder.op_code;
@@ -170,7 +170,7 @@ begin
 
     execute: process (clk) is
     begin
-        if risingEdge(clk) then
+        if rising_edge(clk) then
             exec_opcode           <= indec_opcode;
             exec_target           <= indec_target;
             exec_datastore        <= indec_datastore;
@@ -200,7 +200,7 @@ begin
 
     mem_access: process (clk) is
     begin
-        if risingEdge(clk) then
+        if rising_edge(clk) then
             macc_op_code <= exec_op_code;
             macc_target <= exec_target;
             macc_result <= exec_result;
@@ -253,7 +253,7 @@ begin
 
     write_back: process (clk) is
     begin
-        if risingEdge(clk) then
+        if rising_edge(clk) then
 
             -- Write back flags
             -- 00000000000000000000000000000000
