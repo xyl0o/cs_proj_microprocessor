@@ -123,6 +123,15 @@ begin
     -- debug output
     debug_pc <= register_file(to_integer(unsigned(reg_addr_pc)));
 
+    initialize: process is
+    begin
+        wait for 5 ns;
+        register_file(to_integer(unsigned(reg_addr_zero))) <= (others => '0');
+        register_file(to_integer(unsigned(reg_addr_flags))) <= (others => '0');
+        register_file(to_integer(unsigned(reg_addr_pc))) <= (others => '0');
+        wait;
+    end process initialize;
+
     fetch: process (clk) is
     begin
         if rising_edge(clk) then
