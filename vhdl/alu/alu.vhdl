@@ -23,19 +23,22 @@ package alu_pkg is
 	constant aluop_IDOP2: t_alu_op_code := "01100";
 
     component alu_comp is
+        generic (
+            data_len   : positive := 32
+        );
         port(
             alu_op_code: in t_alu_op_code;
 
             -- Inputs
-            op_1: in t_data;
-            op_2: in t_data;
+            op_1: in std_logic_vector(data_len - 1 downto 0);
+            op_2: in std_logic_vector(data_len - 1 downto 0);
 
             carry_in: in std_logic;
             of_in: in std_logic;
             comp_in: in std_logic;
 
             -- Outputs
-            result: out t_data;
+            result: out std_logic_vector(data_len - 1 downto 0);
 
             carry_out: out std_logic;
             of_out: out std_logic;
