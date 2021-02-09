@@ -90,34 +90,42 @@ architecture cpu_arc of cpu is
 
 begin
 
-    decoder: decoder port map (
-        instr        => instr_in,
+    decoder: decoder
+        generic map (
+            data_len => data_len
+        )
+        port map (
+            instr        => instr_in,
 
-        op_code      => indec_op_code,
-        alu_op_sel   => indec_op_sel,
-        reg_select_1 => indec_reg_select_1,
-        reg_select_2 => indec_reg_select_2,
-        reg_select_3 => indec_reg_select_3,
-        reg_target   => indec_target,
-        write_en     => indec_reg_write_enable,
-        immediate    => indec_immediate,
-        op2_sel      => indec_op2_sel
-    );
+            op_code      => indec_op_code,
+            alu_op_sel   => indec_op_sel,
+            reg_select_1 => indec_reg_select_1,
+            reg_select_2 => indec_reg_select_2,
+            reg_select_3 => indec_reg_select_3,
+            reg_target   => indec_target,
+            write_en     => indec_reg_write_enable,
+            immediate    => indec_immediate,
+            op2_sel      => indec_op2_sel
+        );
 
-    alu: alu port map (
-        alu_op_code => indec_op_sel,
-        op_1        => indec_op_1,
-        op_2        => indec_op_2,
-        carry_in    => indec_flags_carry,
-        of_in       => indec_flags_of,
-        comp_in     => indec_flags_comp,
+    alu: alu
+        generic map (
+            data_len => data_len
+        )
+        port map (
+            alu_op_code => indec_op_sel,
+            op_1        => indec_op_1,
+            op_2        => indec_op_2,
+            carry_in    => indec_flags_carry,
+            of_in       => indec_flags_of,
+            comp_in     => indec_flags_comp,
 
-        -- Outputs
-        result      => exec_result,
-        carry_out   => exec_flags_carry,
-        of_out      => exec_flags_of,
-        comp_out    => exec_flags_comp
-    );
+            -- Outputs
+            result      => exec_result,
+            carry_out   => exec_flags_carry,
+            of_out      => exec_flags_of,
+            comp_out    => exec_flags_comp
+        );
 
     fetch: process (clk) is
         if risingEdge(clk) then
