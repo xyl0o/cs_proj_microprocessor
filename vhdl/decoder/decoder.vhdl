@@ -26,7 +26,7 @@ package decoder_pkg is
   constant op_STR:   t_op_code := "11100";
   constant op_NOP:   t_op_code := "11111";
 
-  component decoder_comp is
+  component decoder is
       port(
         instr        : in std_logic_vector(31 downto 0);
         op_code      : out t_op_code;
@@ -39,7 +39,7 @@ package decoder_pkg is
         op2_sel      : out std_logic; -- 1 if immediate
         write_en     : out std_logic  -- 1 if write in register
       );
-  end component decoder_comp;
+  end component decoder;
 end package decoder_pkg;
 
 -----------------------------------------------------------------------------------

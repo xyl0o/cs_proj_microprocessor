@@ -11,7 +11,7 @@ package cpu_pkg is
     constant reg_addr_link  : t_reg_addr := "11110"; -- R30
     constant reg_addr_pc    : t_reg_addr := "11111"; -- R31
 
-    component cpu_comp is
+    component cpu is
         generic (
             data_len   : positive := 32
         );
@@ -26,7 +26,7 @@ package cpu_pkg is
             instr_addr : out std_logic_vector(data_len - 1 downto 0);
             instr_in   : in std_logic_vector(data_len - 1 downto 0)
         );
-    end component cpu_comp;
+    end component cpu;
 end package cpu_pkg;
 
 use work.cpu_pkg.all;
@@ -93,7 +93,7 @@ begin
     -- implement zero register
     register_file(to_integer(unsigned(reg_addr_zero))) <= '0';
 
-    decoder: decoder_comp
+    decoder: decoder
         generic map (
             data_len => data_len
         )
@@ -111,7 +111,7 @@ begin
             op2_sel      => indec_op2_sel
         );
 
-    alu: alu_comp
+    alu: alu
         generic map (
             data_len => data_len
         )

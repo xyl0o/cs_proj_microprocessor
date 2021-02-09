@@ -22,7 +22,7 @@ package alu_pkg is
 	constant aluop_CMPGT: t_alu_op_code := "01011";
 	constant aluop_IDOP2: t_alu_op_code := "01100";
 
-    component alu_comp is
+    component alu is
         generic (
             data_len   : positive := 32
         );
@@ -44,7 +44,7 @@ package alu_pkg is
             of_out: out std_logic;
             comp_out: out std_logic
         );
-    end component alu_comp;
+    end component alu;
 end package alu_pkg;
 
 entity alu is
