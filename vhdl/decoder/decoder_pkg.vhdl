@@ -28,8 +28,11 @@ package decoder_pkg is
   constant op_NOP:   t_op_code := "11111";
 
   component decoder is
+      generic (
+        data_len   : positive := 32
+      );
       port(
-        instr        : in std_logic_vector(31 downto 0);
+        instr        : in std_logic_vector(data_len - 1 downto 0);
         op_code      : out t_op_code;
         alu_op_sel   : out t_alu_op_code;
         reg_select_1 : out t_reg_addr;
