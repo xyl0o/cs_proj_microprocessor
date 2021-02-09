@@ -162,7 +162,7 @@ begin
             --indec_reg_write_enable <= decoder.write_en;
             indec_next_seq_pc <= fetch_next_seq_pc;
         end if;
-    end process decode;
+    end process inst_decode;
 
     execute: process (clk) is
     begin
