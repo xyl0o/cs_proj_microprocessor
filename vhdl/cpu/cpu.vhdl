@@ -77,9 +77,9 @@ architecture cpu_arc of cpu is
 
     -- write_back
 
-begin
     signal debug_pc               : t_data;
 
+begin
     -- implement zero register
     register_file(to_integer(unsigned(reg_addr_zero))) <= (others => '0');
 
