@@ -36,7 +36,7 @@ architecture cpu_arc of cpu is
 
     -- inst_decode
     signal indec_op_code          : t_op_code;
-    signal indec_op_sel           : t_alu_op_sel;
+    signal indec_op_sel           : t_alu_op_code;
     signal indec_target           : t_reg_addr;
     signal indec_datastore        : t_data;
     signal indec_op_1             : t_data;
