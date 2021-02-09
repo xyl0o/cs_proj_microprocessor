@@ -6,6 +6,7 @@ use work.alu_pkg.all;
 package decoder_pkg is
   subtype t_op_code is std_logic_vector(4 downto 0);
   subtype t_reg_addr is std_logic_vector(4 downto 0);
+  subtype t_op_imm is std_logic_vector(15 downto 0);
 
   constant op_CMPEQ: t_op_code := "01001";
   constant op_CMPGT: t_op_code := "01010";
@@ -35,7 +36,7 @@ package decoder_pkg is
         reg_select_2 : out t_reg_addr;
         reg_select_3 : out t_reg_addr;
         reg_target   : out t_reg_addr;
-        immediate    : out std_logic_vector(15 downto 0);
+        immediate    : out t_op_imm;
         op2_sel      : out std_logic; -- 1 if immediate
         write_en     : out std_logic  -- 1 if write in register
       );
