@@ -6,6 +6,12 @@ use work.alu_pkg.all;
 
 package cpu_pkg is
     constant data_len: positive := 32;
+    constant reg_count: positive := 32;
+
+    constant reg_addr_zero  : positive := "00000"; -- R0
+    constant reg_addr_flags : positive := "00001"; -- R1
+    constant reg_addr_link  : positive := "11110"; -- R30
+    constant reg_addr_pc    : positive := "11111";  -- R31
 end package cpu_pkg;
 
 use work.cpu_pkg.all;
@@ -36,10 +42,7 @@ architecture cpu_arc of cpu is
 
     subtype t_data is std_logic_vector(data_len - 1 downto 0);
 
-    signal PC                     : t_data;
-    signal flag_carry             : std_logic;
-    signal flag_of                : std_logic;
-    signal flag_comp              : std_logic;
+    signal register_file          : array(0 to reg_count - 1) of t_data;
 
     -- fetch
     signal fetch_cmd              : t_data;
@@ -90,6 +93,9 @@ architecture cpu_arc of cpu is
 
 begin
 
+    -- implement zero register
+    register_file(to_integer(unsigned(reg_addr_zero))) <= '0';
+
     decoder: decoder
         generic map (
             data_len => data_len
@@ -130,8 +136,12 @@ begin
     fetch: process (clk) is
     begin
         if risingEdge(clk) then
-            fetch_cmd <= PC;
-            fetch_next_seq_pc <= std_logic_vector(unsigned(PC) + 4);
+
+            fetch_cmd <= register_file(to_integer(unsigned(reg_addr_pc)));
+
+            fetch_next_seq_pc <= std_logic_vector(unsigned(
+                register_file(to_integer(unsigned(reg_addr_pc)))) + 4);
+
         end if;
     end process fetch;
 
@@ -143,11 +153,14 @@ begin
             --indec_op_code <= decoder.op_code;
             --indec_op_sel <= decoder.alu_op_sel;
             --indec_target <= decoder.reg_target;
-            indec_datastore <= regAarray(to_integer(unsigned(indec_reg_select_3)));
-            indec_op_1 <= regAarray(to_integer(unsigned(indec_reg_select_1)));
+            indec_datastore <= register_file(
+                to_integer(unsigned(indec_reg_select_3)));
+            indec_op_1 <= register_file(
+                to_integer(unsigned(indec_reg_select_1)));
 
             if indec_op2_sel then
-                indec_op_2 <= regAarray(to_integer(unsigned(indec_reg_select_2)));
+                indec_op_2 <= register_file(
+                    to_integer(unsigned(indec_reg_select_2)));
             else
                 -- sign extend
                 --indec_op_2 <= sign_extend(decoder.immediate);
@@ -155,9 +168,14 @@ begin
                 indec_op_2(31 downto 16) <= (others => indec_immediate(15));
             end if;
 
-            indec_flags_carry <= flag_carry;
-            indec_flags_of <= flag_of;
-            indec_flags_comp <= flag_comp;
+            -- Read flags
+            -- 00000000000000000000000000000000
+            --                                ^compare
+            --                               ^carry
+            --                              ^overflow
+            indec_flags_comp  <= register_file(to_integer(unsigned(reg_addr_flags)))(0);
+            indec_flags_carry <= register_file(to_integer(unsigned(reg_addr_flags)))(1);
+            indec_flags_of    <= register_file(to_integer(unsigned(reg_addr_flags)))(2);
 
             --indec_reg_write_enable <= decoder.write_en;
             indec_next_seq_pc <= fetch_next_seq_pc;
@@ -208,17 +226,17 @@ begin
 
             case op_code is
                 when "JMP" =>
-                    PC <= exec_result;
-                    link_reg <= exec_next_seq_pc;
+                    register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_result;
+                    register_file(to_integer(unsigned(reg_addr_link))) <= exec_next_seq_pc;
                     instr_addr <= exec_result;
 
                 when "B" =>
                     if exec_flags_comp then
-                        PC <= exec_result;
-                        link_reg <= exec_next_seq_pc;
+                        register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_result;
+                        register_file(to_integer(unsigned(reg_addr_link))) <= exec_next_seq_pc;
                         instr_addr <= exec_result;
                     else
-                        PC <= exec_next_seq_pc;
+                        register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
                         instr_addr <= exec_next_seq_pc;
                     end if;
                 when "LDR" =>
@@ -227,7 +245,7 @@ begin
                     data_addr <= exec_result;
                     macc_result <= data_in;  -- TODO does this work (-> timing)?
 
-                    PC <= exec_next_seq_pc;
+                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
                     instr_addr <= exec_next_seq_pc;
                     
                 when "STR" =>
@@ -236,11 +254,11 @@ begin
                     data_out <= exec_datastore;
                     data_we <= "1";
 
-                    PC <= exec_next_seq_pc;
+                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
                     instr_addr <= exec_next_seq_pc;
                     
                 when others =>
-                    PC <= exec_next_seq_pc;
+                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
                     instr_addr <= exec_next_seq_pc;
 
             end case;
@@ -250,17 +268,28 @@ begin
     write_back: process (clk) is
     begin
         if risingEdge(clk) then
-            
-            flag_comp   <= macc_flags_comp;
-            flag_carry  <= macc_flags_carry;
-            flag_of     <= macc_flags_of;
+
+            -- Write back flags
+            -- 00000000000000000000000000000000
+            --                                ^compare
+            --                               ^carry
+            --                              ^overflow
+            register_file(to_integer(unsigned(reg_addr_flags)))(0) <= macc_flags_comp;
+            register_file(to_integer(unsigned(reg_addr_flags)))(1) <= macc_flags_carry;
+            register_file(to_integer(unsigned(reg_addr_flags)))(2) <= macc_flags_of;
 
             if macc_reg_write_enable then
-                --TODO : add write enable for flags too decode
-                regAarray(to_integer(unsigned(macc_target))) <= macc_result;
 
-            end if; 
-            
+                -- disallow writes to pc and zero register
+                case macc_target is
+                    when reg_addr_pc =>
+                        null;
+                    when reg_addr_zero =>
+                        null;
+                    when others =>
+                        register_file(to_integer(unsigned(macc_target))) <= macc_result;
+                end case;
+            end if;
         end if;
     end process write_back;
 
