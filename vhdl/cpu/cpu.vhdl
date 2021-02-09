@@ -80,7 +80,7 @@ architecture cpu_arc of cpu is
 begin
 
     -- implement zero register
-    register_file(to_integer(unsigned(reg_addr_zero))) <= "0";
+    register_file(to_integer(unsigned(reg_addr_zero))) <= (others => '0');
 
     decoder_instance: decoder
         generic map (
