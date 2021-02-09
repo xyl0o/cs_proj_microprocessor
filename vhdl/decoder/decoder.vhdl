@@ -35,6 +35,8 @@ begin
         op_code_i := instr(31 downto 26);
         tmp_immediate := instr(15 downto 0);
 
+        op2_sel <= instr(26);
+
         case op_code_i is
 
             -- CMPEQ
@@ -44,7 +46,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
                 reg_target <= instr(20 downto 16);
-                op2_sel <= '0';
                 write_en <= '1';
 
             when op_CMPEQ & '1' =>
@@ -53,7 +54,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_target <= instr(20 downto 16);
                 immediate <= tmp_immediate;
-                op2_sel <= '1';
                 write_en <= '1';
 
             -- CMPGT
@@ -63,7 +63,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
                 reg_target <= instr(20 downto 16);
-                op2_sel <= '0';
                 write_en <= '1';
 
             when op_CMPGT & '1' =>
@@ -72,7 +71,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_target <= instr(20 downto 16);
                 immediate <= tmp_immediate;
-                op2_sel <= '1';
                 write_en <= '1';
 
             -- MOV
@@ -82,7 +80,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
                 reg_target <= instr(20 downto 16);
-                op2_sel <= '0';
                 write_en <= '1';
 
             when op_MOV & '1' =>
@@ -91,7 +88,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_target <= instr(20 downto 16);
                 immediate <= tmp_immediate;
-                op2_sel <= '1';
                 write_en <= '1';
 
             -- JMP
@@ -101,7 +97,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
                 reg_target <= instr(20 downto 16);
-                op2_sel <= '0';
 
             when op_JMP & '1' =>
                 op_code <= op_code_i(5 downto 1);
@@ -109,20 +104,17 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_target <= instr(20 downto 16);
                 immediate <= tmp_immediate;
-                op2_sel <= '1';
 
             -- B
             when op_B & '0' =>
                 op_code <= op_code_i(5 downto 1);
                 alu_op_sel <= aluop_ADD;
                 reg_target <= instr(15 downto 11);
-                op2_sel <= '0';
 
             when op_B & '1' =>
                 op_code <= op_code_i(5 downto 1);
                 alu_op_sel <= aluop_ADD;
                 immediate <= tmp_immediate;
-                op2_sel <= '1';
 
             -- ADC
             when op_ADC & '0' =>
@@ -131,7 +123,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
                 reg_target <= instr(25 downto 21);
-                op2_sel <= '0';
                 write_en <= '1';
            
             when op_ADC & '1' =>
@@ -140,7 +131,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_target <= instr(25 downto 21);
                 immediate <= tmp_immediate;
-                op2_sel <= '1';
                 write_en <= '1';
 
             -- ADD
@@ -150,7 +140,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
                 reg_target <= instr(25 downto 21);
-                op2_sel <= '0';
                 write_en <= '1';
 
             when op_ADD & '1' =>
@@ -159,7 +148,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_target <= instr(25 downto 21);
                 immediate <= tmp_immediate;
-                op2_sel <= '1';
                 write_en <= '1';
 
             -- SBC
@@ -169,7 +157,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
                 reg_target <= instr(25 downto 21);
-                op2_sel <= '0';
                 write_en <= '1';
 
             when op_SBC & '1' =>
@@ -178,7 +165,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_target <= instr(25 downto 21);
                 immediate <= tmp_immediate;
-                op2_sel <= '1';
                 write_en <= '1';
 
             -- SUB
@@ -188,7 +174,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
                 reg_target <= instr(25 downto 21);
-                op2_sel <= '0';
                 write_en <= '1';
 
             when op_SUB & '1' =>
@@ -197,7 +182,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_target <= instr(25 downto 21);
                 immediate <= tmp_immediate;
-                op2_sel <= '1';
                 write_en <= '1';
 
             -- SL
@@ -207,7 +191,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
                 reg_target <= instr(25 downto 21);
-                op2_sel <= '0';
                 write_en <= '1';
 
             when op_SL & '1' =>
@@ -216,7 +199,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_target <= instr(25 downto 21);
                 immediate <= tmp_immediate;
-                op2_sel <= '1';
                 write_en <= '1';
 
             -- SRA
@@ -226,7 +208,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
                 reg_target <= instr(25 downto 21);
-                op2_sel <= '0';
                 write_en <= '1';
 
             when op_SRA & '1' =>
@@ -235,7 +216,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_target <= instr(25 downto 21);
                 immediate <= tmp_immediate;
-                op2_sel <= '1';
                 write_en <= '1';
 
             -- SRL
@@ -245,7 +225,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
                 reg_target <= instr(25 downto 21);
-                op2_sel <= '0';
                 write_en <= '1';
 
             when op_SRL & '1' =>
@@ -254,7 +233,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_target <= instr(25 downto 21);
                 immediate <= tmp_immediate;
-                op2_sel <= '1';
                 write_en <= '1';
 
             -- AND
@@ -264,7 +242,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
                 reg_target <= instr(25 downto 21);
-                op2_sel <= '0';
                 write_en <= '1';
 
             when op_AND & '1' =>
@@ -273,7 +250,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_target <= instr(25 downto 21);
                 immediate <= tmp_immediate;
-                op2_sel <= '1';
                 write_en <= '1';
 
             -- ORR
@@ -283,7 +259,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
                 reg_target <= instr(25 downto 21);
-                op2_sel <= '0';
                 write_en <= '1';
 
             when op_ORR & '1' =>
@@ -292,7 +267,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_target <= instr(25 downto 21);
                 immediate <= tmp_immediate;
-                op2_sel <= '1';
                 write_en <= '1';
 
             -- XOR
@@ -302,7 +276,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
                 reg_target <= instr(25 downto 21);
-                op2_sel <= '0';
                 write_en <= '1';
 
             when op_XOR & '1' =>
@@ -311,7 +284,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_target <= instr(25 downto 21);
                 immediate <= tmp_immediate;
-                op2_sel <= '1';
                 write_en <= '1';
 
             -- LDR
@@ -321,7 +293,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
                 reg_target <= instr(25 downto 21);
-                op2_sel <= '0';
                 write_en <= '1';
 
             when op_LDR & '1' =>
@@ -330,7 +301,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_target <= instr(25 downto 21);
                 immediate <= tmp_immediate;
-                op2_sel <= '1';
                 write_en <= '1';
 
             -- STR
@@ -340,7 +310,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
                 reg_select_3 <= instr(25 downto 21);
-                op2_sel <= '0';
                 write_en <= '0';
 
             when op_STR & '1' =>
@@ -349,7 +318,6 @@ begin
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_3 <= instr(25 downto 21);
                 immediate <= tmp_immediate;
-                op2_sel <= '1';
                 write_en <= '0';
 
             -- NOP
