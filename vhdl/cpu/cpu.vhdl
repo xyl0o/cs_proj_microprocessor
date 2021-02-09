@@ -48,9 +48,9 @@ architecture cpu_arc of cpu is
     signal indec_next_seq_pc      : t_data;
 
     -- internal signals to inst_decode
-    signal indec_reg_select_1     : t_data;
-    signal indec_reg_select_2     : t_data;
-    signal indec_reg_select_3     : t_data;
+    signal indec_reg_select_1     : t_reg_addr;
+    signal indec_reg_select_2     : t_reg_addr;
+    signal indec_reg_select_3     : t_reg_addr;
     signal indec_op2_sel          : std_logic;
     signal indec_immediate        : t_op_imm;
 
