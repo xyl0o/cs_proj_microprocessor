@@ -17,6 +17,10 @@ processor: /usr/lib/ghdl/synopsys/v93/std_logic_1164.o /usr/lib/ghdl/synopsys/v9
 run: processor
 	$(GHDL) -r processor $(GHDLRUNFLAGS)
 
+# Run target
+run-wave: processor
+	$(GHDL) -r processor $(GHDLRUNFLAGS) --vcd=processor.vcd
+
 # Targets to analyze files
 /usr/lib/ghdl/synopsys/v93/std_logic_1164.o: /usr/lib/ghdl/synopsys/v93/../../src/ieee/v93/std_logic_1164.vhdl
 	@echo "This file was not locally built ($<)"
