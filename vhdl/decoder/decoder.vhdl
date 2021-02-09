@@ -119,7 +119,6 @@ begin
             when op_B & '1' =>
                 op_code <= op_code_i(5 downto 1);
                 alu_op_sel <= aluop_ADD;
-                reg_target <= instr(15 downto 0);
                 immediate <= instr(15 downto 0);
                 op2_sel <= '1';
 
