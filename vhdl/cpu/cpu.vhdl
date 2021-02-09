@@ -175,7 +175,7 @@ begin
     execute: process (clk) is
     begin
         if rising_edge(clk) then
-            exec_op_code          <= indec_opcode;
+            exec_op_code          <= indec_op_code;
             exec_target           <= indec_target;
             exec_datastore        <= indec_datastore;
             exec_next_seq_pc      <= indec_exec_next_seq_pc;
