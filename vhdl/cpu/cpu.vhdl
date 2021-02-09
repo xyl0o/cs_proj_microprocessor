@@ -178,7 +178,7 @@ begin
             exec_op_code          <= indec_op_code;
             exec_target           <= indec_target;
             exec_datastore        <= indec_datastore;
-            exec_next_seq_pc      <= indec_exec_next_seq_pc;
+            exec_next_seq_pc      <= indec_next_seq_pc;
             exec_reg_write_enable <= indec_reg_write_enable;
 
             --alu.alu_op_sel <= indec_op_sel;
