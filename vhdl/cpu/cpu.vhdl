@@ -93,6 +93,9 @@ architecture cpu_arc of cpu is
 
 begin
 
+    -- implement zero register
+    register_file(to_integer(unsigned(reg_addr_zero))) <= '0';
+
     decoder: decoder
         generic map (
             data_len => data_len
@@ -276,14 +279,17 @@ begin
             register_file(to_integer(unsigned(reg_addr_flags)))(2) <= macc_flags_of;
 
             if macc_reg_write_enable then
-                --TODO : add write enable for flags too decode
-                register_file(to_integer(unsigned(macc_target))) <= macc_result;
 
+                -- disallow writes to pc and zero register
+                case macc_target is
+                    when reg_addr_pc =>
+                        null;
+                    when reg_addr_zero =>
+                        null;
+                    when others =>
+                        register_file(to_integer(unsigned(macc_target))) <= macc_result;
+                end case;
             end if;
-
-            -- implement zero register
-            -- not nice but works?
-            register_file(to_integer(unsigned(reg_addr_zero))) <= '0';
         end if;
     end process write_back;
 
