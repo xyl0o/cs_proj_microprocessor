@@ -15,12 +15,14 @@ entity alu is
 
 		op_1: in std_logic_vector(data_len - 1 downto 0);
 		op_2: in std_logic_vector(data_len - 1 downto 0);
-		carryin: in std_logic;
+		carry_in: in std_logic;
+		of_in: in std_logic;
+		comp_in: in std_logic;
 
 		result: out std_logic_vector(data_len - 1 downto 0);
-		carryout: out std_logic;
-		overflow: out std_logic;
-		compare: out std_logic
+		carry_out: out std_logic;
+		of_out: out std_logic;
+		comp_out: out std_logic
 	);
 end alu;
 
@@ -41,9 +43,9 @@ begin
 				tmp_result := uop_1 + uop_2;
 			when aluop_ADC =>
 			    -- https://electronics.stackexchange.com/questions/463586/vhdl-convert-std-logic-to-std-logic-vector
-				tmp_result := uop_1 + uop_2 + "0" & carryin;
+				tmp_result := uop_1 + uop_2 + "0" & carry_in;
 			when aluop_SBC =>
-				tmp_result := uop_1 - uop_2 - 1 + "0" & carryin;
+				tmp_result := uop_1 - uop_2 - 1 + "0" & carry_in;
 			when aluop_SL =>
 				tmp_result := shift_left(uop_1, to_integer(uop_2));
 			when aluop_SRA =>
@@ -77,8 +79,9 @@ begin
 		end case;
 
 		result <= std_logic_vector(tmp_result(data_len - 1 downto 0));
-		carryout <= tmp_result(data_len);
-		compare <= tmp_compare;
+		carry_out <= tmp_result(data_len);
+		comp_out <= tmp_compare;
+
 
 	end process arithmetic;
 end alu_arc;
