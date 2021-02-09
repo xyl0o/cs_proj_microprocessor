@@ -26,7 +26,7 @@ package decoder_pkg is
   constant op_STR:   t_op_code := "11100";
   constant op_NOP:   t_op_code := "11111";
 
-  component decoder is
+  component decoder_comp is
       port(
         instr        : in std_logic_vector(31 downto 0);
         op_code      : out t_op_code;
@@ -39,7 +39,7 @@ package decoder_pkg is
         op2_sel      : out std_logic; -- 1 if immediate
         write_en     : out std_logic  -- 1 if write in register
       );
-  end component decoder;
+  end component decoder_comp;
 end package decoder_pkg;
 
 -----------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ end package decoder_pkg;
 entity decoder is
 end entity decoder;
 
-architecture decoding of decoder is
+architecture decoder_arc of decoder is
 begin
 
     decoding_process: process (instr) is
@@ -419,4 +419,4 @@ begin
                                 alu_op_sel <= aluop_NOOP;
         end case;
     end process decoding_process;
-end architecture decoding;
+end architecture decoder_arc;

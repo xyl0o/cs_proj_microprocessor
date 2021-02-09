@@ -74,7 +74,7 @@ begin
             fileIO  => data_ctrl
         );
 
-    cpu: cpu
+    cpu: cpu_comp
         generic map (
             data_len   => data_len
         )
