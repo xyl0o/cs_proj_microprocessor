@@ -269,9 +269,12 @@ begin
                 --TODO : add write enable for flags too decode
                 register_file(to_integer(unsigned(macc_target))) <= macc_result;
 
-            end if; 
-            
+            end if;
+
         end if;
+        -- implement zero register
+        -- not nice but works?
+        register_file(to_integer(unsigned(reg_addr_zero))) <= '0';
     end process write_back;
 
 end cpu_arc;
