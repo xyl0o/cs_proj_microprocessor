@@ -28,7 +28,7 @@ architecture cpu_arc of cpu is
     subtype t_data is std_logic_vector(data_len - 1 downto 0);
     type t_register_file is array(0 to 31) of t_data;
 
-    signal register_file          : t_register_file;
+    signal register_file          : t_register_file := (others => (others => '0'));
 
     -- fetch
     signal fetch_cmd              : t_data;
