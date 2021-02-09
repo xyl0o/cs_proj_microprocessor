@@ -8,9 +8,11 @@ use work.cpu_pkg.all;
 
 entity processor is
     generic(
-        clk_period : time     := 20 ns;
-        clk_cycles : positive := 20;
-        data_len   : positive := 32
+        clk_period     : time     := 20 ns;
+        clk_cycles     : positive := 20;
+        data_len       : positive := 32;
+        instr_addr_len : positive := 8;
+        data_addr_len  : positive := 10
     );
 end entity processor;
 
@@ -22,10 +24,12 @@ architecture processor_tb of processor is
     signal data_nwe, data_we     : std_logic;
 
     signal instr_addr            : std_logic_vector(31 downto 0);
+    signal instr_short_addr      : std_logic_vector(instr_addr_len - 1 downto 0);
     signal instr_fromcpu         : std_logic_vector(31 downto 0);
     signal instr_tocpu           : std_logic_vector(31 downto 0);
 
     signal data_addr             : std_logic_vector(31 downto 0);
+    signal data_short_addr       : std_logic_vector(data_addr_len - 1 downto 0);
     signal data_fromcpu          : std_logic_vector(31 downto 0);
     signal data_tocpu            : std_logic_vector(31 downto 0);
 
@@ -40,9 +44,15 @@ begin
 
     data_nwe <= not data_we;
 
+    instr_short_addr <= instr_addr(
+        instr_short_addr'length - 1 downto 0);
+
+    data_short_addr <= data_addr(
+        data_short_addr'length - 1 downto 0);
+
     instr_mem_instance: sram2
         generic map (
-            addrWd  => data_len,
+            addrWd  => instr_addr_len,
             dataWd  => data_len,
             fileID  => "instMem.dat"
         )
@@ -50,7 +60,7 @@ begin
             nCS     => const0,
             nWE     => const1,
 
-            addr    => instr_addr,
+            addr    => instr_short_addr,
             dataIn  => instr_fromcpu,
             dataOut => instr_tocpu,
 
@@ -59,7 +69,7 @@ begin
 
     data_mem_instance: sram2
         generic map (
-            addrWd  => data_len,
+            addrWd  => data_addr_len,
             dataWd  => data_len,
             fileID  => "dataMem.dat"
         )
@@ -67,7 +77,7 @@ begin
             nCS     => const0,
             nWE     => data_nwe,
 
-            addr    => data_addr,
+            addr    => data_short_addr,
             dataIn  => data_fromcpu,
             dataOut => data_tocpu,
 
