@@ -45,8 +45,10 @@ begin
 
     data_nwe <= not data_we;
 
-    instr_short_addr <= instr_addr(
-        instr_short_addr'length - 1 downto 0);
+    --instr_short_addr <= instr_addr(
+    --    instr_short_addr'length - 1 downto 0);
+
+    instr_short_addr <= (others => '0');
 
     data_short_addr <= data_addr(
         data_short_addr'length - 1 downto 0);
