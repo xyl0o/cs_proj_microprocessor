@@ -35,7 +35,6 @@ begin
     const1 <= '1';
 
     data_nwe <= not data_we;
-    --dnOE ????
 
     instr_mem: sram2
         generic map (
@@ -46,9 +45,10 @@ begin
         port map (
             nCS     => const0,
             nWE     => const1,
-            nOE     => const0,
+
             dataIn  => const0,
             dataOut => instr_tocpu,
+
             fileIO  => instr_ctrl
         );
 
@@ -61,7 +61,6 @@ begin
         port map (
             nCS     => const0,
             nWE     => data_nwe,
-            nOE     => dnOE,
 
             addr    => data_addr,
             dataIn  => data_fromcpu,
