@@ -46,6 +46,7 @@ begin
             nCS     => const0,
             nWE     => const1,
 
+            addr    => instr_addr,
             dataIn  => const0,
             dataOut => instr_tocpu,
 
