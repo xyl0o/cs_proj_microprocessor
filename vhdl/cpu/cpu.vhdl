@@ -31,31 +31,31 @@ end package cpu_pkg;
 use work.cpu_pkg.all;
 
 entity cpu is
-    generic (
-        data_len: positive := data_len
-    );
+    --generic (
+    --    data_len: positive := data_len
+    --);
 
-    port (
-        clk: in std_logic;
+    --port (
+    --    clk: in std_logic;
 
-        -- instruction memory
-        instr_in: in std_logic_vector(data_len - 1 downto 0);
+    --    -- instruction memory
+    --    instr_in: in std_logic_vector(data_len - 1 downto 0);
 
-        instr_addr: out std_logic_vector(data_len - 1 downto 0);
+    --    instr_addr: out std_logic_vector(data_len - 1 downto 0);
 
-        -- data memory
-        data_in: in std_logic_vector(data_len - 1 downto 0);
+    --    -- data memory
+    --    data_in: in std_logic_vector(data_len - 1 downto 0);
 
-        data_out: out std_logic_vector(data_len - 1 downto 0);
-        data_addr: out std_logic_vector(data_len - 1 downto 0);
-        data_we: out std_logic
-    );
+    --    data_out: out std_logic_vector(data_len - 1 downto 0);
+    --    data_addr: out std_logic_vector(data_len - 1 downto 0);
+    --    data_we: out std_logic
+    --);
 end cpu;
 
 architecture cpu_arc of cpu is
 
     subtype t_data is std_logic_vector(data_len - 1 downto 0);
-    type t_register_file is array(0 to reg_count - 1) of t_data;
+    type t_register_file is array(0 to 31) of t_data;
 
     signal register_file          : t_register_file;
 
