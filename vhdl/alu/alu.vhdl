@@ -6,6 +6,29 @@ use ieee.numeric_std.all;
 
 use work.alu_op_codes.all;
 
+package alu_pkg is
+    component alu is
+        port(
+            alu_op_code: in t_alu_op_code;
+
+            -- Inputs
+            op_1: in t_data;
+            op_2: in t_data;
+
+            carry_in: in std_logic;
+            of_in: in std_logic;
+            comp_in: in std_logic;
+
+            -- Outputs
+            result: out t_data;
+
+            carry_out: out std_logic;
+            of_out: out std_logic;
+            comp_out: out std_logic
+        );
+    end component;
+end package alu_pkg;
+
 entity alu is
 	generic (
 		data_len: integer := 32 -- data width
