@@ -16,7 +16,7 @@ entity decoder is
     reg_select_2 : out t_reg_addr;
     reg_select_3 : out t_reg_addr;
     reg_target   : out t_reg_addr;
-    immediate    : out std_logic_vector(15 downto 0);
+    immediate    : out t_op_imm;
     op2_sel      : out std_logic; -- 1 if immediate
     write_en     : out std_logic  -- 1 if write in register
   );
