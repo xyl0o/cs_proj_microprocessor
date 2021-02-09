@@ -20,12 +20,12 @@ architecture processor_tb of processor is
     signal const0, const1    : std_logic;
     signal data_nwe, data_we : std_logic;
 
-    signal instr_addr        : str_logic_vector(31 downto 0);
-    signal instr_tocpu       : str_logic_vector(31 downto 0);
+    signal instr_addr        : std_logic_vector(31 downto 0);
+    signal instr_tocpu       : std_logic_vector(31 downto 0);
 
-    signal data_addr         : str_logic_vector(31 downto 0);
-    signal data_fromcpu      : str_logic_vector(31 downto 0);
-    signal data_tocpu        : str_logic_vector(31 downto 0);
+    signal data_addr         : std_logic_vector(31 downto 0);
+    signal data_fromcpu      : std_logic_vector(31 downto 0);
+    signal data_tocpu        : std_logic_vector(31 downto 0);
 
     signal instr_ctrl, data_ctrl   : fileIOty;
 
