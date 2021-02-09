@@ -34,24 +34,6 @@ begin
         op_code_i := instr(31 downto 26);
 
         case op_code_i is
-            -- when "000000" =>   op_code <= op_code_i(5 downto 1);
-            --                    alu_op_sel <= XXX;
-            --                    reg_select_1 <= XXX;
-            --                    reg_select_2 <= XXX;
-            --                    reg_select_3 <= XXX;
-            --                    reg_target <= XXX;
-            --                    immediate <= XXX;
-            --                    op2_sel <= XXX;
-            --                    write_en <= X;
-            -- when "000001" =>   op_code <= op_code_i(5 downto 1);
-            --                    alu_op_sel <= XXX;
-            --                    reg_select_1 <= XXX;
-            --                    reg_select_2 <= XXX;
-            --                    reg_select_3 <= XXX;
-            --                    reg_target <= XXX;
-            --                    immediate <= XXX;
-            --                    op2_sel <= XXX;
-            --                    write_en <= X;
 
             -- CMPEQ
             when op_CMPEQ & '0' =>    op_code <= op_code_i(5 downto 1);
