@@ -15,26 +15,26 @@ entity cpu is
         data_len: positive := data_len
     );
 
-    subtype t_data is std_logic_vector(data_len - 1 downto 0);
-
     port (
         clk: in std_logic;
 
         -- instruction memory
-        instr_in: in t_data;
+        instr_in: in std_logic_vector(data_len - 1 downto 0);
 
-        instr_addr: out t_data;
+        instr_addr: out std_logic_vector(data_len - 1 downto 0);
 
         -- data memory
-        data_in: in t_data;
+        data_in: in std_logic_vector(data_len - 1 downto 0);
 
-        data_out: out t_data;
-        data_addr: out t_data;
+        data_out: out std_logic_vector(data_len - 1 downto 0);
+        data_addr: out std_logic_vector(data_len - 1 downto 0);
         data_we: out std_logic
     );
 end cpu;
 
 architecture cpu_arc of cpu is
+
+    subtype t_data is std_logic_vector(data_len - 1 downto 0);
 
     signal PC                     : t_data;
     signal flag_carry             : std_logic;
