@@ -1,19 +1,21 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use work.decoder_pkg.all;
+use work.alu_pkg.all;
 
 package decoder_pkg is
+  subtype t_op_code is std_logic_vector(4 downto 0);
   subtype t_reg_addr is std_logic_vector(4 downto 0);
 
   component decoder is
       port(
         instr                 : in std_logic_vector(31 downto 0);
-        op_code               : out std_logic_vector(31 downto 0);
-        alu_op_sel            : out std_logic_vector(4 downto 0);
-        reg_select_1          : out std_logic_vector(4 downto 0);
-        reg_select_2          : out std_logic_vector(4 downto 0);
-        reg_select_3          : out std_logic_vector(4 downto 0);
-        reg_target            : out std_logic_vector(4 downto 0);
+        op_code               : out t_op_code;
+        alu_op_sel            : out t_alu_op_code;
+        reg_select_1          : out t_reg_addr;
+        reg_select_2          : out t_reg_addr;
+        reg_select_3          : out t_reg_addr;
+        reg_target            : out t_reg_addr;
         immediate             : out std_logic_vector(15 downto 0);
         op2_sel               : out std_logic;                          -- 1 if immediate
         write_en              : out std_logic                           -- 1 if write in register 
@@ -23,19 +25,15 @@ end package decoder_pkg;
 
 -----------------------------------------------------------------------------------
 
-library ieee;
-use ieee.std_logic_1164.all;
-use work.decoder_pkg.all;
-
 entity decoder is
     port(
         instr                 : in std_logic_vector(31 downto 0);
-        op_code               : out std_logic_vector(31 downto 0);
-        alu_op_sel            : out std_logic_vector(4 downto 0);
-        reg_select_1          : out std_logic_vector(4 downto 0);
-        reg_select_2          : out std_logic_vector(4 downto 0);
-        reg_select_3          : out std_logic_vector(4 downto 0);
-        reg_target            : out std_logic_vector(4 downto 0);
+        op_code               : out t_op_code;
+        alu_op_sel            : out t_alu_op_code;
+        reg_select_1          : out t_reg_addr;
+        reg_select_2          : out t_reg_addr;
+        reg_select_3          : out t_reg_addr;
+        reg_target            : out t_reg_addr;
         immediate             : out std_logic_vector(15 downto 0);
         op2_sel               : out std_logic;
         write_en              : out std_logic
@@ -75,7 +73,7 @@ begin
 
             -- CMPEQ
             when "010010" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "01010";
+                                alu_op_sel <= aluop_CMPEQ;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_select_2 <= instr(15 downto 11);
                                 reg_target <= instr(20 downto 16);
@@ -83,7 +81,7 @@ begin
                                 write_en <= "1";
 
             when "010011" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "01010";
+                                alu_op_sel <= aluop_CMPEQ;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_target <= instr(20 downto 16);
                                 immediate <= instr(15 downto 0);
@@ -95,7 +93,7 @@ begin
 
             -- CMPGT
             when "010100" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "01011";
+                                alu_op_sel <= aluop_CMPGT;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_select_2 <= instr(15 downto 11);
                                 reg_target <= instr(20 downto 16);
@@ -103,7 +101,7 @@ begin
                                 write_en <= "1";
                         
             when "010101" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "01011";
+                                alu_op_sel <= aluop_CMPGT;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_target <= instr(20 downto 16);
                                 immediate <= instr(15 downto 0);
@@ -113,7 +111,7 @@ begin
 
             -- MOV
             when "010110" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "01100";
+                                alu_op_sel <= aluop_IDOP2;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_select_2 <= instr(15 downto 11);
                                 reg_target <= instr(20 downto 16);
@@ -121,7 +119,7 @@ begin
                                 write_en <= "1";
 
             when "010111" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "01100";
+                                alu_op_sel <= aluop_IDOP2;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_target <= instr(20 downto 16);
                                 immediate <= instr(15 downto 0);
@@ -131,14 +129,14 @@ begin
 
             -- JMP
             when "011000" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00001";
+                                alu_op_sel <= aluop_ADD;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_select_2 <= instr(15 downto 11);
                                 reg_target <= instr(20 downto 16);
                                 op2_sel <= "0";
 
             when "011001" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00001";
+                                alu_op_sel <= aluop_ADD;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_target <= instr(20 downto 16);
                                 immediate <= instr(15 downto 0);
@@ -147,12 +145,12 @@ begin
 
             -- B
             when "011010" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00001";
+                                alu_op_sel <= aluop_ADD;
                                 reg_target <= instr(15 downto 11);
                                 op2_sel <= "0";
 
             when "011011" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00001";
+                                alu_op_sel <= aluop_ADD;
                                 reg_target <= instr(15 downto 0);
                                 immediate <= instr(15 downto 0);
                                 op2_sel <= "1";
@@ -162,7 +160,7 @@ begin
 
             -- ADC
             when "100010" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00010";
+                                alu_op_sel <= aluop_ADC;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_select_2 <= instr(15 downto 11);
                                 reg_target <= instr(25 downto 21);
@@ -170,7 +168,7 @@ begin
                                 write_en <= "1";
             
             when "100011" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00010";
+                                alu_op_sel <= aluop_ADC;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_target <= instr(25 downto 21);
                                 immediate <= instr(15 downto 0);
@@ -182,7 +180,7 @@ begin
 
             -- ADD
             when "100100" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00001";
+                                alu_op_sel <= aluop_ADD;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_select_2 <= instr(15 downto 11);
                                 reg_target <= instr(25 downto 21);
@@ -190,7 +188,7 @@ begin
                                 write_en <= "1"; 
 
             when "100101" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00001";
+                                alu_op_sel <= aluop_ADD;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_target <= instr(25 downto 21);
                                 immediate <= instr(15 downto 0);
@@ -202,7 +200,7 @@ begin
 
             --  SBC
             when "100110" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00011";
+                                alu_op_sel <= aluop_SBC;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_select_2 <= instr(15 downto 11);
                                 reg_target <= instr(25 downto 21);
@@ -210,7 +208,7 @@ begin
                                 write_en <= "1"; 
 
             when "100111" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00011";
+                                alu_op_sel <= aluop_SBC;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_target <= instr(25 downto 21);
                                 immediate <= instr(15 downto 0);
@@ -222,7 +220,7 @@ begin
 
             -- SUB
             when "101000" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00001";
+                                alu_op_sel <= aluop_ADD;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_select_2 <= instr(15 downto 11);
                                 reg_target <= instr(25 downto 21);
@@ -230,7 +228,7 @@ begin
                                 write_en <= "1"; 
  
             when "101001" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00001";
+                                alu_op_sel <= aluop_ADD;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_target <= instr(25 downto 21);
                                 immediate <= instr(15 downto 0);
@@ -262,7 +260,7 @@ begin
 
             -- SRA
             when "101100" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00101";
+                                alu_op_sel <= aluop_SRA;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_select_2 <= instr(15 downto 11);
                                 reg_target <= instr(25 downto 21);
@@ -270,7 +268,7 @@ begin
                                 write_en <= "1";
  
             when "101101" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00101";
+                                alu_op_sel <= aluop_SRA;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_target <= instr(25 downto 21);
                                 immediate <= instr(15 downto 0);
@@ -282,7 +280,7 @@ begin
 
             -- SRL
             when "101110" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00100";
+                                alu_op_sel <= aluop_SRL;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_select_2 <= instr(15 downto 11);
                                 reg_target <= instr(25 downto 21);
@@ -290,7 +288,7 @@ begin
                                 write_en <= "1";
 
             when "101111" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00100";
+                                alu_op_sel <= aluop_SRL;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_target <= instr(25 downto 21);
                                 immediate <= instr(15 downto 0);
@@ -302,7 +300,7 @@ begin
 
             -- AND
             when "110000" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00111";
+                                alu_op_sel <= aluop_AND;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_select_2 <= instr(15 downto 11);
                                 reg_target <= instr(25 downto 21);
@@ -310,7 +308,7 @@ begin
                                 write_en <= "1";
  
             when "110001" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00111";
+                                alu_op_sel <= aluop_AND;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_target <= instr(25 downto 21);
                                 immediate <= instr(15 downto 0);
@@ -322,7 +320,7 @@ begin
 
             -- ORR
             when "110010" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "01000";
+                                alu_op_sel <= aluop_ORR;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_select_2 <= instr(15 downto 11);
                                 reg_target <= instr(25 downto 21);
@@ -330,7 +328,7 @@ begin
                                 write_en <= "1";
  
             when "110011" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "01000";
+                                alu_op_sel <= aluop_ORR;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_target <= instr(25 downto 21);
                                 immediate <= instr(15 downto 0);
@@ -342,7 +340,7 @@ begin
 
             -- XOR
             when "110100" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "01001";
+                                alu_op_sel <= aluop_XOR;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_select_2 <= instr(15 downto 11);
                                 reg_target <= instr(25 downto 21);
@@ -350,7 +348,7 @@ begin
                                 write_en <= "1";
  
             when "110101" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "01001";
+                                alu_op_sel <= aluop_XOR;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_target <= instr(25 downto 21);
                                 immediate <= instr(15 downto 0);
@@ -362,7 +360,7 @@ begin
 
             -- LDR
             when "110110" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00001";
+                                alu_op_sel <= aluop_ADD;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_select_2 <= instr(15 downto 11);
                                 reg_target <= instr(25 downto 21);
@@ -370,7 +368,7 @@ begin
                                 write_en <= "1";
 
             when "110111" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00001";
+                                alu_op_sel <= aluop_ADD;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_target <= instr(25 downto 21);
                                 immediate <= instr(15 downto 0);
@@ -382,7 +380,7 @@ begin
 
             -- STR
             when "111000" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00001";
+                                alu_op_sel <= aluop_ADD;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_select_2 <= instr(15 downto 11);
                                 reg_select_3 <= instr(25 downto 21);
@@ -390,7 +388,7 @@ begin
                                 write_en <= "0";
  
             when "111001" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00001";
+                                alu_op_sel <= aluop_ADD;
                                 reg_select_1 <= instr(20 downto 16);
                                 reg_select_3 <= instr(25 downto 21);
                                 immediate <= instr(15 downto 0);
@@ -402,16 +400,16 @@ begin
 
             -- NOP
             when "111110" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00000";
+                                alu_op_sel <= aluop_NOOP;
 
             when "111111" =>    op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00000";
+                                alu_op_sel <= aluop_NOOP;
 
 
 
             -- Others
             when others =>  op_code <= op_code_i(5 downto 1);
-                                alu_op_sel <= "00000";
+                                alu_op_sel <= aluop_NOOP;
         end case;
     end process decoding_process;
 end architecture decoding;
