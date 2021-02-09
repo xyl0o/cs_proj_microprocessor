@@ -51,12 +51,13 @@ entity alu is
 end alu;
 
 architecture alu_arc of alu is
-
+	subtype t_data is std_logic_vector(data_len - 1 downto 0);
+	subtype t_data_ext is unsigned(data_len downto 0);
 begin
 	arithmetic : process (op_1, op_2, alu_op_code)
-		variable tmp_result: unsigned(data_len downto 0);
-		variable uop_1: unsigned(data_len downto 0);
-		variable uop_2: unsigned(data_len downto 0);
+		variable tmp_result: t_data_ext;
+		variable uop_1: t_data_ext;
+		variable uop_2: t_data_ext;
 	begin
 
 		carry_out <= carry_in;
