@@ -27,7 +27,7 @@ entity cpu is
             data_in: in t_data;
 
             data_out: out t_data;
-            data_addr_out: out t_data;
+            data_addr: out t_data;
             data_we: out std_logic
 
         );
@@ -216,7 +216,7 @@ begin
                 when "LDR" =>
                     --macc_result <= memory_get(result);
                     data_we <= "0";
-                    data_addr_out <= exec_result;
+                    data_addr <= exec_result;
                     macc_result <= data_in;  -- TODO does this work (-> timing)?
 
                     PC <= exec_next_seq_pc;
@@ -224,7 +224,7 @@ begin
                     
                 when "STR" =>
                     --memory_write(result, exec_datastore); --addr then value
-                    data_addr_out <= exec_result;
+                    data_addr <= exec_result;
                     data_out <= exec_datastore;
                     data_we <= "1";
 
