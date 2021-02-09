@@ -43,10 +43,7 @@ architecture cpu_arc of cpu is
     subtype t_data is std_logic_vector(data_len - 1 downto 0);
 
     signal PC                     : t_data;
-    signal flag_carry             : std_logic;
-    signal flag_of                : std_logic;
-    signal flag_comp              : std_logic;
-    signal register_file          : array(2 to reg_count - 1) of t_data;
+    signal register_file          : array(0 to reg_count - 1) of t_data;
 
     -- fetch
     signal fetch_cmd              : t_data;
@@ -165,9 +162,14 @@ begin
                 indec_op_2(31 downto 16) <= (others => indec_immediate(15));
             end if;
 
-            indec_flags_carry <= flag_carry;
-            indec_flags_of <= flag_of;
-            indec_flags_comp <= flag_comp;
+            -- Read flags
+            -- 00000000000000000000000000000000
+            --                                ^compare
+            --                               ^carry
+            --                              ^overflow
+            indec_flags_comp  <= register_file(to_integer(unsigned(reg_addr_flags)))(0);
+            indec_flags_carry <= register_file(to_integer(unsigned(reg_addr_flags)))(1);
+            indec_flags_of    <= register_file(to_integer(unsigned(reg_addr_flags)))(2);
 
             --indec_reg_write_enable <= decoder.write_en;
             indec_next_seq_pc <= fetch_next_seq_pc;
@@ -260,16 +262,22 @@ begin
     write_back: process (clk) is
     begin
         if risingEdge(clk) then
-            
-            flag_comp   <= macc_flags_comp;
-            flag_carry  <= macc_flags_carry;
-            flag_of     <= macc_flags_of;
+
+            -- Write back flags
+            -- 00000000000000000000000000000000
+            --                                ^compare
+            --                               ^carry
+            --                              ^overflow
+            register_file(to_integer(unsigned(reg_addr_flags)))(0) <= macc_flags_comp;
+            register_file(to_integer(unsigned(reg_addr_flags)))(1) <= macc_flags_carry;
+            register_file(to_integer(unsigned(reg_addr_flags)))(2) <= macc_flags_of;
 
             if macc_reg_write_enable then
                 --TODO : add write enable for flags too decode
                 register_file(to_integer(unsigned(macc_target))) <= macc_result;
 
             end if;
+
             -- implement zero register
             -- not nice but works?
             register_file(to_integer(unsigned(reg_addr_zero))) <= '0';
