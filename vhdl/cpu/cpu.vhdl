@@ -21,7 +21,7 @@ entity cpu is
             -- instruction memory
             instr_in: in t_data;
 
-            instr_addr_out: out t_data;
+            instr_addr: out t_data;
 
             -- data memory
             data_in: in t_data;
@@ -202,16 +202,16 @@ begin
                 when "JMP" =>
                     PC <= exec_result;
                     link_reg <= exec_next_seq_pc;
-                    instr_addr_out <= exec_result;
+                    instr_addr <= exec_result;
 
                 when "B" =>
                     if exec_flags_comp then
                         PC <= exec_result;
                         link_reg <= exec_next_seq_pc;
-                        instr_addr_out <= exec_result;
+                        instr_addr <= exec_result;
                     else
                         PC <= exec_next_seq_pc;
-                        instr_addr_out <= exec_next_seq_pc;
+                        instr_addr <= exec_next_seq_pc;
                     end if;
                 when "LDR" =>
                     --macc_result <= memory_get(result);
@@ -220,7 +220,7 @@ begin
                     macc_result <= data_in;  -- TODO does this work (-> timing)?
 
                     PC <= exec_next_seq_pc;
-                    instr_addr_out <= exec_next_seq_pc;
+                    instr_addr <= exec_next_seq_pc;
                     
                 when "STR" =>
                     --memory_write(result, exec_datastore); --addr then value
@@ -229,11 +229,11 @@ begin
                     data_we <= "1";
 
                     PC <= exec_next_seq_pc;
-                    instr_addr_out <= exec_next_seq_pc;
+                    instr_addr <= exec_next_seq_pc;
                     
                 when others =>
                     PC <= exec_next_seq_pc;
-                    instr_addr_out <= exec_next_seq_pc;
+                    instr_addr <= exec_next_seq_pc;
 
             end case;
         end if;
