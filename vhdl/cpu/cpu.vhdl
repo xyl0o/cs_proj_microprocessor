@@ -234,7 +234,7 @@ begin
                     end if;
                 when op_LDR =>
                     --macc_result <= memory_get(result);
-                    data_we <= "0";
+                    data_we <= '0';
                     data_addr <= exec_result;
                     macc_result <= data_in;  -- TODO does this work (-> timing)?
 
@@ -245,7 +245,7 @@ begin
                     --memory_write(result, exec_datastore); --addr then value
                     data_addr <= exec_result;
                     data_out <= exec_datastore;
-                    data_we <= "1";
+                    data_we <= '1';
 
                     register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
                     instr_addr <= exec_next_seq_pc;
