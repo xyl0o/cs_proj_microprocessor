@@ -271,7 +271,7 @@ begin
             register_file(to_integer(unsigned(reg_addr_flags)))(1) <= macc_flags_carry;
             register_file(to_integer(unsigned(reg_addr_flags)))(2) <= macc_flags_of;
 
-            if macc_reg_write_enable then
+            if macc_reg_write_enable = '1' then
 
                 -- disallow writes to pc and zero register
                 case macc_target is
