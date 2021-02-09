@@ -51,7 +51,7 @@ architecture cpu_arc of cpu is
     signal indec_reg_select_1     : t_data;
     signal indec_reg_select_2     : t_data;
     signal indec_reg_select_3     : t_data;
-    signal indec_op2_sel          : t_data;
+    signal indec_op2_sel          : std_logic;
     signal indec_immediate        : t_op_imm;
 
     -- execute
