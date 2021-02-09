@@ -27,7 +27,7 @@ begin
 
     decoding_process: process (instr) is
 
-        variable op_code_i  : std_logic_vector(5 downto 0);
+        variable op_code_i : std_logic_vector(5 downto 0);
 
     begin
 
@@ -70,9 +70,6 @@ begin
                                 op2_sel <= "1";
                                 write_en <= "1";
 
-
-
-
             -- CMPGT
             when "010100" =>    op_code <= op_code_i(5 downto 1);
                                 alu_op_sel <= aluop_CMPGT;
@@ -89,7 +86,6 @@ begin
                                 immediate <= instr(15 downto 0);
                                 op2_sel <= "1";
                                 write_en <= "1";
-
 
             -- MOV
             when "010110" =>    op_code <= op_code_i(5 downto 1);
@@ -108,7 +104,6 @@ begin
                                 op2_sel <= "1";
                                 write_en <= "1";
 
-
             -- JMP
             when "011000" =>    op_code <= op_code_i(5 downto 1);
                                 alu_op_sel <= aluop_ADD;
@@ -124,7 +119,6 @@ begin
                                 immediate <= instr(15 downto 0);
                                 op2_sel <= "1";
 
-
             -- B
             when "011010" =>    op_code <= op_code_i(5 downto 1);
                                 alu_op_sel <= aluop_ADD;
@@ -136,9 +130,6 @@ begin
                                 reg_target <= instr(15 downto 0);
                                 immediate <= instr(15 downto 0);
                                 op2_sel <= "1";
-
-
-
 
             -- ADC
             when "100010" =>    op_code <= op_code_i(5 downto 1);
@@ -157,9 +148,6 @@ begin
                                 op2_sel <= "1";
                                 write_en <= "1";
 
-
-
-
             -- ADD
             when "100100" =>    op_code <= op_code_i(5 downto 1);
                                 alu_op_sel <= aluop_ADD;
@@ -176,9 +164,6 @@ begin
                                 immediate <= instr(15 downto 0);
                                 op2_sel <= "1";
                                 write_en <= "1"; 
-
-
-
 
             --  SBC
             when "100110" =>    op_code <= op_code_i(5 downto 1);
@@ -197,9 +182,6 @@ begin
                                 op2_sel <= "1";
                                 write_en <= "1"; 
 
-
-
-
             -- SUB
             when "101000" =>    op_code <= op_code_i(5 downto 1);
                                 alu_op_sel <= aluop_ADD;
@@ -216,9 +198,6 @@ begin
                                 immediate <= instr(15 downto 0);
                                 op2_sel <= "1";
                                 write_en <= "1"; 
-
-
-
 
             -- SL
             when "101010" =>    op_code <= op_code_i(5 downto 1);
@@ -237,9 +216,6 @@ begin
                                 op2_sel <= "1";
                                 write_en <= "1"; 
 
-
-
-
             -- SRA
             when "101100" =>    op_code <= op_code_i(5 downto 1);
                                 alu_op_sel <= aluop_SRA;
@@ -256,9 +232,6 @@ begin
                                 immediate <= instr(15 downto 0);
                                 op2_sel <= "1";
                                 write_en <= "1";
-
-
-
 
             -- SRL
             when "101110" =>    op_code <= op_code_i(5 downto 1);
@@ -277,9 +250,6 @@ begin
                                 op2_sel <= "1";
                                 write_en <= "1";
 
-
-
-
             -- AND
             when "110000" =>    op_code <= op_code_i(5 downto 1);
                                 alu_op_sel <= aluop_AND;
@@ -296,9 +266,6 @@ begin
                                 immediate <= instr(15 downto 0);
                                 op2_sel <= "1";
                                 write_en <= "1";
-
-
-
 
             -- ORR
             when "110010" =>    op_code <= op_code_i(5 downto 1);
@@ -317,9 +284,6 @@ begin
                                 op2_sel <= "1";
                                 write_en <= "1";
 
-
-
-
             -- XOR
             when "110100" =>    op_code <= op_code_i(5 downto 1);
                                 alu_op_sel <= aluop_XOR;
@@ -336,9 +300,6 @@ begin
                                 immediate <= instr(15 downto 0);
                                 op2_sel <= "1";
                                 write_en <= "1";
-
-
-
 
             -- LDR
             when "110110" =>    op_code <= op_code_i(5 downto 1);
@@ -357,9 +318,6 @@ begin
                                 op2_sel <= "1";
                                 write_en <= "1";
 
-
-
-
             -- STR
             when "111000" =>    op_code <= op_code_i(5 downto 1);
                                 alu_op_sel <= aluop_ADD;
@@ -376,9 +334,6 @@ begin
                                 immediate <= instr(15 downto 0);
                                 op2_sel <= "1";
                                 write_en <= "0";
-
-
-
 
             -- NOP
             when "111110" =>    op_code <= op_code_i(5 downto 1);
