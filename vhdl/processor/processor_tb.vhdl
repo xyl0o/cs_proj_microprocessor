@@ -21,6 +21,7 @@ architecture processor_tb of processor is
     signal data_nwe, data_we : std_logic;
 
     signal instr_addr        : std_logic_vector(31 downto 0);
+    signal instr_fromcpu     : std_logic_vector(31 downto 0);
     signal instr_tocpu       : std_logic_vector(31 downto 0);
 
     signal data_addr         : std_logic_vector(31 downto 0);
@@ -33,6 +34,8 @@ begin
 
     const0 <= '0';
     const1 <= '1';
+
+    --instr_fromcpu <= "0";
 
     data_nwe <= not data_we;
 
@@ -47,7 +50,7 @@ begin
             nWE     => const1,
 
             addr    => instr_addr,
-            dataIn  => const0,
+            dataIn  => instr_fromcpu,
             dataOut => instr_tocpu,
 
             fileIO  => instr_ctrl
