@@ -5,13 +5,11 @@ use work.decoder_pkg.all;
 use work.alu_pkg.all;
 
 package cpu_pkg is
-    constant data_len: positive := 32;
-    constant reg_count: positive := 32;
+    constant reg_addr_zero  : t_reg_addr := "00000"; -- R0
+    constant reg_addr_flags : t_reg_addr := "00001"; -- R1
+    constant reg_addr_link  : t_reg_addr := "11110"; -- R30
+    constant reg_addr_pc    : t_reg_addr := "11111";  -- R31
 
-    constant reg_addr_zero  : positive := "00000"; -- R0
-    constant reg_addr_flags : positive := "00001"; -- R1
-    constant reg_addr_link  : positive := "11110"; -- R30
-    constant reg_addr_pc    : positive := "11111";  -- R31
 end package cpu_pkg;
 
 use work.cpu_pkg.all;
@@ -52,7 +50,7 @@ architecture cpu_arc of cpu is
     -- inst_decode
     signal indec_op_code          : t_op_code;
     signal indec_op_sel           : t_alu_op_sel;
-    signal indec_target           : t_reg_sel;
+    signal indec_target           : t_reg_addr;
     signal indec_datastore        : t_data;
     signal indec_op_1             : t_data;
     signal indec_op_2             : t_data;
@@ -71,7 +69,7 @@ architecture cpu_arc of cpu is
 
     -- execute
     signal exec_op_code           : t_op_code;
-    signal exec_target            : t_data;
+    signal exec_target            : t_reg_addr;
     signal exec_datastore         : t_data;
     signal exec_result            : t_data;
     signal exec_flags_comp        : std_logic;
@@ -82,7 +80,7 @@ architecture cpu_arc of cpu is
 
     -- mem_access
     signal macc_op_code           : t_op_code;
-    signal macc_target            : t_data;
+    signal macc_target            : t_reg_addr;
     signal macc_result            : t_data;
     signal macc_flags_comp        : std_logic;
     signal macc_flags_carry       : std_logic;
