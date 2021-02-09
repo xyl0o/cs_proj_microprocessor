@@ -214,7 +214,7 @@ begin
 
             macc_reg_write_enable <= exec_reg_write_enable;
 
-            case op_code is
+            case macc_op_code is
                 when op_JMP =>
                     register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_result;
                     register_file(to_integer(unsigned(reg_addr_link))) <= exec_next_seq_pc;
