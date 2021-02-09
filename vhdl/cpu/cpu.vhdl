@@ -6,6 +6,7 @@ use work.alu_pkg.all;
 
 package cpu_pkg is
     constant data_len: positive := 32;
+    constant reg_count: positive := 32;
 end package cpu_pkg;
 
 use work.cpu_pkg.all;
@@ -40,6 +41,7 @@ architecture cpu_arc of cpu is
     signal flag_carry             : std_logic;
     signal flag_of                : std_logic;
     signal flag_comp              : std_logic;
+    signal register_file          : array(2 to reg_count - 1) of t_data;
 
     -- fetch
     signal fetch_cmd              : t_data;
@@ -143,11 +145,14 @@ begin
             --indec_op_code <= decoder.op_code;
             --indec_op_sel <= decoder.alu_op_sel;
             --indec_target <= decoder.reg_target;
-            indec_datastore <= register_file(to_integer(unsigned(indec_reg_select_3)));
-            indec_op_1 <= register_file(to_integer(unsigned(indec_reg_select_1)));
+            indec_datastore <= register_file(
+                to_integer(unsigned(indec_reg_select_3)));
+            indec_op_1 <= register_file(
+                to_integer(unsigned(indec_reg_select_1)));
 
             if indec_op2_sel then
-                indec_op_2 <= register_file(to_integer(unsigned(indec_reg_select_2)));
+                indec_op_2 <= register_file(
+                    to_integer(unsigned(indec_reg_select_2)));
             else
                 -- sign extend
                 --indec_op_2 <= sign_extend(decoder.immediate);
