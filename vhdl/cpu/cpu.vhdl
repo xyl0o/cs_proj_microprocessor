@@ -143,11 +143,11 @@ begin
             --indec_op_code <= decoder.op_code;
             --indec_op_sel <= decoder.alu_op_sel;
             --indec_target <= decoder.reg_target;
-            indec_datastore <= regAarray(to_integer(unsigned(indec_reg_select_3)));
-            indec_op_1 <= regAarray(to_integer(unsigned(indec_reg_select_1)));
+            indec_datastore <= register_file(to_integer(unsigned(indec_reg_select_3)));
+            indec_op_1 <= register_file(to_integer(unsigned(indec_reg_select_1)));
 
             if indec_op2_sel then
-                indec_op_2 <= regAarray(to_integer(unsigned(indec_reg_select_2)));
+                indec_op_2 <= register_file(to_integer(unsigned(indec_reg_select_2)));
             else
                 -- sign extend
                 --indec_op_2 <= sign_extend(decoder.immediate);
@@ -257,7 +257,7 @@ begin
 
             if macc_reg_write_enable then
                 --TODO : add write enable for flags too decode
-                regAarray(to_integer(unsigned(macc_target))) <= macc_result;
+                register_file(to_integer(unsigned(macc_target))) <= macc_result;
 
             end if; 
             
