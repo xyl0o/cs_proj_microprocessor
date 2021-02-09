@@ -221,12 +221,12 @@ begin
             macc_reg_write_enable <= exec_reg_write_enable;
 
             case op_code is
-                when "JMP" =>
+                when op_JMP =>
                     register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_result;
                     register_file(to_integer(unsigned(reg_addr_link))) <= exec_next_seq_pc;
                     instr_addr <= exec_result;
 
-                when "B" =>
+                when op_B =>
                     if exec_flags_comp then
                         register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_result;
                         register_file(to_integer(unsigned(reg_addr_link))) <= exec_next_seq_pc;
@@ -235,7 +235,7 @@ begin
                         register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
                         instr_addr <= exec_next_seq_pc;
                     end if;
-                when "LDR" =>
+                when op_LDR =>
                     --macc_result <= memory_get(result);
                     data_we <= "0";
                     data_addr <= exec_result;
@@ -244,7 +244,7 @@ begin
                     register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
                     instr_addr <= exec_next_seq_pc;
                     
-                when "STR" =>
+                when op_STR =>
                     --memory_write(result, exec_datastore); --addr then value
                     data_addr <= exec_result;
                     data_out <= exec_datastore;
