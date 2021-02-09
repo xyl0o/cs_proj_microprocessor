@@ -13,7 +13,7 @@ package decoder_pkg is
         reg_target            : out std_logic_vector(4 downto 0);
         immediate             : out std_logic_vector(15 downto 0);
         op2_sel               : out std_logic;                          -- 1 if immediate
-        write_en              : out std_logic;                          -- 1 if write in register 
+        write_en              : out std_logic                           -- 1 if write in register 
       );
   end component decoder;
 end package decoder_pkg;
@@ -35,8 +35,8 @@ entity decoder is
         reg_target            : out std_logic_vector(4 downto 0);
         immediate             : out std_logic_vector(15 downto 0);
         op2_sel               : out std_logic;
-        write_en              : out std_logic;
-    )
+        write_en              : out std_logic
+    );
 end entity decoder;
 
 architecture decoding of decoder is
@@ -48,7 +48,7 @@ begin
 
     begin
 
-        op_code_i <= instr(31 downto 26)
+        op_code_i <= instr(31 downto 26);
 
         case op_code_i is
             -- when "000000" =>   op_code <= op_code_i(5 downto 1);
@@ -409,6 +409,6 @@ begin
             -- Others
             when others =>  op_code <= op_code_i(5 downto 1);
                                 alu_op_sel <= "00000";
-
+        end case;
     end process decoding_process;
 end architecture decoding;
