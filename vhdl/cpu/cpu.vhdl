@@ -10,6 +10,22 @@ package cpu_pkg is
     constant reg_addr_link  : t_reg_addr := "11110"; -- R30
     constant reg_addr_pc    : t_reg_addr := "11111";  -- R31
 
+    component cpu_comp is
+        generic (
+            data_len   : positive := 32
+        );
+        port (
+            clk        : in std_logic;
+
+            data_addr  : out std_logic_vector(data_len - 1 downto 0);
+            data_out   : out std_logic_vector(data_len - 1 downto 0);
+            data_in    : in std_logic_vector(data_len - 1 downto 0);
+            data_we    : out std_logic;
+
+            instr_addr : out std_logic_vector(data_len - 1 downto 0);
+            instr_in   : in std_logic_vector(data_len - 1 downto 0)
+        );
+    end component cpu_comp;
 end package cpu_pkg;
 
 use work.cpu_pkg.all;
