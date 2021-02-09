@@ -5,32 +5,33 @@ use work.decoder_pkg.all;
 use work.alu_pkg.all;
 
 package cpu_pkg is
-    constant data_len: integer := 32;
-    subtype t_data is std_logic_vector(data_len - 1 downto 0);
+    constant data_len: positive := 32;
 end package cpu_pkg;
 
 use work.cpu_pkg.all;
 
 entity cpu is
-        generic (
-            data_len: integer := 32
-        );
-        port (
-            clk: in std_logic;
+    generic (
+        data_len: positive := data_len
+    );
 
-            -- instruction memory
-            instr_in: in t_data;
+    subtype t_data is std_logic_vector(data_len - 1 downto 0);
 
-            instr_addr: out t_data;
+    port (
+        clk: in std_logic;
 
-            -- data memory
-            data_in: in t_data;
+        -- instruction memory
+        instr_in: in t_data;
 
-            data_out: out t_data;
-            data_addr: out t_data;
-            data_we: out std_logic
+        instr_addr: out t_data;
 
-        );
+        -- data memory
+        data_in: in t_data;
+
+        data_out: out t_data;
+        data_addr: out t_data;
+        data_we: out std_logic
+    );
 end cpu;
 
 architecture cpu_arc of cpu is
@@ -86,7 +87,6 @@ architecture cpu_arc of cpu is
     signal macc_next_seq_pc       : t_data;
 
     -- write_back
-
 
 begin
 
