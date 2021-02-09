@@ -41,7 +41,7 @@ package alu_pkg is
             of_out: out std_logic;
             comp_out: out std_logic
         );
-    end component;
+    end component alu_comp;
 end package alu_pkg;
 
 entity alu is
