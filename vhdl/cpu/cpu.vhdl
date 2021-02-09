@@ -263,7 +263,5 @@ begin
             
         end if;
     end process write_back;
-begin
-    
-    
-  
+
+end cpu_arc;
