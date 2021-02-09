@@ -91,7 +91,7 @@ begin
         );
 
   -- load instruction/data and run cpu
-    stiP: process is
+    stimulus_process: process is
     begin
         clk        <= '0';
         instr_ctrl <= load,  none after 5 ns;
@@ -103,6 +103,6 @@ begin
             wait for clk_period;
         end loop;
         wait;
-    end process stiP;
+    end process stimulus_process;
 
 end architecture processor_tb;
