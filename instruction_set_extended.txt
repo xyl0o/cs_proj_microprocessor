@@ -54,7 +54,7 @@ instb   inst  mem wb aluop lay op1 op2 tgt dst wbe
 10001   ADC    ✗  ✓  ADC    3   BY  CZ  AX  _   1           tgt := op1 + op2 + Carry
 10010   ADD    ✗  ✓  ADD    3   BY  CZ  AX  _   1           tgt := op1 + op2
 10011   SBC    ✗  ✓  SBC    3   BY  CZ  AX  _   1           tgt := op1 - op2 - 1 + Carry
-10100   SUB    ✗  ✓  SUB    3   BY  CZ  AX  _   1           tgt := op1 - op2
+10100   SUB    ✗  ✓  ADD    3   BY  CZ  AX  _   1           tgt := op1 - op2
 10101   SL     ✗  ✓  SL     3   BY  CZ  AX  _   1           tgt := op1 << op2
 10110   SRA    ✗  ✓  SRA    3   BY  CZ  AX  _   1           tgt := op1 >>> op2
 10111   SRL    ✗  ✓  SRL    3   BY  CZ  AX  _   1           tgt := op1 >> op2
