@@ -185,7 +185,8 @@ begin
 
     with indec_op2_sel select indec_out_op_2 <=
         register_file(to_integer(unsigned(indec_reg_select_2))) when '1',
-        sign_extend(indec_immediate)                            when '0';
+        sign_extend(indec_immediate)                            when '0',
+        (others => '0')                                         when others;
 
     indec_out_datastore   <= register_file(to_integer(unsigned(indec_reg_select_3)));
     indec_out_flags_comp  <= register_file(to_integer(unsigned(reg_addr_flags)))(0);
