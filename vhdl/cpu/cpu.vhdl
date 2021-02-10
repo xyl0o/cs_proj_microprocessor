@@ -305,7 +305,8 @@ begin
                     when reg_addr_zero =>
                         null;
                     when others =>
-                        register_file(to_integer(unsigned(macc_target))) <= macc_result;
+                        null;
+                        --register_file(to_integer(unsigned(macc_target))) <= macc_result;
                 end case;
             end if;
         end if;
