@@ -43,8 +43,8 @@ architecture cpu_arc of cpu is
     --- Instruction decode signals
 
     -- Inputs
-    signal indec_in_instr       : t_data;
-    signal indec_in_next_seq_pc : t_data;
+    signal indec_in_instr       : t_data := (others => '1');
+    signal indec_in_next_seq_pc : t_data := (others => '0');
 
     -- internal signals to inst_decode
     signal indec_reg_select_1 : t_reg_addr;
