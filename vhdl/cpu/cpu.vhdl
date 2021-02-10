@@ -38,7 +38,10 @@ architecture cpu_arc of cpu is
     -- fetch
     signal fetch_next_seq_pc : t_data := (others => '0');
 
-    -- inst_decode
+
+    ----------------------------------------------------------------------------
+    --- Instruction decode signals
+
     signal indec_op_code          : t_op_code := op_NOP;
     signal indec_op_sel           : t_alu_op_code;
     signal indec_target           : t_reg_addr;
@@ -58,7 +61,10 @@ architecture cpu_arc of cpu is
     signal indec_op2_sel      : std_logic;
     signal indec_immediate    : t_op_imm;
 
-    -- execute
+
+    ----------------------------------------------------------------------------
+    --- Execute signals
+
     signal exec_op_code          : t_op_code := op_NOP;
     signal exec_target           : t_reg_addr;
     signal exec_datastore        : t_data;
@@ -69,7 +75,10 @@ architecture cpu_arc of cpu is
     signal exec_reg_write_enable : std_logic;
     signal exec_next_seq_pc      : t_data := (others => '0');
 
-    -- mem_access
+
+    ----------------------------------------------------------------------------
+    --- Memory access signals
+
     signal macc_op_code          : t_op_code := op_NOP;
     signal macc_target           : t_reg_addr;
     signal macc_result           : t_data;
@@ -78,7 +87,15 @@ architecture cpu_arc of cpu is
     signal macc_flags_of         : std_logic;
     signal macc_reg_write_enable : std_logic;
 
-    -- write_back
+
+    ----------------------------------------------------------------------------
+    --- Write back signals
+
+
+    ----------------------------------------------------------------------------
+    --- Functions
+
+
 
     function sign_extend(imm_value : t_op_imm) return t_data is
         variable result: t_data;
@@ -107,6 +124,9 @@ begin
 
         end if;
     end process fetch;
+
+    ----------------------------------------------------------------------------
+    --- Instruction decode
 
     decoder_instance: decoder
         generic map (
@@ -171,6 +191,10 @@ begin
         end if;
     end process inst_decode;
 
+
+    ----------------------------------------------------------------------------
+    --- Execute
+
     alu_instance: alu
         generic map (
             data_len => data_len
@@ -220,6 +244,10 @@ begin
 
         end if;
     end process execute;
+
+
+    ----------------------------------------------------------------------------
+    --- Memory access
 
     mem_access: process (clk) is
     begin
@@ -282,6 +310,10 @@ begin
             end case;
         end if;
     end process mem_access;
+
+
+    ----------------------------------------------------------------------------
+    --- Write back
 
     write_back: process (clk) is
     begin
