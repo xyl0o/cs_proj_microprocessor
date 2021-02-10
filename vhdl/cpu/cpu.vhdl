@@ -293,9 +293,12 @@ begin
             --                                ^compare
             --                               ^carry
             --                              ^overflow
-            register_file(to_integer(unsigned(reg_addr_flags)))(0) <= macc_flags_comp;
-            register_file(to_integer(unsigned(reg_addr_flags)))(1) <= macc_flags_carry;
-            register_file(to_integer(unsigned(reg_addr_flags)))(2) <= macc_flags_of;
+            register_file(to_integer(unsigned(reg_addr_flags))) <= (
+                0      => macc_flags_comp,
+                1      => macc_flags_carry,
+                2      => macc_flags_of,
+                others => '0'
+            );
 
             if macc_reg_write_enable = '1' then
 
