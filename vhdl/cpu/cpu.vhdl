@@ -149,9 +149,12 @@ begin
     end process fetch;
 
     inst_decode: process (clk) is
+        variable reg_flags: t_data;
     begin
         if rising_edge(clk) then
             --decoder.instr <= instr_in;
+
+            reg_flags := register_file(to_integer(unsigned(reg_addr_flags)));
 
             --indec_op_code <= decoder.op_code;
             --indec_op_sel <= decoder.alu_op_sel;
@@ -180,9 +183,9 @@ begin
             --                                ^compare
             --                               ^carry
             --                              ^overflow
-            indec_flags_comp  <= register_file(to_integer(unsigned(reg_addr_flags)))(0);
-            indec_flags_carry <= register_file(to_integer(unsigned(reg_addr_flags)))(1);
-            indec_flags_of    <= register_file(to_integer(unsigned(reg_addr_flags)))(2);
+            indec_flags_comp  <= reg_flags(0);
+            indec_flags_carry <= reg_flags(1);
+            indec_flags_of    <= reg_flags(2);
 
             --indec_reg_write_enable <= decoder.write_en;
             indec_next_seq_pc <= fetch_next_seq_pc;
