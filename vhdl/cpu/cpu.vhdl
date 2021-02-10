@@ -111,13 +111,28 @@ architecture cpu_arc of cpu is
     ----------------------------------------------------------------------------
     --- Memory access signals
 
-    signal macc_op_code          : t_op_code := op_NOP;
-    signal macc_target           : t_reg_addr;
-    signal macc_result           : t_data;
-    signal macc_flags_comp       : std_logic;
-    signal macc_flags_carry      : std_logic;
-    signal macc_flags_of         : std_logic;
-    signal macc_reg_write_enable : std_logic;
+    -- Inputs
+    signal macc_in_op_code          : t_op_code := op_NOP;
+    signal macc_in_target           : t_reg_addr;
+    signal macc_in_datastore        : t_data;
+    signal macc_in_result           : t_data;
+    signal macc_in_flags_comp       : std_logic;
+    signal macc_in_flags_carry      : std_logic;
+    signal macc_in_flags_of         : std_logic;
+    signal macc_in_reg_write_enable : std_logic;
+    signal macc_in_next_seq_pc      : t_data := (others => '0');
+
+    -- internal signals to mem_access
+    signal macc_will_jump : std_logic;
+
+    -- Outputs
+    signal macc_out_op_code          : t_op_code := op_NOP;
+    signal macc_out_target           : t_reg_addr;
+    signal macc_out_result           : t_data;
+    signal macc_out_flags_comp       : std_logic;
+    signal macc_out_flags_carry      : std_logic;
+    signal macc_out_flags_of         : std_logic;
+    signal macc_out_reg_write_enable : std_logic;
 
 
     ----------------------------------------------------------------------------
@@ -257,67 +272,66 @@ begin
     ----------------------------------------------------------------------------
     --- Memory access
 
-    mem_access: process (clk) is
+    macc_pipeline: process (clk) is
     begin
         if rising_edge(clk) then
-
-            macc_op_code     <= exec_out_op_code;
-            macc_target      <= exec_out_target;
-            macc_result      <= exec_out_result;
-            macc_flags_comp  <= exec_out_flags_comp;
-            macc_flags_carry <= exec_out_flags_carry;
-            macc_flags_of    <= exec_out_flags_of;
-
-            macc_reg_write_enable <= exec_out_reg_write_enable;
-
-            case macc_op_code is
-
-                when op_JMP =>
-                    reg_pc   <= exec_out_result;
-                    reg_link <= exec_out_next_seq_pc;
-                    --instr_addr <= exec_out_result;
-
-                when op_B =>
-                    if exec_out_flags_comp = '1' then
-                        reg_pc   <= exec_out_result;
-                        reg_link <= exec_out_next_seq_pc;
-                        --instr_addr <= exec_out_result;
-
-                    elsif exec_out_flags_comp = '0' then
-                        reg_pc <= exec_out_next_seq_pc;
-                        --instr_addr <= exec_out_next_seq_pc;
-
-                    else
-                        -- TODO is just else sufficient?
-                        report "exec_out_flags_comp was neither 0 nor 1"
-                        severity error;
-                    end if;
-
-                when op_LDR =>
-                    --macc_result <= memory_get(result);
-                    data_we     <= '0';
-                    data_addr   <= exec_out_result;
-                    macc_result <= data_in;  -- TODO does this work (-> timing)?
-
-                    reg_pc <= exec_out_next_seq_pc;
-                    --instr_addr <= exec_out_next_seq_pc;
-                    
-                when op_STR =>
-                    --memory_write(result, exec_out_datastore); --addr then value
-                    data_addr <= exec_out_result;
-                    data_out  <= exec_out_datastore;
-                    data_we   <= '1';
-
-                    reg_pc <= exec_out_next_seq_pc;
-                    --instr_addr <= exec_out_next_seq_pc;
-                    
-                when others =>
-                    reg_pc <= exec_out_next_seq_pc;
-                    --instr_addr <= exec_out_next_seq_pc;
-
-            end case;
+            macc_in_datastore        <= exec_out_datastore;
+            macc_in_flags_carry      <= exec_out_flags_carry;
+            macc_in_flags_comp       <= exec_out_flags_comp;
+            macc_in_flags_of         <= exec_out_flags_of;
+            macc_in_next_seq_pc      <= exec_out_next_seq_pc;
+            macc_in_op_code          <= exec_out_op_code;
+            macc_in_reg_write_enable <= exec_out_reg_write_enable;
+            macc_in_result           <= exec_out_result;
+            macc_in_target           <= exec_out_target;
         end if;
-    end process mem_access;
+    end process macc_pipeline;
+
+    -- passthrough
+    macc_out_flags_carry      <= macc_in_flags_carry;
+    macc_out_flags_comp       <= macc_in_flags_comp;
+    macc_out_flags_of         <= macc_in_flags_of;
+    macc_out_op_code          <= macc_in_op_code;
+    macc_out_target           <= macc_in_target;
+    macc_out_reg_write_enable <= macc_in_reg_write_enable;
+
+    -- determine pc and link values
+    macc_will_jump <= '1'                when macc_in_op_code = op_JMP else
+                      macc_in_flags_comp when macc_in_op_code = op_B   else
+                      '0';
+
+    with macc_will_jump select reg_pc <=
+        macc_in_result      when '1',
+        macc_in_next_seq_pc when others;
+
+    -- TODO: can we do this somewhat cleaner?
+    -- use process because no else path wanted (do not assign if no jump)
+    process (macc_will_jump, macc_in_next_seq_pc) is begin
+        if macc_will_jump = '1' then
+            reg_link <= macc_in_next_seq_pc;
+        end if;
+    end process;
+
+    -- When STR or LDF instruction: set data_addr to macc_in_result
+    with macc_in_op_code select data_addr <=
+        macc_in_result  when op_LDR,
+        macc_in_result  when op_STR,
+        (others => '0') when others;
+
+    -- When STR instruction: set data_out to macc_in_datastore
+    with macc_in_op_code select data_out <=
+        macc_in_datastore when op_STR,
+        (others => '0')   when others;
+
+    -- When STR instruction: set data_we to '1'
+    with macc_in_op_code select data_we <=
+        '1' when op_STR,
+        '0' when others;
+
+    -- When LDR instruction: set macc_out_result to data_in
+    with macc_in_op_code select macc_out_result <=
+        data_in        when op_LDR,
+        macc_in_result when others;
 
 
     ----------------------------------------------------------------------------
@@ -333,16 +347,16 @@ begin
             --                               ^carry
             --                              ^overflow
             reg_flag <= (
-                0      => macc_flags_comp,
-                1      => macc_flags_carry,
-                2      => macc_flags_of,
+                0      => macc_out_flags_comp,
+                1      => macc_out_flags_carry,
+                2      => macc_out_flags_of,
                 others => '0'
             );
 
-            if macc_reg_write_enable = '1' then
+            if macc_out_reg_write_enable = '1' then
 
                 -- disallow writes to pc and zero register
-                case macc_target is
+                case macc_out_target is
                     when reg_addr_pc =>
                         null;
                     when reg_addr_zero =>
