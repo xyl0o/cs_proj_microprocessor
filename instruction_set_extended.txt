@@ -59,7 +59,7 @@ instb   inst  mem wb aluop lay op1 op2 tgt dst wbe
 10110   SRA    ✗  ✓  SRA    3   BY  CZ  AX  _   1           tgt := op1 >>> op2
 10111   SRL    ✗  ✓  SRL    3   BY  CZ  AX  _   1           tgt := op1 >> op2
 11000   AND    ✗  ✓  AND    3   BY  CZ  AX  _   1           tgt := op1 AND op2
-11001   ORR    ✗  ✓  OR     3   BY  CZ  AX  _   1           tgt := op1 OR op2
+11001   ORR    ✗  ✓  ORR    3   BY  CZ  AX  _   1           tgt := op1 OR op2
 11010   XOR    ✗  ✓  XOR    3   BY  CZ  AX  _   1           tgt := op1 XOR op2
 11011   LDR    l  ✓  ADD    3   BY  CZ  AX  _   1           tgt := m[op1 + op2]
 11100   STR    s  ✗  ADD    3   BY  CZ  _   AX  0  m[op1 + op2] := dst
