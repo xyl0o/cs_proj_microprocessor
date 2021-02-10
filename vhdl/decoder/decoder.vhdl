@@ -172,14 +172,14 @@ begin
 
             -- SL
             when op_SL & '0' =>
-                alu_op_sel   <= "00100";
+                alu_op_sel   <= aluop_SL;
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
                 reg_target   <= instr(25 downto 21);
                 write_en     <= '1';
 
             when op_SL & '1' =>
-                alu_op_sel   <= "00100";
+                alu_op_sel   <= aluop_SL;
                 reg_select_1 <= instr(20 downto 16);
                 reg_target   <= instr(25 downto 21);
                 immediate    <= tmp_immediate;
