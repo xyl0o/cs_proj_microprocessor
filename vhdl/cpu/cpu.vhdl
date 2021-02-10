@@ -151,7 +151,10 @@ architecture cpu_arc of cpu is
     ----------------------------------------------------------------------------
     --- Functions
 
-
+    impure function reg_access(reg_addr: t_reg_addr) return t_data is
+    begin
+        return register_file(to_integer(unsigned(reg_addr)));
+    end function;
 
     function sign_extend(imm_value : t_op_imm) return t_data is
         variable result: t_data;
@@ -217,14 +220,14 @@ begin
 
 
     -- assign op_1, op_2, datastore, flags
-    indec_out_op_1 <= register_file(to_integer(unsigned(indec_reg_select_1)));
+    indec_out_op_1 <= reg_access(indec_reg_select_1);
 
     with indec_op2_sel select
-        indec_out_op_2 <= register_file(to_integer(unsigned(indec_reg_select_2))) when '0',
-                          sign_extend(indec_immediate)                            when '1',
-                          (others => '0')                                         when others;
+        indec_out_op_2 <= reg_access(indec_reg_select_2) when '0',
+                          sign_extend(indec_immediate)   when '1',
+                          (others => '0')                when others;
 
-    indec_out_datastore   <= register_file(to_integer(unsigned(indec_reg_select_3)));
+    indec_out_datastore   <= reg_access(indec_reg_select_3);
     indec_out_flags_comp  <= reg_flag(0);
     indec_out_flags_carry <= reg_flag(1);
     indec_out_flags_of    <= reg_flag(2);
