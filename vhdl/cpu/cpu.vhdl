@@ -36,7 +36,6 @@ architecture cpu_arc of cpu is
     signal debug_link             : t_data;
 
     -- fetch
-    signal fetch_cmd              : t_data;
     signal fetch_next_seq_pc      : t_data;
 
     -- inst_decode
@@ -137,13 +136,14 @@ begin
     end process initialize;
 
     fetch: process (clk) is
+        variable pc : t_data;
     begin
         if rising_edge(clk) then
 
-            fetch_cmd <= register_file(to_integer(unsigned(reg_addr_pc)));
+            pc := register_file(to_integer(unsigned(reg_addr_pc)));
 
-            fetch_next_seq_pc <= std_logic_vector(unsigned(
-                register_file(to_integer(unsigned(reg_addr_pc)))) + 4);
+            instr_addr <= pc;
+            fetch_next_seq_pc <= std_logic_vector(unsigned(pc) + 4);
 
         end if;
     end process fetch;
