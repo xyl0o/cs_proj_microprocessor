@@ -30,6 +30,11 @@ architecture cpu_arc of cpu is
 
     signal register_file          : t_register_file := (others => (others => '0'));
 
+    -- debug
+    signal debug_flags            : t_data;
+    signal debug_pc               : t_data;
+    signal debug_link             : t_data;
+
     -- fetch
     signal fetch_cmd              : t_data;
     signal fetch_next_seq_pc      : t_data;
@@ -77,7 +82,6 @@ architecture cpu_arc of cpu is
 
     -- write_back
 
-    signal debug_pc               : t_data;
 
 begin
 
@@ -119,7 +123,9 @@ begin
         );
 
     -- debug output
+    debug_flags <= register_file(to_integer(unsigned(reg_addr_flags)));
     debug_pc <= register_file(to_integer(unsigned(reg_addr_pc)));
+    debug_link <= register_file(to_integer(unsigned(reg_addr_link)));
 
     initialize: process is
     begin
