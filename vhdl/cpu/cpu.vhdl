@@ -42,6 +42,18 @@ architecture cpu_arc of cpu is
     ----------------------------------------------------------------------------
     --- Instruction decode signals
 
+    -- Inputs
+    signal indec_in_instr       : t_data;
+    signal indec_in_next_seq_pc : t_data;
+
+    -- internal signals to inst_decode
+    signal indec_reg_select_1 : t_reg_addr;
+    signal indec_reg_select_2 : t_reg_addr;
+    signal indec_reg_select_3 : t_reg_addr;
+    signal indec_op2_sel      : std_logic;
+    signal indec_immediate    : t_op_imm;
+
+    -- Outputs
     signal indec_out_op_code          : t_op_code := op_NOP;
     signal indec_out_op_sel           : t_alu_op_code;
     signal indec_out_target           : t_reg_addr;
@@ -53,13 +65,6 @@ architecture cpu_arc of cpu is
     signal indec_out_flags_of         : std_logic;
     signal indec_out_reg_write_enable : std_logic;
     signal indec_out_next_seq_pc      : t_data := (others => '0');
-
-    -- internal signals to inst_decode
-    signal indec_reg_select_1 : t_reg_addr;
-    signal indec_reg_select_2 : t_reg_addr;
-    signal indec_reg_select_3 : t_reg_addr;
-    signal indec_op2_sel      : std_logic;
-    signal indec_immediate    : t_op_imm;
 
 
     ----------------------------------------------------------------------------
@@ -128,13 +133,24 @@ begin
     ----------------------------------------------------------------------------
     --- Instruction decode
 
+    indec_pipeline: process (clk) is
+    begin
+        if rising_edge(clk) then
+            indec_in_instr       <= instr_in;
+            indec_in_next_seq_pc <= fetch_out_next_seq_pc;
+        end if;
+    end process indec_pipeline;
+
+    -- passthrough
+    indec_out_next_seq_pc <= indec_in_next_seq_pc;
+
     decoder_instance: decoder
         generic map (
             data_len => data_len
         )
         port map (
             -- Inputs
-            instr => instr_in,
+            instr => indec_in_instr,
 
             -- Outputs
             op_code      => indec_out_op_code,
@@ -148,48 +164,18 @@ begin
             op2_sel      => indec_op2_sel
         );
 
-    inst_decode: process (clk) is
-        variable reg_flags: t_data;
-    begin
-        if rising_edge(clk) then
-            --decoder.instr <= instr_in;
 
-            reg_flags := register_file(to_integer(unsigned(reg_addr_flags)));
+    -- assign op_1, op_2, datastore, flags
+    indec_out_op_1 <= register_file(to_integer(unsigned(indec_reg_select_1)));
 
-            --indec_out_op_code <= decoder.op_code;
-            --indec_out_op_sel <= decoder.alu_op_sel;
-            --indec_out_target <= decoder.reg_target;
+    with indec_op2_sel select indec_out_op_2 <=
+        register_file(to_integer(unsigned(indec_reg_select_2))) when '1',
+        sign_extend(indec_immediate)                            when '0';
 
-            indec_out_op_1      <= register_file(to_integer(unsigned(indec_reg_select_1)));
-            indec_out_datastore <= register_file(to_integer(unsigned(indec_reg_select_3)));
-
-            if indec_op2_sel = '1' then
-                indec_out_op_2 <= register_file(to_integer(unsigned(indec_reg_select_2)));
-
-            elsif indec_op2_sel = '0' then
-                -- sign extend
-                --indec_out_op_2 <= sign_extend(decoder.immediate);
-                indec_out_op_2 <= sign_extend(indec_immediate);
-
-            else
-                -- TODO is just else sufficient?
-                report "indec_op2_sel was neither 0 nor 1"
-                severity error;
-            end if;
-
-            -- Read flags
-            -- 00000000000000000000000000000000
-            --                                ^compare
-            --                               ^carry
-            --                              ^overflow
-            indec_out_flags_comp  <= reg_flags(0);
-            indec_out_flags_carry <= reg_flags(1);
-            indec_out_flags_of    <= reg_flags(2);
-
-            --indec_out_reg_write_enable <= decoder.write_en;
-            indec_out_next_seq_pc <= fetch_next_seq_pc;
-        end if;
-    end process inst_decode;
+    indec_out_datastore   <= register_file(to_integer(unsigned(indec_reg_select_3)));
+    indec_out_flags_comp  <= register_file(to_integer(unsigned(reg_addr_flags)))(0);
+    indec_out_flags_carry <= register_file(to_integer(unsigned(reg_addr_flags)))(1);
+    indec_out_flags_of    <= register_file(to_integer(unsigned(reg_addr_flags)))(2);
 
 
     ----------------------------------------------------------------------------
