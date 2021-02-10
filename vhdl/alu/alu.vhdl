@@ -35,10 +35,6 @@ architecture alu_arc of alu is
 
     signal op_equals  : std_logic;
     signal op_greater : std_logic;
-
-    signal sl_result, sra_result, srl_result : t_udata_ext;
-
-    signal adc_result, sbc_result : t_udata_ext;
 begin
 
     uop_1 <= '0' & unsigned(op_1);
@@ -64,33 +60,33 @@ begin
                      uresult(data_len) when aluop_SBC, -- TODO
                      carry_in          when others;
 
-    sbc_result <= uop_1 - uop_2 - 1 + ("" & carry_in);
-    adc_result <= uop_1 + uop_2     + ("" & carry_in);
-
-    shifts: process (uop_1, uop_2) is
-        variable tmp_result : t_udata_ext;
+    calc: process (alu_op_code, uop_1, uop_2) is
     begin
-        --tmp_result := shift_left(uop_1, to_integer(uop_2));
-        --tmp_result := uop_1(data_len) & shift_right(uop_1, to_integer(unsigned(op_2)))(t_udata_ext'range);
-    end process shifts;
-
-    sl_result  <= shift_left(uop_1, to_integer(uop_2));
-    sra_result <= unsigned(shift_right(signed(uop_1), to_integer(uop_2)));
-    srl_result <= shift_right(uop_1, to_integer(uop_2));
-
-
-    with alu_op_code select
-        uresult <= uop_1   + uop_2 when aluop_ADD,
-                   adc_result      when aluop_ADC,
-                   sbc_result      when aluop_SBC,
-                   sl_result       when aluop_SL,
-                   sra_result      when aluop_SRA,
-                   srl_result      when aluop_SRL,
-                   uop_1 and uop_2 when aluop_AND,
-                   uop_1 or  uop_2 when aluop_ORR,
-                   uop_1 xor uop_2 when aluop_XOR,
-                   uop_2           when aluop_IDOP2,
-                   (others => '0') when others;
+        case alu_op_code is
+            when aluop_ADD =>
+                uresult <= uop_1 + uop_2;
+            when aluop_ADC =>
+                uresult <= uop_1 + uop_2 + ("" & carry_in);
+            when aluop_SBC =>
+                uresult <= uop_1 - uop_2 - 1 + ("" & carry_in);
+            when aluop_SL =>
+                uresult <= shift_left(uop_1, to_integer(uop_2));
+            when aluop_SRA =>
+                uresult <= unsigned(shift_right(signed(uop_1), to_integer(uop_2)));
+            when aluop_SRL =>
+                uresult <= shift_right(uop_1, to_integer(uop_2));
+            when aluop_AND =>
+                uresult <= uop_1 and uop_2;
+            when aluop_ORR =>
+                uresult <= uop_1 or uop_2;
+            when aluop_XOR =>
+                uresult <= uop_1 xor uop_2;
+            when aluop_IDOP2 =>
+                uresult <= uop_2;
+            when others =>
+                null;
+        end case;
+    end process calc;
 
     result <= std_logic_vector(uresult(result'range));
 
