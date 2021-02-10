@@ -70,6 +70,21 @@ architecture cpu_arc of cpu is
     ----------------------------------------------------------------------------
     --- Execute signals
 
+    -- Inputs
+    signal exec_in_op_code          : t_op_code := op_NOP;
+    signal exec_in_op_sel           : t_alu_op_code;
+    signal exec_in_target           : t_reg_addr;
+    signal exec_in_datastore        : t_data;
+    signal exec_in_op_1             : t_data;
+    signal exec_in_op_2             : t_data;
+    signal exec_in_flags_comp       : std_logic;
+    signal exec_in_flags_carry      : std_logic;
+    signal exec_in_flags_of         : std_logic;
+    signal exec_in_reg_write_enable : std_logic;
+    signal exec_in_next_seq_pc      : t_data := (others => '0');
+
+
+
     signal exec_out_op_code          : t_op_code := op_NOP;
     signal exec_out_target           : t_reg_addr;
     signal exec_out_datastore        : t_data;
@@ -181,18 +196,42 @@ begin
     ----------------------------------------------------------------------------
     --- Execute
 
+    exec_pipeline: process (clk) is
+    begin
+        if rising_edge(clk) then
+            exec_in_datastore        <= indec_out_datastore;
+            exec_in_flags_carry      <= indec_out_flags_carry;
+            exec_in_flags_comp       <= indec_out_flags_comp;
+            exec_in_flags_of         <= indec_out_flags_of;
+            exec_in_next_seq_pc      <= indec_out_next_seq_pc;
+            exec_in_op_1             <= indec_out_op_1;
+            exec_in_op_2             <= indec_out_op_2;
+            exec_in_op_code          <= indec_out_op_code;
+            exec_in_op_sel           <= indec_out_op_sel;
+            exec_in_reg_write_enable <= indec_out_reg_write_enable;
+            exec_in_target           <= indec_out_target;
+        end if;
+    end process exec_pipeline;
+
+    -- passthrough
+    exec_out_op_code          <= exec_in_op_code;
+    exec_out_target           <= exec_in_target;
+    exec_out_datastore        <= exec_in_datastore;
+    exec_out_next_seq_pc      <= exec_in_next_seq_pc;
+    exec_out_reg_write_enable <= exec_in_reg_write_enable;
+
     alu_instance: alu
         generic map (
             data_len => data_len
         )
         port map (
             -- Inputs
-            alu_op_code => indec_out_op_sel,
-            op_1        => indec_out_op_1,
-            op_2        => indec_out_op_2,
-            carry_in    => indec_out_flags_carry,
-            of_in       => indec_out_flags_of,
-            comp_in     => indec_out_flags_comp,
+            alu_op_code => exec_in_op_sel,
+            op_1        => exec_in_op_1,
+            op_2        => exec_in_op_2,
+            carry_in    => exec_in_flags_carry,
+            of_in       => exec_in_flags_of,
+            comp_in     => exec_in_flags_comp,
 
             -- Outputs
             result    => exec_out_result,
@@ -200,36 +239,6 @@ begin
             of_out    => exec_out_flags_of,
             comp_out  => exec_out_flags_comp
         );
-
-    execute: process (clk) is
-    begin
-        if rising_edge(clk) then
-            exec_out_op_code          <= indec_out_op_code;
-            exec_out_target           <= indec_out_target;
-            exec_out_datastore        <= indec_out_datastore;
-            exec_out_next_seq_pc      <= indec_out_next_seq_pc;
-            exec_out_reg_write_enable <= indec_out_reg_write_enable;
-
-            --alu.alu_op_sel <= indec_out_op_sel;
-            
-            
-            --alu.op_1 <= indec_out_op_1
-		    --alu.op_2 <= indec_out_op_2
-            --alu.carry_in <= indec_out_flags_carry;
-            --alu.of_in <= indec_out_flags_of
-            --alu.comp_in <= indec_out_flags_comp;
-
-            --wait;
-
-            --exec_out_flags_carry <= alu.carry_out;
-            --exec_out_flags_of <= alu.of_out;
-            --exec_out_flags_comp <=  alu.comp_out;
-
-
-            --exec_out_result <= alu.result;
-
-        end if;
-    end process execute;
 
 
     ----------------------------------------------------------------------------
