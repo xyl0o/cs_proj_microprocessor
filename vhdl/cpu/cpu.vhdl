@@ -77,7 +77,6 @@ architecture cpu_arc of cpu is
     signal macc_flags_carry       : std_logic;
     signal macc_flags_of          : std_logic;
     signal macc_reg_write_enable  : std_logic;
-    signal macc_next_seq_pc       : t_data;
 
     -- write_back
 
