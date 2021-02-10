@@ -129,8 +129,8 @@ begin
 
     -- debug output
     debug_flags <= register_file(to_integer(unsigned(reg_addr_flags)));
-    debug_pc <= register_file(to_integer(unsigned(reg_addr_pc)));
-    debug_link <= register_file(to_integer(unsigned(reg_addr_link)));
+    debug_pc    <= register_file(to_integer(unsigned(reg_addr_pc)));
+    debug_link  <= register_file(to_integer(unsigned(reg_addr_link)));
 
     fetch: process (clk) is
         variable pc : t_data;
