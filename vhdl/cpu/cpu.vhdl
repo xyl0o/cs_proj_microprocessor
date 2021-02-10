@@ -159,19 +159,19 @@ begin
             --indec_op_code <= decoder.op_code;
             --indec_op_sel <= decoder.alu_op_sel;
             --indec_target <= decoder.reg_target;
-            indec_datastore <= register_file(
-                to_integer(unsigned(indec_reg_select_3)));
-            indec_op_1 <= register_file(
-                to_integer(unsigned(indec_reg_select_1)));
+
+            indec_op_1      <= register_file(to_integer(unsigned(indec_reg_select_1)));
+            indec_datastore <= register_file(to_integer(unsigned(indec_reg_select_3)));
 
             if indec_op2_sel = '1' then
-                indec_op_2 <= register_file(
-                    to_integer(unsigned(indec_reg_select_2)));
+                indec_op_2 <= register_file(to_integer(unsigned(indec_reg_select_2)));
+
             elsif indec_op2_sel = '0' then
                 -- sign extend
                 --indec_op_2 <= sign_extend(decoder.immediate);
                 indec_op_2(15 downto 0)  <= indec_immediate;
                 indec_op_2(31 downto 16) <= (others => indec_immediate(15));
+
             else
                 -- TODO is just else sufficient?
                 report "indec_op2_sel was neither 0 nor 1"
