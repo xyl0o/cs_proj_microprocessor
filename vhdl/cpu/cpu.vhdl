@@ -36,10 +36,10 @@ architecture cpu_arc of cpu is
     signal debug_link             : t_data;
 
     -- fetch
-    signal fetch_next_seq_pc      : t_data;
+    signal fetch_next_seq_pc      : t_data := (others => '0');
 
     -- inst_decode
-    signal indec_op_code          : t_op_code;
+    signal indec_op_code          : t_op_code := op_NOP;
     signal indec_op_sel           : t_alu_op_code;
     signal indec_target           : t_reg_addr;
     signal indec_datastore        : t_data;
@@ -49,7 +49,7 @@ architecture cpu_arc of cpu is
     signal indec_flags_carry      : std_logic;
     signal indec_flags_of         : std_logic;
     signal indec_reg_write_enable : std_logic;
-    signal indec_next_seq_pc      : t_data;
+    signal indec_next_seq_pc      : t_data := (others => '0');
 
     -- internal signals to inst_decode
     signal indec_reg_select_1     : t_reg_addr;
@@ -59,7 +59,7 @@ architecture cpu_arc of cpu is
     signal indec_immediate        : t_op_imm;
 
     -- execute
-    signal exec_op_code           : t_op_code;
+    signal exec_op_code           : t_op_code := op_NOP;
     signal exec_target            : t_reg_addr;
     signal exec_datastore         : t_data;
     signal exec_result            : t_data;
@@ -67,10 +67,10 @@ architecture cpu_arc of cpu is
     signal exec_flags_carry       : std_logic;
     signal exec_flags_of          : std_logic;
     signal exec_reg_write_enable  : std_logic;
-    signal exec_next_seq_pc       : t_data;
+    signal exec_next_seq_pc       : t_data := (others => '0');
 
     -- mem_access
-    signal macc_op_code           : t_op_code;
+    signal macc_op_code           : t_op_code := op_NOP;
     signal macc_target            : t_reg_addr;
     signal macc_result            : t_data;
     signal macc_flags_comp        : std_logic;
