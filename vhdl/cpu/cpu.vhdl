@@ -47,7 +47,14 @@ architecture cpu_arc of cpu is
     alias reg_link : t_data is register_file(to_integer(unsigned(reg_addr_link)));
     alias reg_pc   : t_data is register_file(to_integer(unsigned(reg_addr_pc)));
 
-    -- fetch
+
+    ----------------------------------------------------------------------------
+    --- Fetch signals
+
+    signal fetch_in_pc : t_data := (others => '0');
+
+    -- Outputs
+    signal fetch_out_instr       : t_data := (others => '0');
     signal fetch_out_next_seq_pc : t_data := (others => '0');
 
 
@@ -171,18 +178,22 @@ begin
     debug_pc    <= reg_pc;
     debug_link  <= reg_link;
 
-    fetch: process (clk) is
-        variable pc : t_data;
+
+    ----------------------------------------------------------------------------
+    --- Fetch
+
+    fetch_pipeline: process (clk) is
     begin
         if rising_edge(clk) then
-
-            pc := reg_pc;
-
-            instr_addr            <= pc;
-            fetch_out_next_seq_pc <= std_logic_vector(unsigned(pc) + 1);
-
+            fetch_in_pc <= reg_pc;
         end if;
-    end process fetch;
+    end process fetch_pipeline;
+
+    instr_addr <= fetch_in_pc;
+
+    fetch_out_instr       <= instr_in;
+    fetch_out_next_seq_pc <= std_logic_vector(unsigned(fetch_in_pc) + 1);
+
 
     ----------------------------------------------------------------------------
     --- Instruction decode
