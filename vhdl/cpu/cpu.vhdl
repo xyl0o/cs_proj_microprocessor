@@ -65,15 +65,15 @@ architecture cpu_arc of cpu is
     ----------------------------------------------------------------------------
     --- Execute signals
 
-    signal exec_op_code          : t_op_code := op_NOP;
-    signal exec_target           : t_reg_addr;
-    signal exec_datastore        : t_data;
-    signal exec_result           : t_data;
-    signal exec_flags_comp       : std_logic;
-    signal exec_flags_carry      : std_logic;
-    signal exec_flags_of         : std_logic;
-    signal exec_reg_write_enable : std_logic;
-    signal exec_next_seq_pc      : t_data := (others => '0');
+    signal exec_out_op_code          : t_op_code := op_NOP;
+    signal exec_out_target           : t_reg_addr;
+    signal exec_out_datastore        : t_data;
+    signal exec_out_result           : t_data;
+    signal exec_out_flags_comp       : std_logic;
+    signal exec_out_flags_carry      : std_logic;
+    signal exec_out_flags_of         : std_logic;
+    signal exec_out_reg_write_enable : std_logic;
+    signal exec_out_next_seq_pc      : t_data := (others => '0');
 
 
     ----------------------------------------------------------------------------
@@ -209,20 +209,20 @@ begin
             comp_in     => indec_out_flags_comp,
 
             -- Outputs
-            result    => exec_result,
-            carry_out => exec_flags_carry,
-            of_out    => exec_flags_of,
-            comp_out  => exec_flags_comp
+            result    => exec_out_result,
+            carry_out => exec_out_flags_carry,
+            of_out    => exec_out_flags_of,
+            comp_out  => exec_out_flags_comp
         );
 
     execute: process (clk) is
     begin
         if rising_edge(clk) then
-            exec_op_code          <= indec_out_op_code;
-            exec_target           <= indec_out_target;
-            exec_datastore        <= indec_out_datastore;
-            exec_next_seq_pc      <= indec_out_next_seq_pc;
-            exec_reg_write_enable <= indec_out_reg_write_enable;
+            exec_out_op_code          <= indec_out_op_code;
+            exec_out_target           <= indec_out_target;
+            exec_out_datastore        <= indec_out_datastore;
+            exec_out_next_seq_pc      <= indec_out_next_seq_pc;
+            exec_out_reg_write_enable <= indec_out_reg_write_enable;
 
             --alu.alu_op_sel <= indec_out_op_sel;
             
@@ -235,12 +235,12 @@ begin
 
             --wait;
 
-            --exec_flags_carry <= alu.carry_out;
-            --exec_flags_of <= alu.of_out;
-            --exec_flags_comp <=  alu.comp_out;
+            --exec_out_flags_carry <= alu.carry_out;
+            --exec_out_flags_of <= alu.of_out;
+            --exec_out_flags_comp <=  alu.comp_out;
 
 
-            --exec_result <= alu.result;
+            --exec_out_result <= alu.result;
 
         end if;
     end process execute;
@@ -253,59 +253,59 @@ begin
     begin
         if rising_edge(clk) then
 
-            macc_op_code     <= exec_op_code;
-            macc_target      <= exec_target;
-            macc_result      <= exec_result;
-            macc_flags_comp  <= exec_flags_comp;
-            macc_flags_carry <= exec_flags_carry;
-            macc_flags_of    <= exec_flags_of;
+            macc_op_code     <= exec_out_op_code;
+            macc_target      <= exec_out_target;
+            macc_result      <= exec_out_result;
+            macc_flags_comp  <= exec_out_flags_comp;
+            macc_flags_carry <= exec_out_flags_carry;
+            macc_flags_of    <= exec_out_flags_of;
 
-            macc_reg_write_enable <= exec_reg_write_enable;
+            macc_reg_write_enable <= exec_out_reg_write_enable;
 
             case macc_op_code is
 
                 when op_JMP =>
-                    register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_result;
-                    register_file(to_integer(unsigned(reg_addr_link))) <= exec_next_seq_pc;
-                    --instr_addr <= exec_result;
+                    register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_out_result;
+                    register_file(to_integer(unsigned(reg_addr_link))) <= exec_out_next_seq_pc;
+                    --instr_addr <= exec_out_result;
 
                 when op_B =>
-                    if exec_flags_comp = '1' then
-                        register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_result;
-                        register_file(to_integer(unsigned(reg_addr_link))) <= exec_next_seq_pc;
-                        --instr_addr <= exec_result;
+                    if exec_out_flags_comp = '1' then
+                        register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_out_result;
+                        register_file(to_integer(unsigned(reg_addr_link))) <= exec_out_next_seq_pc;
+                        --instr_addr <= exec_out_result;
 
-                    elsif exec_flags_comp = '0' then
-                        register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
-                        --instr_addr <= exec_next_seq_pc;
+                    elsif exec_out_flags_comp = '0' then
+                        register_file(to_integer(unsigned(reg_addr_pc))) <= exec_out_next_seq_pc;
+                        --instr_addr <= exec_out_next_seq_pc;
 
                     else
                         -- TODO is just else sufficient?
-                        report "exec_flags_comp was neither 0 nor 1"
+                        report "exec_out_flags_comp was neither 0 nor 1"
                         severity error;
                     end if;
 
                 when op_LDR =>
                     --macc_result <= memory_get(result);
                     data_we     <= '0';
-                    data_addr   <= exec_result;
+                    data_addr   <= exec_out_result;
                     macc_result <= data_in;  -- TODO does this work (-> timing)?
 
-                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
-                    --instr_addr <= exec_next_seq_pc;
+                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_out_next_seq_pc;
+                    --instr_addr <= exec_out_next_seq_pc;
                     
                 when op_STR =>
-                    --memory_write(result, exec_datastore); --addr then value
-                    data_addr <= exec_result;
-                    data_out  <= exec_datastore;
+                    --memory_write(result, exec_out_datastore); --addr then value
+                    data_addr <= exec_out_result;
+                    data_out  <= exec_out_datastore;
                     data_we   <= '1';
 
-                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
-                    --instr_addr <= exec_next_seq_pc;
+                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_out_next_seq_pc;
+                    --instr_addr <= exec_out_next_seq_pc;
                     
                 when others =>
-                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
-                    --instr_addr <= exec_next_seq_pc;
+                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_out_next_seq_pc;
+                    --instr_addr <= exec_out_next_seq_pc;
 
             end case;
         end if;
