@@ -42,17 +42,17 @@ architecture cpu_arc of cpu is
     ----------------------------------------------------------------------------
     --- Instruction decode signals
 
-    signal indec_op_code          : t_op_code := op_NOP;
-    signal indec_op_sel           : t_alu_op_code;
-    signal indec_target           : t_reg_addr;
-    signal indec_datastore        : t_data;
-    signal indec_op_1             : t_data;
-    signal indec_op_2             : t_data;
-    signal indec_flags_comp       : std_logic;
-    signal indec_flags_carry      : std_logic;
-    signal indec_flags_of         : std_logic;
-    signal indec_reg_write_enable : std_logic;
-    signal indec_next_seq_pc      : t_data := (others => '0');
+    signal indec_out_op_code          : t_op_code := op_NOP;
+    signal indec_out_op_sel           : t_alu_op_code;
+    signal indec_out_target           : t_reg_addr;
+    signal indec_out_datastore        : t_data;
+    signal indec_out_op_1             : t_data;
+    signal indec_out_op_2             : t_data;
+    signal indec_out_flags_comp       : std_logic;
+    signal indec_out_flags_carry      : std_logic;
+    signal indec_out_flags_of         : std_logic;
+    signal indec_out_reg_write_enable : std_logic;
+    signal indec_out_next_seq_pc      : t_data := (others => '0');
 
     -- internal signals to inst_decode
     signal indec_reg_select_1 : t_reg_addr;
@@ -137,13 +137,13 @@ begin
             instr => instr_in,
 
             -- Outputs
-            op_code      => indec_op_code,
-            alu_op_sel   => indec_op_sel,
+            op_code      => indec_out_op_code,
+            alu_op_sel   => indec_out_op_sel,
             reg_select_1 => indec_reg_select_1,
             reg_select_2 => indec_reg_select_2,
             reg_select_3 => indec_reg_select_3,
-            reg_target   => indec_target,
-            write_en     => indec_reg_write_enable,
+            reg_target   => indec_out_target,
+            write_en     => indec_out_reg_write_enable,
             immediate    => indec_immediate,
             op2_sel      => indec_op2_sel
         );
@@ -156,20 +156,20 @@ begin
 
             reg_flags := register_file(to_integer(unsigned(reg_addr_flags)));
 
-            --indec_op_code <= decoder.op_code;
-            --indec_op_sel <= decoder.alu_op_sel;
-            --indec_target <= decoder.reg_target;
+            --indec_out_op_code <= decoder.op_code;
+            --indec_out_op_sel <= decoder.alu_op_sel;
+            --indec_out_target <= decoder.reg_target;
 
-            indec_op_1      <= register_file(to_integer(unsigned(indec_reg_select_1)));
-            indec_datastore <= register_file(to_integer(unsigned(indec_reg_select_3)));
+            indec_out_op_1      <= register_file(to_integer(unsigned(indec_reg_select_1)));
+            indec_out_datastore <= register_file(to_integer(unsigned(indec_reg_select_3)));
 
             if indec_op2_sel = '1' then
-                indec_op_2 <= register_file(to_integer(unsigned(indec_reg_select_2)));
+                indec_out_op_2 <= register_file(to_integer(unsigned(indec_reg_select_2)));
 
             elsif indec_op2_sel = '0' then
                 -- sign extend
-                --indec_op_2 <= sign_extend(decoder.immediate);
-                indec_op_2 <= sign_extend(indec_immediate);
+                --indec_out_op_2 <= sign_extend(decoder.immediate);
+                indec_out_op_2 <= sign_extend(indec_immediate);
 
             else
                 -- TODO is just else sufficient?
@@ -182,12 +182,12 @@ begin
             --                                ^compare
             --                               ^carry
             --                              ^overflow
-            indec_flags_comp  <= reg_flags(0);
-            indec_flags_carry <= reg_flags(1);
-            indec_flags_of    <= reg_flags(2);
+            indec_out_flags_comp  <= reg_flags(0);
+            indec_out_flags_carry <= reg_flags(1);
+            indec_out_flags_of    <= reg_flags(2);
 
-            --indec_reg_write_enable <= decoder.write_en;
-            indec_next_seq_pc <= fetch_next_seq_pc;
+            --indec_out_reg_write_enable <= decoder.write_en;
+            indec_out_next_seq_pc <= fetch_next_seq_pc;
         end if;
     end process inst_decode;
 
@@ -201,12 +201,12 @@ begin
         )
         port map (
             -- Inputs
-            alu_op_code => indec_op_sel,
-            op_1        => indec_op_1,
-            op_2        => indec_op_2,
-            carry_in    => indec_flags_carry,
-            of_in       => indec_flags_of,
-            comp_in     => indec_flags_comp,
+            alu_op_code => indec_out_op_sel,
+            op_1        => indec_out_op_1,
+            op_2        => indec_out_op_2,
+            carry_in    => indec_out_flags_carry,
+            of_in       => indec_out_flags_of,
+            comp_in     => indec_out_flags_comp,
 
             -- Outputs
             result    => exec_result,
@@ -218,20 +218,20 @@ begin
     execute: process (clk) is
     begin
         if rising_edge(clk) then
-            exec_op_code          <= indec_op_code;
-            exec_target           <= indec_target;
-            exec_datastore        <= indec_datastore;
-            exec_next_seq_pc      <= indec_next_seq_pc;
-            exec_reg_write_enable <= indec_reg_write_enable;
+            exec_op_code          <= indec_out_op_code;
+            exec_target           <= indec_out_target;
+            exec_datastore        <= indec_out_datastore;
+            exec_next_seq_pc      <= indec_out_next_seq_pc;
+            exec_reg_write_enable <= indec_out_reg_write_enable;
 
-            --alu.alu_op_sel <= indec_op_sel;
+            --alu.alu_op_sel <= indec_out_op_sel;
             
             
-            --alu.op_1 <= indec_op_1
-		    --alu.op_2 <= indec_op_2
-            --alu.carry_in <= indec_flags_carry;
-            --alu.of_in <= indec_flags_of
-            --alu.comp_in <= indec_flags_comp;
+            --alu.op_1 <= indec_out_op_1
+		    --alu.op_2 <= indec_out_op_2
+            --alu.carry_in <= indec_out_flags_carry;
+            --alu.of_in <= indec_out_flags_of
+            --alu.comp_in <= indec_out_flags_comp;
 
             --wait;
 
