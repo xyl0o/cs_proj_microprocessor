@@ -6,10 +6,13 @@ use work.decoder_pkg.all;
 
 entity decoder is
   generic (
-    data_len   : positive := 32
+    data_len : positive := 32
   );
   port(
-    instr        : in std_logic_vector(data_len - 1 downto 0);
+    -- Inputs
+    instr : in std_logic_vector(data_len - 1 downto 0);
+
+    -- Outputs
     op_code      : out t_op_code;
     alu_op_sel   : out t_alu_op_code;
     reg_select_1 : out t_reg_addr;
@@ -27,8 +30,8 @@ begin
 
     decoding_process: process (instr) is
 
-        variable op_code_i : std_logic_vector(5 downto 0);
-        variable tmp_immediate: t_op_imm;
+        variable op_code_i     : std_logic_vector(5 downto 0);
+        variable tmp_immediate : t_op_imm;
 
     begin
 
@@ -42,61 +45,61 @@ begin
 
             -- CMPEQ
             when op_CMPEQ & '0' =>
-                alu_op_sel <= aluop_CMPEQ;
+                alu_op_sel   <= aluop_CMPEQ;
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
-                reg_target <= instr(20 downto 16);
-                write_en <= '1';
+                reg_target   <= instr(20 downto 16);
+                write_en     <= '1';
 
             when op_CMPEQ & '1' =>
-                alu_op_sel <= aluop_CMPEQ;
+                alu_op_sel   <= aluop_CMPEQ;
                 reg_select_1 <= instr(20 downto 16);
-                reg_target <= instr(20 downto 16);
-                immediate <= tmp_immediate;
-                write_en <= '1';
+                reg_target   <= instr(20 downto 16);
+                immediate    <= tmp_immediate;
+                write_en     <= '1';
 
             -- CMPGT
             when op_CMPGT & '0' =>
-                alu_op_sel <= aluop_CMPGT;
+                alu_op_sel   <= aluop_CMPGT;
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
-                reg_target <= instr(20 downto 16);
-                write_en <= '1';
+                reg_target   <= instr(20 downto 16);
+                write_en     <= '1';
 
             when op_CMPGT & '1' =>
-                alu_op_sel <= aluop_CMPGT;
+                alu_op_sel   <= aluop_CMPGT;
                 reg_select_1 <= instr(20 downto 16);
-                reg_target <= instr(20 downto 16);
-                immediate <= tmp_immediate;
-                write_en <= '1';
+                reg_target   <= instr(20 downto 16);
+                immediate    <= tmp_immediate;
+                write_en     <= '1';
 
             -- MOV
             when op_MOV & '0' =>
-                alu_op_sel <= aluop_IDOP2;
+                alu_op_sel   <= aluop_IDOP2;
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
-                reg_target <= instr(20 downto 16);
-                write_en <= '1';
+                reg_target   <= instr(20 downto 16);
+                write_en     <= '1';
 
             when op_MOV & '1' =>
-                alu_op_sel <= aluop_IDOP2;
+                alu_op_sel   <= aluop_IDOP2;
                 reg_select_1 <= instr(20 downto 16);
-                reg_target <= instr(20 downto 16);
-                immediate <= tmp_immediate;
-                write_en <= '1';
+                reg_target   <= instr(20 downto 16);
+                immediate    <= tmp_immediate;
+                write_en     <= '1';
 
             -- JMP
             when op_JMP & '0' =>
-                alu_op_sel <= aluop_ADD;
+                alu_op_sel   <= aluop_ADD;
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
-                reg_target <= instr(20 downto 16);
+                reg_target   <= instr(20 downto 16);
 
             when op_JMP & '1' =>
-                alu_op_sel <= aluop_ADD;
+                alu_op_sel   <= aluop_ADD;
                 reg_select_1 <= instr(20 downto 16);
-                reg_target <= instr(20 downto 16);
-                immediate <= tmp_immediate;
+                reg_target   <= instr(20 downto 16);
+                immediate    <= tmp_immediate;
 
             -- B
             when op_B & '0' =>
@@ -105,187 +108,187 @@ begin
 
             when op_B & '1' =>
                 alu_op_sel <= aluop_ADD;
-                immediate <= tmp_immediate;
+                immediate  <= tmp_immediate;
 
             -- ADC
             when op_ADC & '0' =>
-                alu_op_sel <= aluop_ADC;
+                alu_op_sel   <= aluop_ADC;
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
-                reg_target <= instr(25 downto 21);
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                write_en     <= '1';
            
             when op_ADC & '1' =>
-                alu_op_sel <= aluop_ADC;
+                alu_op_sel   <= aluop_ADC;
                 reg_select_1 <= instr(20 downto 16);
-                reg_target <= instr(25 downto 21);
-                immediate <= tmp_immediate;
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                immediate    <= tmp_immediate;
+                write_en     <= '1';
 
             -- ADD
             when op_ADD & '0' =>
-                alu_op_sel <= aluop_ADD;
+                alu_op_sel   <= aluop_ADD;
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
-                reg_target <= instr(25 downto 21);
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                write_en     <= '1';
 
             when op_ADD & '1' =>
-                alu_op_sel <= aluop_ADD;
+                alu_op_sel   <= aluop_ADD;
                 reg_select_1 <= instr(20 downto 16);
-                reg_target <= instr(25 downto 21);
-                immediate <= tmp_immediate;
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                immediate    <= tmp_immediate;
+                write_en     <= '1';
 
             -- SBC
             when op_SBC & '0' =>
-                alu_op_sel <= aluop_SBC;
+                alu_op_sel   <= aluop_SBC;
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
-                reg_target <= instr(25 downto 21);
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                write_en     <= '1';
 
             when op_SBC & '1' =>
-                alu_op_sel <= aluop_SBC;
+                alu_op_sel   <= aluop_SBC;
                 reg_select_1 <= instr(20 downto 16);
-                reg_target <= instr(25 downto 21);
-                immediate <= tmp_immediate;
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                immediate    <= tmp_immediate;
+                write_en     <= '1';
 
             -- SUB
             when op_SUB & '0' =>
-                alu_op_sel <= aluop_ADD;
+                alu_op_sel   <= aluop_ADD;
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
-                reg_target <= instr(25 downto 21);
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                write_en     <= '1';
 
             when op_SUB & '1' =>
-                alu_op_sel <= aluop_ADD;
+                alu_op_sel   <= aluop_ADD;
                 reg_select_1 <= instr(20 downto 16);
-                reg_target <= instr(25 downto 21);
-                immediate <= tmp_immediate;
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                immediate    <= tmp_immediate;
+                write_en     <= '1';
 
             -- SL
             when op_SL & '0' =>
-                alu_op_sel <= "00100";
+                alu_op_sel   <= "00100";
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
-                reg_target <= instr(25 downto 21);
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                write_en     <= '1';
 
             when op_SL & '1' =>
-                alu_op_sel <= "00100";
+                alu_op_sel   <= "00100";
                 reg_select_1 <= instr(20 downto 16);
-                reg_target <= instr(25 downto 21);
-                immediate <= tmp_immediate;
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                immediate    <= tmp_immediate;
+                write_en     <= '1';
 
             -- SRA
             when op_SRA & '0' =>
-                alu_op_sel <= aluop_SRA;
+                alu_op_sel   <= aluop_SRA;
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
-                reg_target <= instr(25 downto 21);
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                write_en     <= '1';
 
             when op_SRA & '1' =>
-                alu_op_sel <= aluop_SRA;
+                alu_op_sel   <= aluop_SRA;
                 reg_select_1 <= instr(20 downto 16);
-                reg_target <= instr(25 downto 21);
-                immediate <= tmp_immediate;
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                immediate    <= tmp_immediate;
+                write_en     <= '1';
 
             -- SRL
             when op_SRL & '0' =>
-                alu_op_sel <= aluop_SRL;
+                alu_op_sel   <= aluop_SRL;
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
-                reg_target <= instr(25 downto 21);
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                write_en     <= '1';
 
             when op_SRL & '1' =>
-                alu_op_sel <= aluop_SRL;
+                alu_op_sel   <= aluop_SRL;
                 reg_select_1 <= instr(20 downto 16);
-                reg_target <= instr(25 downto 21);
-                immediate <= tmp_immediate;
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                immediate    <= tmp_immediate;
+                write_en     <= '1';
 
             -- AND
             when op_AND & '0' =>
-                alu_op_sel <= aluop_AND;
+                alu_op_sel   <= aluop_AND;
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
-                reg_target <= instr(25 downto 21);
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                write_en     <= '1';
 
             when op_AND & '1' =>
-                alu_op_sel <= aluop_AND;
+                alu_op_sel   <= aluop_AND;
                 reg_select_1 <= instr(20 downto 16);
-                reg_target <= instr(25 downto 21);
-                immediate <= tmp_immediate;
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                immediate    <= tmp_immediate;
+                write_en     <= '1';
 
             -- ORR
             when op_ORR & '0' =>
-                alu_op_sel <= aluop_ORR;
+                alu_op_sel   <= aluop_ORR;
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
-                reg_target <= instr(25 downto 21);
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                write_en     <= '1';
 
             when op_ORR & '1' =>
-                alu_op_sel <= aluop_ORR;
+                alu_op_sel   <= aluop_ORR;
                 reg_select_1 <= instr(20 downto 16);
-                reg_target <= instr(25 downto 21);
-                immediate <= tmp_immediate;
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                immediate    <= tmp_immediate;
+                write_en     <= '1';
 
             -- XOR
             when op_XOR & '0' =>
-                alu_op_sel <= aluop_XOR;
+                alu_op_sel   <= aluop_XOR;
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
-                reg_target <= instr(25 downto 21);
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                write_en     <= '1';
 
             when op_XOR & '1' =>
-                alu_op_sel <= aluop_XOR;
+                alu_op_sel   <= aluop_XOR;
                 reg_select_1 <= instr(20 downto 16);
-                reg_target <= instr(25 downto 21);
-                immediate <= tmp_immediate;
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                immediate    <= tmp_immediate;
+                write_en     <= '1';
 
             -- LDR
             when op_LDR & '0' =>
-                alu_op_sel <= aluop_ADD;
+                alu_op_sel   <= aluop_ADD;
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
-                reg_target <= instr(25 downto 21);
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                write_en     <= '1';
 
             when op_LDR & '1' =>
-                alu_op_sel <= aluop_ADD;
+                alu_op_sel   <= aluop_ADD;
                 reg_select_1 <= instr(20 downto 16);
-                reg_target <= instr(25 downto 21);
-                immediate <= tmp_immediate;
-                write_en <= '1';
+                reg_target   <= instr(25 downto 21);
+                immediate    <= tmp_immediate;
+                write_en     <= '1';
 
             -- STR
             when op_STR & '0' =>
-                alu_op_sel <= aluop_ADD;
+                alu_op_sel   <= aluop_ADD;
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_2 <= instr(15 downto 11);
                 reg_select_3 <= instr(25 downto 21);
-                write_en <= '0';
+                write_en     <= '0';
 
             when op_STR & '1' =>
-                alu_op_sel <= aluop_ADD;
+                alu_op_sel   <= aluop_ADD;
                 reg_select_1 <= instr(20 downto 16);
                 reg_select_3 <= instr(25 downto 21);
-                immediate <= tmp_immediate;
-                write_en <= '0';
+                immediate    <= tmp_immediate;
+                write_en     <= '0';
 
             -- NOP
             when op_NOP & '0' =>

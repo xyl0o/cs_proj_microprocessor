@@ -13,18 +13,18 @@ package cpu_pkg is
 
     component cpu is
         generic (
-            data_len   : positive := 32
+            data_len : positive := 32
         );
         port (
-            clk        : in std_logic;
+            clk : in std_logic;
+
+            data_in  : in std_logic_vector(data_len - 1 downto 0);
+            instr_in : in std_logic_vector(data_len - 1 downto 0);
 
             data_addr  : out std_logic_vector(data_len - 1 downto 0);
             data_out   : out std_logic_vector(data_len - 1 downto 0);
-            data_in    : in std_logic_vector(data_len - 1 downto 0);
             data_we    : out std_logic;
-
-            instr_addr : out std_logic_vector(data_len - 1 downto 0);
-            instr_in   : in std_logic_vector(data_len - 1 downto 0)
+            instr_addr : out std_logic_vector(data_len - 1 downto 0)
         );
     end component cpu;
 end package cpu_pkg;

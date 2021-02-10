@@ -8,25 +8,22 @@ use work.alu_pkg.all;
 
 entity alu is
     generic (
-        data_len   : positive := 32
+        data_len : positive := 32
     );
     port(
         -- Inputs
-        alu_op_code: in t_alu_op_code;
-
-        op_1: in std_logic_vector(data_len - 1 downto 0);
-        op_2: in std_logic_vector(data_len - 1 downto 0);
-
-        carry_in: in std_logic;
-        of_in: in std_logic;
-        comp_in: in std_logic;
+        alu_op_code : in t_alu_op_code;
+        op_1        : in std_logic_vector(data_len - 1 downto 0);
+        op_2        : in std_logic_vector(data_len - 1 downto 0);
+        carry_in    : in std_logic;
+        of_in       : in std_logic;
+        comp_in     : in std_logic;
 
         -- Outputs
-        result: out std_logic_vector(data_len - 1 downto 0);
-
-        carry_out: out std_logic;
-        of_out: out std_logic;
-        comp_out: out std_logic
+        result    : out std_logic_vector(data_len - 1 downto 0);
+        carry_out : out std_logic;
+        of_out    : out std_logic;
+        comp_out  : out std_logic
     );
 end alu;
 
@@ -35,13 +32,13 @@ architecture alu_arc of alu is
 	subtype t_data_ext is unsigned(data_len downto 0);
 begin
 	arithmetic : process (alu_op_code, op_1, op_2, carry_in, of_in, comp_in)
-		variable tmp_result: t_data_ext;
-		variable uop_1: t_data_ext;
-		variable uop_2: t_data_ext;
+		variable tmp_result : t_data_ext;
+		variable uop_1      : t_data_ext;
+		variable uop_2      : t_data_ext;
 	begin
 
 		carry_out <= carry_in;
-		comp_out <= comp_in;
+		comp_out  <= comp_in;
 
 		-- ignore for now.
 		-- needs special handling

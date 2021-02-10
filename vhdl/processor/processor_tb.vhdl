@@ -20,19 +20,19 @@ end entity processor;
 architecture processor_tb of processor is
     subtype t_data is std_logic_vector(data_len - 1 downto 0);
 
-    signal clk                   : std_logic;
-    signal const0, const1        : std_logic;
-    signal data_nwe, data_we     : std_logic;
+    signal clk               : std_logic;
+    signal const0, const1    : std_logic;
+    signal data_nwe, data_we : std_logic;
 
-    signal instr_addr            : t_data;
-    signal instr_short_addr      : std_logic_vector(instr_addr_len - 1 downto 0);
-    signal instr_fromcpu         : t_data;
-    signal instr_tocpu           : t_data;
+    signal instr_addr       : t_data;
+    signal instr_short_addr : std_logic_vector(instr_addr_len - 1 downto 0);
+    signal instr_fromcpu    : t_data;
+    signal instr_tocpu      : t_data;
 
-    signal data_addr             : t_data;
-    signal data_short_addr       : std_logic_vector(data_addr_len - 1 downto 0);
-    signal data_fromcpu          : t_data;
-    signal data_tocpu            : t_data;
+    signal data_addr       : t_data;
+    signal data_short_addr : std_logic_vector(data_addr_len - 1 downto 0);
+    signal data_fromcpu    : t_data;
+    signal data_tocpu      : t_data;
 
     signal instr_ctrl, data_ctrl : fileIOty;
 
@@ -53,13 +53,13 @@ begin
 
     instr_mem_instance: sram2
         generic map (
-            addrWd  => instr_addr_len,
-            dataWd  => data_len,
-            fileID  => "instMem.dat"
+            addrWd => instr_addr_len,
+            dataWd => data_len,
+            fileID => "instMem.dat"
         )
         port map (
-            nCS     => const0,
-            nWE     => const1,
+            nCS => const0,
+            nWE => const1,
 
             addr    => instr_short_addr,
             dataIn  => instr_fromcpu,
@@ -70,32 +70,32 @@ begin
 
     data_mem_instance: sram2
         generic map (
-            addrWd  => data_addr_len,
-            dataWd  => data_len,
-            fileID  => "dataMem.dat"
+            addrWd => data_addr_len,
+            dataWd => data_len,
+            fileID => "dataMem.dat"
         )
         port map (
-            nCS     => const0,
-            nWE     => data_nwe,
+            nCS => const0,
+            nWE => data_nwe,
 
             addr    => data_short_addr,
             dataIn  => data_fromcpu,
             dataOut => data_tocpu,
 
-            fileIO  => data_ctrl
+            fileIO => data_ctrl
         );
 
     cpu_instance: cpu
         generic map (
-            data_len   => data_len
+            data_len => data_len
         )
         port map (
-            clk        => clk,
+            clk => clk,
 
-            data_addr  => data_addr,
-            data_out   => data_fromcpu,
-            data_in    => data_tocpu,
-            data_we    => data_we,
+            data_addr => data_addr,
+            data_out  => data_fromcpu,
+            data_in   => data_tocpu,
+            data_we   => data_we,
 
             instr_addr => instr_addr,
             instr_in   => instr_tocpu
