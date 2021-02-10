@@ -238,15 +238,15 @@ begin
                 when op_JMP =>
                     register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_result;
                     register_file(to_integer(unsigned(reg_addr_link))) <= exec_next_seq_pc;
-                    instr_addr <= exec_result;
+                    --instr_addr <= exec_result;
                 when op_B =>
                     if exec_flags_comp = '1' then
                         register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_result;
                         register_file(to_integer(unsigned(reg_addr_link))) <= exec_next_seq_pc;
-                        instr_addr <= exec_result;
+                        --instr_addr <= exec_result;
                     elsif exec_flags_comp = '0' then
                         register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
-                        instr_addr <= exec_next_seq_pc;
+                        --instr_addr <= exec_next_seq_pc;
                     else
                         -- TODO is just else sufficient?
                         report "indec_op2_sel was neither 0 nor 1"
@@ -259,7 +259,7 @@ begin
                     macc_result <= data_in;  -- TODO does this work (-> timing)?
 
                     register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
-                    instr_addr <= exec_next_seq_pc;
+                    --instr_addr <= exec_next_seq_pc;
                     
                 when op_STR =>
                     --memory_write(result, exec_datastore); --addr then value
@@ -268,11 +268,11 @@ begin
                     data_we <= '1';
 
                     register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
-                    instr_addr <= exec_next_seq_pc;
+                    --instr_addr <= exec_next_seq_pc;
                     
                 when others =>
                     register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
-                    instr_addr <= exec_next_seq_pc;
+                    --instr_addr <= exec_next_seq_pc;
 
             end case;
         end if;
