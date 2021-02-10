@@ -138,6 +138,15 @@ architecture cpu_arc of cpu is
     ----------------------------------------------------------------------------
     --- Write back signals
 
+    -- Inputs
+    signal wback_in_op_code          : t_op_code := op_NOP;
+    signal wback_in_target           : t_reg_addr;
+    signal wback_in_result           : t_data;
+    signal wback_in_flags_comp       : std_logic := '0';
+    signal wback_in_flags_carry      : std_logic := '0';
+    signal wback_in_flags_of         : std_logic := '0';
+    signal wback_in_reg_write_enable : std_logic;
+
 
     ----------------------------------------------------------------------------
     --- Functions
@@ -337,22 +346,50 @@ begin
     ----------------------------------------------------------------------------
     --- Write back
 
-    write_back: process (clk) is
+    wback_pipeline: process (clk) is
     begin
         if rising_edge(clk) then
+            wback_in_op_code          <= macc_out_op_code;
+            wback_in_target           <= macc_out_target;
+            wback_in_result           <= macc_out_result;
+            wback_in_flags_comp       <= macc_out_flags_comp;
+            wback_in_flags_carry      <= macc_out_flags_carry;
+            wback_in_flags_of         <= macc_out_flags_of;
+            wback_in_reg_write_enable <= macc_out_reg_write_enable;
+        end if;
+    end process wback_pipeline;
 
-            -- Write back flags
-            -- 00000000000000000000000000000000
-            --                                ^compare
-            --                               ^carry
-            --                              ^overflow
-            reg_flag <= (
-                0      => macc_out_flags_comp,
-                1      => macc_out_flags_carry,
-                2      => macc_out_flags_of,
-                others => '0'
-            );
+    -- TODO creates 'x' values ??
+    --reg_flag <= (
+    --    0      => wback_in_flags_comp,
+    --    1      => wback_in_flags_carry,
+    --    2      => wback_in_flags_of,
+    --    others => '0');
 
+    --wback_write_to_flags: process (
+    --        clk,
+    --        macc_out_flags_comp,
+    --        macc_out_flags_carry,
+    --        macc_out_flags_of) is
+    --begin
+    --    if rising_edge(clk) then
+    --        reg_flag <= (
+    --            0      => macc_out_flags_comp,
+    --            1      => macc_out_flags_carry,
+    --            2      => macc_out_flags_of,
+    --            others => '0'
+    --        );
+    --    end if;
+    --end process wback_write_to_flags;
+
+    -- TODO creates 'x' values ??
+    wback_write_to_target: process (
+            clk,
+            macc_out_target,
+            macc_out_result,
+            macc_out_reg_write_enable) is
+    begin
+        if rising_edge(clk) then
             if macc_out_reg_write_enable = '1' then
 
                 -- disallow writes to pc and zero register
@@ -362,11 +399,11 @@ begin
                     when reg_addr_zero =>
                         null;
                     when others =>
-                        null;
-                        --register_file(to_integer(unsigned(macc_target))) <= macc_result;
+                        -- TODO disabled for now
+                        -- register_file(to_integer(unsigned(macc_out_target))) <= macc_out_result;
                 end case;
             end if;
         end if;
-    end process write_back;
+    end process wback_write_to_target;
 
 end cpu_arc;
