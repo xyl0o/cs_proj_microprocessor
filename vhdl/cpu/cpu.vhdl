@@ -254,7 +254,7 @@ begin
 
                     else
                         -- TODO is just else sufficient?
-                        report "indec_op2_sel was neither 0 nor 1"
+                        report "exec_flags_comp was neither 0 nor 1"
                         severity error;
                     end if;
 
