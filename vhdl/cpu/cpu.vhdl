@@ -102,8 +102,7 @@ architecture cpu_arc of cpu is
     signal exec_in_reg_write_enable : std_logic;
     signal exec_in_next_seq_pc      : t_data := (others => '0');
 
-
-
+    -- Outputs
     signal exec_out_op_code          : t_op_code := op_NOP;
     signal exec_out_target           : t_reg_addr;
     signal exec_out_datastore        : t_data;
