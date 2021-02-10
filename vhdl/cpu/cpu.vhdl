@@ -80,6 +80,13 @@ architecture cpu_arc of cpu is
 
     -- write_back
 
+    function sign_extend(imm_value : t_op_imm) return t_data is
+        variable result: t_data;
+    begin
+        result(imm_value'length - 1 downto 0)         := imm_value;
+        result(result'length - 1 downto imm_value'length) := (others => imm_value(imm_value'length - 1));
+        return result;
+    end function;
 
 begin
 
@@ -168,8 +175,7 @@ begin
             elsif indec_op2_sel = '0' then
                 -- sign extend
                 --indec_op_2 <= sign_extend(decoder.immediate);
-                indec_op_2(15 downto 0)  <= indec_immediate;
-                indec_op_2(31 downto 16) <= (others => indec_immediate(15));
+                indec_op_2 <= sign_extend(indec_immediate);
 
             else
                 -- TODO is just else sufficient?
