@@ -225,6 +225,7 @@ begin
     mem_access: process (clk) is
     begin
         if rising_edge(clk) then
+
             macc_op_code <= exec_op_code;
             macc_target <= exec_target;
             macc_result <= exec_result;
@@ -235,23 +236,28 @@ begin
             macc_reg_write_enable <= exec_reg_write_enable;
 
             case macc_op_code is
+
                 when op_JMP =>
                     register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_result;
                     register_file(to_integer(unsigned(reg_addr_link))) <= exec_next_seq_pc;
                     --instr_addr <= exec_result;
+
                 when op_B =>
                     if exec_flags_comp = '1' then
                         register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_result;
                         register_file(to_integer(unsigned(reg_addr_link))) <= exec_next_seq_pc;
                         --instr_addr <= exec_result;
+
                     elsif exec_flags_comp = '0' then
                         register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
                         --instr_addr <= exec_next_seq_pc;
+
                     else
                         -- TODO is just else sufficient?
                         report "indec_op2_sel was neither 0 nor 1"
                         severity error;
                     end if;
+
                 when op_LDR =>
                     --macc_result <= memory_get(result);
                     data_we <= '0';
