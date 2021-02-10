@@ -11,9 +11,9 @@ entity alu is
         data_len   : positive := 32
     );
     port(
+        -- Inputs
         alu_op_code: in t_alu_op_code;
 
-        -- Inputs
         op_1: in std_logic_vector(data_len - 1 downto 0);
         op_2: in std_logic_vector(data_len - 1 downto 0);
 
@@ -34,7 +34,7 @@ architecture alu_arc of alu is
 	subtype t_data is std_logic_vector(data_len - 1 downto 0);
 	subtype t_data_ext is unsigned(data_len downto 0);
 begin
-	arithmetic : process (op_1, op_2, alu_op_code)
+	arithmetic : process (alu_op_code, op_1, op_2, carry_in, of_in, comp_in)
 		variable tmp_result: t_data_ext;
 		variable uop_1: t_data_ext;
 		variable uop_2: t_data_ext;
