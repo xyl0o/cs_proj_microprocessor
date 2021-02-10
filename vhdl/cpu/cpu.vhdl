@@ -175,7 +175,7 @@ begin
 
             pc := reg_pc;
 
-            instr_addr        <= pc;
+            instr_addr            <= pc;
             fetch_out_next_seq_pc <= std_logic_vector(unsigned(pc) + 1);
 
         end if;
@@ -219,10 +219,10 @@ begin
     -- assign op_1, op_2, datastore, flags
     indec_out_op_1 <= register_file(to_integer(unsigned(indec_reg_select_1)));
 
-    with indec_op2_sel select indec_out_op_2 <=
-        register_file(to_integer(unsigned(indec_reg_select_2))) when '0',
-        sign_extend(indec_immediate)                            when '1',
-        (others => '0')                                         when others;
+    with indec_op2_sel select
+        indec_out_op_2 <= register_file(to_integer(unsigned(indec_reg_select_2))) when '0',
+                          sign_extend(indec_immediate)                            when '1',
+                          (others => '0')                                         when others;
 
     indec_out_datastore   <= register_file(to_integer(unsigned(indec_reg_select_3)));
     indec_out_flags_comp  <= reg_flag(0);
@@ -309,9 +309,9 @@ begin
                       macc_in_flags_comp when macc_in_op_code = op_B   else
                       '0';
 
-    with macc_will_jump select reg_pc <=
-        macc_in_result      when '1',
-        macc_in_next_seq_pc when others;
+    with macc_will_jump select
+        reg_pc <= macc_in_result      when '1',
+                  macc_in_next_seq_pc when others;
 
     -- TODO: can we do this somewhat cleaner?
     -- use process because no else path wanted (do not assign if no jump)
@@ -322,25 +322,25 @@ begin
     end process;
 
     -- When STR or LDF instruction: set data_addr to macc_in_result
-    with macc_in_op_code select data_addr <=
-        macc_in_result  when op_LDR,
-        macc_in_result  when op_STR,
-        (others => '0') when others;
+    with macc_in_op_code select
+        data_addr <= macc_in_result  when op_LDR,
+                     macc_in_result  when op_STR,
+                     (others => '0') when others;
 
     -- When STR instruction: set data_out to macc_in_datastore
-    with macc_in_op_code select data_out <=
-        macc_in_datastore when op_STR,
-        (others => '0')   when others;
+    with macc_in_op_code select
+        data_out <= macc_in_datastore when op_STR,
+                    (others => '0')   when others;
 
     -- When STR instruction: set data_we to '1'
-    with macc_in_op_code select data_we <=
-        '1' when op_STR,
-        '0' when others;
+    with macc_in_op_code
+        select data_we <= '1' when op_STR,
+                          '0' when others;
 
     -- When LDR instruction: set macc_out_result to data_in
-    with macc_in_op_code select macc_out_result <=
-        data_in        when op_LDR,
-        macc_in_result when others;
+    with macc_in_op_code select
+        macc_out_result <= data_in        when op_LDR,
+                           macc_in_result when others;
 
 
     ----------------------------------------------------------------------------
