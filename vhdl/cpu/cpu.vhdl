@@ -90,6 +90,24 @@ architecture cpu_arc of cpu is
 
 begin
 
+    -- debug output
+    debug_flags <= register_file(to_integer(unsigned(reg_addr_flags)));
+    debug_pc    <= register_file(to_integer(unsigned(reg_addr_pc)));
+    debug_link  <= register_file(to_integer(unsigned(reg_addr_link)));
+
+    fetch: process (clk) is
+        variable pc : t_data;
+    begin
+        if rising_edge(clk) then
+
+            pc := register_file(to_integer(unsigned(reg_addr_pc)));
+
+            instr_addr <= pc;
+            fetch_next_seq_pc <= std_logic_vector(unsigned(pc) + 1);
+
+        end if;
+    end process fetch;
+
     decoder_instance: decoder
         generic map (
             data_len => data_len
@@ -107,43 +125,6 @@ begin
             immediate    => indec_immediate,
             op2_sel      => indec_op2_sel
         );
-
-    alu_instance: alu
-        generic map (
-            data_len => data_len
-        )
-        port map (
-            alu_op_code => indec_op_sel,
-            op_1        => indec_op_1,
-            op_2        => indec_op_2,
-            carry_in    => indec_flags_carry,
-            of_in       => indec_flags_of,
-            comp_in     => indec_flags_comp,
-
-            -- Outputs
-            result      => exec_result,
-            carry_out   => exec_flags_carry,
-            of_out      => exec_flags_of,
-            comp_out    => exec_flags_comp
-        );
-
-    -- debug output
-    debug_flags <= register_file(to_integer(unsigned(reg_addr_flags)));
-    debug_pc    <= register_file(to_integer(unsigned(reg_addr_pc)));
-    debug_link  <= register_file(to_integer(unsigned(reg_addr_link)));
-
-    fetch: process (clk) is
-        variable pc : t_data;
-    begin
-        if rising_edge(clk) then
-
-            pc := register_file(to_integer(unsigned(reg_addr_pc)));
-
-            instr_addr <= pc;
-            fetch_next_seq_pc <= std_logic_vector(unsigned(pc) + 4);
-
-        end if;
-    end process fetch;
 
     inst_decode: process (clk) is
         variable reg_flags: t_data;
@@ -187,6 +168,25 @@ begin
             indec_next_seq_pc <= fetch_next_seq_pc;
         end if;
     end process inst_decode;
+
+    alu_instance: alu
+        generic map (
+            data_len => data_len
+        )
+        port map (
+            alu_op_code => indec_op_sel,
+            op_1        => indec_op_1,
+            op_2        => indec_op_2,
+            carry_in    => indec_flags_carry,
+            of_in       => indec_flags_of,
+            comp_in     => indec_flags_comp,
+
+            -- Outputs
+            result      => exec_result,
+            carry_out   => exec_flags_carry,
+            of_out      => exec_flags_of,
+            comp_out    => exec_flags_comp
+        );
 
     execute: process (clk) is
     begin
