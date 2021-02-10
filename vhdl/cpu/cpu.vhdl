@@ -36,7 +36,7 @@ architecture cpu_arc of cpu is
     signal debug_link  : t_data;
 
     -- fetch
-    signal fetch_next_seq_pc : t_data := (others => '0');
+    signal fetch_out_next_seq_pc : t_data := (others => '0');
 
 
     ----------------------------------------------------------------------------
@@ -120,7 +120,7 @@ begin
             pc := register_file(to_integer(unsigned(reg_addr_pc)));
 
             instr_addr        <= pc;
-            fetch_next_seq_pc <= std_logic_vector(unsigned(pc) + 1);
+            fetch_out_next_seq_pc <= std_logic_vector(unsigned(pc) + 1);
 
         end if;
     end process fetch;
