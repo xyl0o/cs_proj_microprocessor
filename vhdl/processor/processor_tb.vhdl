@@ -9,7 +9,7 @@ use work.cpu_pkg.all;
 entity processor is
     generic(
         clk_period     : time     := 200 ns;
-        clk_cycles     : positive := 20;
+        clk_cycles     : positive := 50;
         data_len       : positive := 32;
         instr_addr_len : positive := 8;
         data_addr_len  : positive := 10
