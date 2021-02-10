@@ -26,14 +26,26 @@ end cpu;
 architecture cpu_arc of cpu is
 
     subtype t_data is std_logic_vector(data_len - 1 downto 0);
-    type t_register_file is array(0 to 31) of t_data;
 
-    signal register_file : t_register_file := (others => (others => '0'));
+
 
     -- debug
     signal debug_flags : t_data;
     signal debug_pc    : t_data;
     signal debug_link  : t_data;
+
+
+    ----------------------------------------------------------------------------
+    --- Registers
+
+    type t_register_file is array(0 to 31) of t_data;
+
+    signal register_file : t_register_file := (others => (others => '0'));
+
+    alias reg_zero : t_data is register_file(to_integer(unsigned(reg_addr_zero)));
+    alias reg_flag : t_data is register_file(to_integer(unsigned(reg_addr_flags)));
+    alias reg_link : t_data is register_file(to_integer(unsigned(reg_addr_link)));
+    alias reg_pc   : t_data is register_file(to_integer(unsigned(reg_addr_pc)));
 
     -- fetch
     signal fetch_out_next_seq_pc : t_data := (others => '0');
@@ -128,16 +140,16 @@ architecture cpu_arc of cpu is
 begin
 
     -- debug output
-    debug_flags <= register_file(to_integer(unsigned(reg_addr_flags)));
-    debug_pc    <= register_file(to_integer(unsigned(reg_addr_pc)));
-    debug_link  <= register_file(to_integer(unsigned(reg_addr_link)));
+    debug_flags <= reg_flag;
+    debug_pc    <= reg_pc;
+    debug_link  <= reg_link;
 
     fetch: process (clk) is
         variable pc : t_data;
     begin
         if rising_edge(clk) then
 
-            pc := register_file(to_integer(unsigned(reg_addr_pc)));
+            pc := reg_pc;
 
             instr_addr        <= pc;
             fetch_out_next_seq_pc <= std_logic_vector(unsigned(pc) + 1);
@@ -189,9 +201,9 @@ begin
         (others => '0')                                         when others;
 
     indec_out_datastore   <= register_file(to_integer(unsigned(indec_reg_select_3)));
-    indec_out_flags_comp  <= register_file(to_integer(unsigned(reg_addr_flags)))(0);
-    indec_out_flags_carry <= register_file(to_integer(unsigned(reg_addr_flags)))(1);
-    indec_out_flags_of    <= register_file(to_integer(unsigned(reg_addr_flags)))(2);
+    indec_out_flags_comp  <= reg_flag(0);
+    indec_out_flags_carry <= reg_flag(1);
+    indec_out_flags_of    <= reg_flag(2);
 
 
     ----------------------------------------------------------------------------
@@ -261,18 +273,18 @@ begin
             case macc_op_code is
 
                 when op_JMP =>
-                    register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_out_result;
-                    register_file(to_integer(unsigned(reg_addr_link))) <= exec_out_next_seq_pc;
+                    reg_pc   <= exec_out_result;
+                    reg_link <= exec_out_next_seq_pc;
                     --instr_addr <= exec_out_result;
 
                 when op_B =>
                     if exec_out_flags_comp = '1' then
-                        register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_out_result;
-                        register_file(to_integer(unsigned(reg_addr_link))) <= exec_out_next_seq_pc;
+                        reg_pc   <= exec_out_result;
+                        reg_link <= exec_out_next_seq_pc;
                         --instr_addr <= exec_out_result;
 
                     elsif exec_out_flags_comp = '0' then
-                        register_file(to_integer(unsigned(reg_addr_pc))) <= exec_out_next_seq_pc;
+                        reg_pc <= exec_out_next_seq_pc;
                         --instr_addr <= exec_out_next_seq_pc;
 
                     else
@@ -287,7 +299,7 @@ begin
                     data_addr   <= exec_out_result;
                     macc_result <= data_in;  -- TODO does this work (-> timing)?
 
-                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_out_next_seq_pc;
+                    reg_pc <= exec_out_next_seq_pc;
                     --instr_addr <= exec_out_next_seq_pc;
                     
                 when op_STR =>
@@ -296,11 +308,11 @@ begin
                     data_out  <= exec_out_datastore;
                     data_we   <= '1';
 
-                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_out_next_seq_pc;
+                    reg_pc <= exec_out_next_seq_pc;
                     --instr_addr <= exec_out_next_seq_pc;
                     
                 when others =>
-                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_out_next_seq_pc;
+                    reg_pc <= exec_out_next_seq_pc;
                     --instr_addr <= exec_out_next_seq_pc;
 
             end case;
@@ -320,7 +332,7 @@ begin
             --                                ^compare
             --                               ^carry
             --                              ^overflow
-            register_file(to_integer(unsigned(reg_addr_flags))) <= (
+            reg_flag <= (
                 0      => macc_flags_comp,
                 1      => macc_flags_carry,
                 2      => macc_flags_of,
