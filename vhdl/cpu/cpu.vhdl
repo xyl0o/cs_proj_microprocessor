@@ -139,7 +139,8 @@ architecture cpu_arc of cpu is
     signal macc_out_flags_carry      : std_logic := '0';
     signal macc_out_flags_of         : std_logic := '0';
     signal macc_out_reg_write_enable : std_logic;
-
+    signal macc_out_new_pc           : t_data;
+    signal macc_out_new_link         : t_data;
 
     ----------------------------------------------------------------------------
     --- Write back signals
@@ -323,8 +324,12 @@ begin
                       '0';
 
     with macc_will_jump select
-        reg_pc <= macc_in_result      when '1',
-                  macc_in_next_seq_pc when others;
+        macc_out_new_pc <= macc_in_result      when '1',
+                           macc_in_next_seq_pc when others;
+
+    with macc_will_jump select
+        macc_out_new_link <= macc_in_next_seq_pc when '1',
+                             reg_link            when others;
 
     -- TODO: can we do this somewhat cleaner?
     -- use process because no else path wanted (do not assign if no jump)
@@ -381,6 +386,8 @@ begin
             macc_out_reg_write_enable) is
     begin
         if rising_edge(clk) then
+            reg_pc   <= macc_out_new_pc;
+            reg_link <= macc_out_new_link;
 
             reg_flag <= (
                 0      => wback_in_flags_comp,
