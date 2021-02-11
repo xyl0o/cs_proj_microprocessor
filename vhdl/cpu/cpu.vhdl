@@ -346,9 +346,9 @@ begin
                     (others => '0')   when others;
 
     -- When STR instruction: set data_we to '1'
-    with macc_in_op_code
-        select data_we <= '1' when op_STR,
-                          '0' when others;
+    with macc_in_op_code select
+        data_we <= '1' when op_STR,
+                   '0' when others;
 
     -- When LDR instruction: set macc_out_result to data_in
     with macc_in_op_code select
