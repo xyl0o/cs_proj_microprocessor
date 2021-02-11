@@ -54,11 +54,11 @@ architecture cpu_arc of cpu is
     signal fetch_in_pc : t_data := (others => '0');
 
     -- Outputs
-    subtype t_fetch_out : std_logic_vector(t_data'length * 2 - 1 downto 1);
+    subtype t_fetch_out : std_logic_vector(146 downto 0);
     signal fetch_out    : t_fetch_out;
 
-    signal fetch_out_instr       : t_data := (others => '0');
-    signal fetch_out_next_seq_pc : t_data := (others => '0');
+    alias fetch_out_instr       : t_data is fetch_out(63 downto 32) := (others => '0');
+    alias fetch_out_next_seq_pc : t_data is fetch_out(31 downto 0) := (others => '0');
 
 
     ----------------------------------------------------------------------------
@@ -67,8 +67,8 @@ architecture cpu_arc of cpu is
     -- Inputs
     signal indec_in : t_fetch_out;
 
-    signal indec_in_instr       : t_data := (others => '1');
-    signal indec_in_next_seq_pc : t_data := (others => '0');
+    alias indec_in_instr       : t_data is indec_in(63 downto 32) := (others => '1');
+    alias indec_in_next_seq_pc : t_data is indec_in31 downto 0 := (others => '0');
 
     -- internal signals to inst_decode
     signal indec_reg_select_1 : t_reg_addr;
@@ -78,20 +78,20 @@ architecture cpu_arc of cpu is
     signal indec_immediate    : t_op_imm;
 
     -- Outputs
-    subtype t_indec_out : std_logic_vector(t_data'length * 2 - 1 downto 1);
+    subtype t_indec_out : std_logic_vector(146 downto 0);
     signal indec_out    : t_indec_out;
 
-    signal indec_out_op_code          : t_op_code := op_NOP;
-    signal indec_out_op_sel           : t_alu_op_code;
-    signal indec_out_target           : t_reg_addr;
-    signal indec_out_datastore        : t_data;
-    signal indec_out_op_1             : t_data;
-    signal indec_out_op_2             : t_data;
-    signal indec_out_flags_comp       : std_logic := '0';
-    signal indec_out_flags_carry      : std_logic := '0';
-    signal indec_out_flags_of         : std_logic := '0';
-    signal indec_out_reg_write_enable : std_logic;
-    signal indec_out_next_seq_pc      : t_data := (others => '0');
+    alias indec_out_op_code          : t_op_code     is indec_out(146 downto 142)  := op_NOP         ;
+    alias indec_out_op_sel           : t_alu_op_code is indec_out(141 downto 137)                    ;
+    alias indec_out_target           : t_reg_addr    is indec_out(136 downto  132)                   ;
+    alias indec_out_datastore        : t_data        is indec_out(131 downto 100)                    ;
+    alias indec_out_op_1             : t_data        is indec_out(99 downto 68)                      ;
+    alias indec_out_op_2             : t_data        is indec_out(67 downto 36)                      ;
+    alias indec_out_flags_comp       : std_logic     is indec_out(35)              := '0'            ;
+    alias indec_out_flags_carry      : std_logic     is indec_out(34)              := '0'            ;
+    alias indec_out_flags_of         : std_logic     is indec_out(33)              := '0'            ;
+    alias indec_out_reg_write_enable : std_logic     is indec_out(32)                                ;
+    alias indec_out_next_seq_pc      : t_data        is indec_out(31 downto 0)     := (others => '0');
 
 
     ----------------------------------------------------------------------------
@@ -100,31 +100,27 @@ architecture cpu_arc of cpu is
     -- Inputs
     signal exec_in : t_indec_out;
 
-    signal exec_in_op_code          : t_op_code := op_NOP;
-    signal exec_in_op_sel           : t_alu_op_code;
-    signal exec_in_target           : t_reg_addr;
-    signal exec_in_datastore        : t_data;
-    signal exec_in_op_1             : t_data;
-    signal exec_in_op_2             : t_data;
-    signal exec_in_flags_comp       : std_logic := '0';
-    signal exec_in_flags_carry      : std_logic := '0';
-    signal exec_in_flags_of         : std_logic := '0';
-    signal exec_in_reg_write_enable : std_logic;
-    signal exec_in_next_seq_pc      : t_data := (others => '0');
+    alias exec_in_op_code          : t_op_code     is indec_out(146 downto 142)  := op_NOP         ;
+    alias exec_in_op_sel           : t_alu_op_code is indec_out(141 downto 137)                    ;
+    alias exec_in_target           : t_reg_addr    is indec_out(136 downto  132)                   ;
+    alias exec_in_datastore        : t_data        is indec_out(131 downto 100)                    ;
+    alias exec_in_op_1             : t_data        is indec_out(99 downto 68)                      ;
+    alias exec_in_op_2             : t_data        is indec_out(67 downto 36)                      ;
+    alias exec_in_flags_comp       : std_logic     is indec_out(35)              := '0'            ;
+    alias exec_in_flags_carry      : std_logic     is indec_out(34)              := '0'            ;
+    alias exec_in_flags_of         : std_logic     is indec_out(33)              := '0'            ;
+    alias exec_in_reg_write_enable : std_logic     is indec_out(32)                                ;
+    alias exec_in_next_seq_pc      : t_data        is indec_out(31 downto 0)     := (others => '0');
 
     -- Outputs
-    subtype t_exec_out : std_logic_vector(t_data'length * 2 - 1 downto 1);
+    subtype t_exec_out : std_logic_vector(146 downto 0);
     signal exec_out    : t_exec_out;
 
-    signal exec_out_op_code          : t_op_code := op_NOP;
-    signal exec_out_target           : t_reg_addr;
-    signal exec_out_datastore        : t_data;
-    signal exec_out_result           : t_data;
-    signal exec_out_flags_comp       : std_logic := '0';
-    signal exec_out_flags_carry      : std_logic := '0';
-    signal exec_out_flags_of         : std_logic := '0';
-    signal exec_out_reg_write_enable : std_logic;
-    signal exec_out_next_seq_pc      : t_data := (others => '0');
+    alias exec_out_result      : t_data    is indec_out(67 downto 36)                   ;
+    alias exec_out_flags_comp  : std_logic is indec_out(35)           := '0'            ;
+    alias exec_out_flags_carry : std_logic is indec_out(34)           := '0'            ;
+    alias exec_out_flags_of    : std_logic is indec_out(33)           := '0'            ;
+    alias exec_out_next_seq_pc : t_data    is indec_out(31 downto 0)  := (others => '0');
 
 
     ----------------------------------------------------------------------------
@@ -282,13 +278,6 @@ begin
             exec_in_target           <= indec_out_target;
         end if;
     end process exec_pipeline;
-
-    -- passthrough
-    exec_out_op_code          <= exec_in_op_code;
-    exec_out_target           <= exec_in_target;
-    exec_out_datastore        <= exec_in_datastore;
-    exec_out_next_seq_pc      <= exec_in_next_seq_pc;
-    exec_out_reg_write_enable <= exec_in_reg_write_enable;
 
     alu_instance: alu
         generic map (
