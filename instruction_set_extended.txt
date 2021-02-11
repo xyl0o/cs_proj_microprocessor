@@ -1,0 +1,89 @@
+
+A, B, C view on instr:
+
+             3         2         1         0
+            10987654321098765432109876543210
+threeop reg ooooo0AAAAABBBBBCCCCC___________
+threeop imm ooooo1AAAAABBBBBcicicicicicicici
+twoop   reg ooooo0_____AAAAABBBBB___________
+twoop   imm ooooo1_____AAAAAbibibibibibibibi
+oneop   reg ooooo0__________AAAAA___________
+oneop   imm ooooo1__________aiaiaiaiaiaiaiai
+noop    reg ooooo0__________________________
+noop    imm ooooo1__________________________
+
+
+X, Y, Z view on instr:
+
+             3         2         1         0
+            10987654321098765432109876543210
+threeop reg ooooo0XXXXXYYYYYZZZZZ___________
+threeop imm ooooo1XXXXXYYYYYzizizizizizizizi
+twoop   reg ooooo0_____YYYYYZZZZZ___________
+twoop   imm ooooo1_____YYYYYzizizizizizizizi
+oneop   reg ooooo0__________ZZZZZ___________
+oneop   imm ooooo1__________zizizizizizizizi
+noop    reg ooooo0__________________________
+noop    imm ooooo1__________________________
+
+threeop: A = X, B = Y, C = Z
+twoop:   A = Y, B = Z
+oneop:   A = Z
+
+
+
+
+instb   inst  mem wb aluop lay op1 op2 tgt dst wbe 
+00000          ✗  ✗  _      1   _   _   _   _   0              no op
+00001          ✗  ✗  _      1   _   _   _   _   0              no op
+00010          ✗  ✗  _      1   _   _   _   _   0              no op
+00011          ✗  ✗  _      1   _   _   _   _   0              no op
+00100          ✗  ✗  _      1   _   _   _   _   0              no op
+00101          ✗  ✗  _      1   _   _   _   _   0              no op
+00110          ✗  ✗  _      1   _   _   _   _   0              no op
+00111          ✗  ✗  _      1   _   _   _   _   0              no op
+01000          ✗  ✗  _      2   _   _   _   _   0              no op
+01001   CMPEQ  ✗  c  CMPEQ  2   AY  BZ  _   _   0          fCMP := op1 == op2
+01010   CMPGT  ✗  c  CMPGT  2   AY  BZ  _   _   0          fCMP := op1 - op2 > 0
+01011   MOV    ✗  ✓  IDOP2  2   _   BZ  AY  _   1           tgt := op2
+01100   JMP    j  ✗  ADD    2   AY  BZ  _   _   0            PC := op1 + op2 if fCMP
+01101   B      b  ✗  ADD    2   AY  BZ  _   _   0            PC := op1 + op2
+01110          ✗  ✗  _      2   _   _   _   _   0              no op
+01111          ✗  ✗  _      2   _   _   _   _   0              no op
+10000          ✗  ✗  _      3   _   _   _   _   0              no op
+10001   ADC    ✗  ✓  ADC    3   BY  CZ  AX  _   1           tgt := op1 + op2 + Carry
+10010   ADD    ✗  ✓  ADD    3   BY  CZ  AX  _   1           tgt := op1 + op2
+10011   SBC    ✗  ✓  SBC    3   BY  CZ  AX  _   1           tgt := op1 - op2 - 1 + Carry
+10100   SUB    ✗  ✓  ADD    3   BY  CZ  AX  _   1           tgt := op1 - op2
+10101   SL     ✗  ✓  SL     3   BY  CZ  AX  _   1           tgt := op1 << op2
+10110   SRA    ✗  ✓  SRA    3   BY  CZ  AX  _   1           tgt := op1 >>> op2
+10111   SRL    ✗  ✓  SRL    3   BY  CZ  AX  _   1           tgt := op1 >> op2
+11000   AND    ✗  ✓  AND    3   BY  CZ  AX  _   1           tgt := op1 AND op2
+11001   ORR    ✗  ✓  ORR    3   BY  CZ  AX  _   1           tgt := op1 OR op2
+11010   XOR    ✗  ✓  XOR    3   BY  CZ  AX  _   1           tgt := op1 XOR op2
+11011   LDR    l  ✓  ADD    3   BY  CZ  AX  _   1           tgt := m[op1 + op2]
+11100   STR    s  ✗  ADD    3   BY  CZ  _   AX  0  m[op1 + op2] := dst
+11101          ✗  ✗  _      3   _   _   _   _   0              no op
+11110          ✗  ✗  _      3   _   _   _   _   0              no op
+11111   NOP    ✗  ✗  NOP    3   _   _   _   _   0              NO OP
+
+
+
+
+instb := bitcode of instr
+inst  := instruction
+mem   := what should happen in mem
+            l: r = mem(r)
+            s: mem(r) = dst
+            j: jmp(r)
+            b: jif(r)
+wb    := what should happen in wb
+            ✓: reg(t) = r
+            ✗: nop
+            c: reg(flag).comp := alu_comp
+aluop := alu operation
+op1   := alu first operand
+op2   := alu second operand
+tgt   := reg addr to write back to
+dst   := value of tgt register
+wbe   := write back to tgt or not
