@@ -51,7 +51,7 @@ architecture cpu_arc of cpu is
     ----------------------------------------------------------------------------
     --- Fetch signals
 
-    signal fetch_in_pc : t_data := (others => '0');
+    signal fetch_in_pc : t_data;
 
     -- Outputs
     signal fetch_out_instr       : t_data := (others => '0');
