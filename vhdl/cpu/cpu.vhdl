@@ -378,8 +378,7 @@ begin
     end process wback_pipeline;
 
     -- TODO creates 'x' values ??
-    -- TODO creates 'x' values ??
-    wback_write_to_target: process (
+    wback_write: process (
             clk,
             macc_out_target,
             macc_out_result,
@@ -409,6 +408,6 @@ begin
                 end case;
             end if;
         end if;
-    end process wback_write_to_target;
+    end process wback_write;
 
 end cpu_arc;
