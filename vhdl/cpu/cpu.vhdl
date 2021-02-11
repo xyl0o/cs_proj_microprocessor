@@ -377,7 +377,6 @@ begin
         end if;
     end process wback_pipeline;
 
-    -- TODO creates 'x' values ??
     wback_write: process (
             clk,
             macc_out_target,
@@ -404,7 +403,7 @@ begin
                         null;
                     when others =>
                         -- TODO disabled for now
-                        -- register_file(to_integer(unsigned(macc_out_target))) <= macc_out_result;
+                        register_file(to_integer(unsigned(macc_out_target))) <= macc_out_result;
                 end case;
             end if;
         end if;
