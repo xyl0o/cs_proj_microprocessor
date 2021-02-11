@@ -36,20 +36,15 @@ architecture cpu_arc of cpu is
     signal debug_link  : t_data;
 
     -- fetch
-    signal fetch_next_seq_pc : t_data := (others => '0');
+    signal fetch_out_next_seq_pc : t_data := (others => '0');
 
-    -- inst_decode
-    signal indec_op_code          : t_op_code := op_NOP;
-    signal indec_op_sel           : t_alu_op_code;
-    signal indec_target           : t_reg_addr;
-    signal indec_datastore        : t_data;
-    signal indec_op_1             : t_data;
-    signal indec_op_2             : t_data;
-    signal indec_flags_comp       : std_logic;
-    signal indec_flags_carry      : std_logic;
-    signal indec_flags_of         : std_logic;
-    signal indec_reg_write_enable : std_logic;
-    signal indec_next_seq_pc      : t_data := (others => '0');
+
+    ----------------------------------------------------------------------------
+    --- Instruction decode signals
+
+    -- Inputs
+    signal indec_in_instr       : t_data := (others => '1');
+    signal indec_in_next_seq_pc : t_data := (others => '0');
 
     -- internal signals to inst_decode
     signal indec_reg_select_1 : t_reg_addr;
@@ -58,18 +53,52 @@ architecture cpu_arc of cpu is
     signal indec_op2_sel      : std_logic;
     signal indec_immediate    : t_op_imm;
 
-    -- execute
-    signal exec_op_code          : t_op_code := op_NOP;
-    signal exec_target           : t_reg_addr;
-    signal exec_datastore        : t_data;
-    signal exec_result           : t_data;
-    signal exec_flags_comp       : std_logic;
-    signal exec_flags_carry      : std_logic;
-    signal exec_flags_of         : std_logic;
-    signal exec_reg_write_enable : std_logic;
-    signal exec_next_seq_pc      : t_data := (others => '0');
+    -- Outputs
+    signal indec_out_op_code          : t_op_code := op_NOP;
+    signal indec_out_op_sel           : t_alu_op_code;
+    signal indec_out_target           : t_reg_addr;
+    signal indec_out_datastore        : t_data;
+    signal indec_out_op_1             : t_data;
+    signal indec_out_op_2             : t_data;
+    signal indec_out_flags_comp       : std_logic;
+    signal indec_out_flags_carry      : std_logic;
+    signal indec_out_flags_of         : std_logic;
+    signal indec_out_reg_write_enable : std_logic;
+    signal indec_out_next_seq_pc      : t_data := (others => '0');
 
-    -- mem_access
+
+    ----------------------------------------------------------------------------
+    --- Execute signals
+
+    -- Inputs
+    signal exec_in_op_code          : t_op_code := op_NOP;
+    signal exec_in_op_sel           : t_alu_op_code;
+    signal exec_in_target           : t_reg_addr;
+    signal exec_in_datastore        : t_data;
+    signal exec_in_op_1             : t_data;
+    signal exec_in_op_2             : t_data;
+    signal exec_in_flags_comp       : std_logic;
+    signal exec_in_flags_carry      : std_logic;
+    signal exec_in_flags_of         : std_logic;
+    signal exec_in_reg_write_enable : std_logic;
+    signal exec_in_next_seq_pc      : t_data := (others => '0');
+
+
+
+    signal exec_out_op_code          : t_op_code := op_NOP;
+    signal exec_out_target           : t_reg_addr;
+    signal exec_out_datastore        : t_data;
+    signal exec_out_result           : t_data;
+    signal exec_out_flags_comp       : std_logic;
+    signal exec_out_flags_carry      : std_logic;
+    signal exec_out_flags_of         : std_logic;
+    signal exec_out_reg_write_enable : std_logic;
+    signal exec_out_next_seq_pc      : t_data := (others => '0');
+
+
+    ----------------------------------------------------------------------------
+    --- Memory access signals
+
     signal macc_op_code          : t_op_code := op_NOP;
     signal macc_target           : t_reg_addr;
     signal macc_result           : t_data;
@@ -78,7 +107,15 @@ architecture cpu_arc of cpu is
     signal macc_flags_of         : std_logic;
     signal macc_reg_write_enable : std_logic;
 
-    -- write_back
+
+    ----------------------------------------------------------------------------
+    --- Write back signals
+
+
+    ----------------------------------------------------------------------------
+    --- Functions
+
+
 
     function sign_extend(imm_value : t_op_imm) return t_data is
         variable result: t_data;
@@ -103,10 +140,24 @@ begin
             pc := register_file(to_integer(unsigned(reg_addr_pc)));
 
             instr_addr        <= pc;
-            fetch_next_seq_pc <= std_logic_vector(unsigned(pc) + 1);
+            fetch_out_next_seq_pc <= std_logic_vector(unsigned(pc) + 1);
 
         end if;
     end process fetch;
+
+    ----------------------------------------------------------------------------
+    --- Instruction decode
+
+    indec_pipeline: process (clk) is
+    begin
+        if rising_edge(clk) then
+            indec_in_instr       <= instr_in;
+            indec_in_next_seq_pc <= fetch_out_next_seq_pc;
+        end if;
+    end process indec_pipeline;
+
+    -- passthrough
+    indec_out_next_seq_pc <= indec_in_next_seq_pc;
 
     decoder_instance: decoder
         generic map (
@@ -114,62 +165,61 @@ begin
         )
         port map (
             -- Inputs
-            instr => instr_in,
+            instr => indec_in_instr,
 
             -- Outputs
-            op_code      => indec_op_code,
-            alu_op_sel   => indec_op_sel,
+            op_code      => indec_out_op_code,
+            alu_op_sel   => indec_out_op_sel,
             reg_select_1 => indec_reg_select_1,
             reg_select_2 => indec_reg_select_2,
             reg_select_3 => indec_reg_select_3,
-            reg_target   => indec_target,
-            write_en     => indec_reg_write_enable,
+            reg_target   => indec_out_target,
+            write_en     => indec_out_reg_write_enable,
             immediate    => indec_immediate,
             op2_sel      => indec_op2_sel
         );
 
-    inst_decode: process (clk) is
-        variable reg_flags: t_data;
+
+    -- assign op_1, op_2, datastore, flags
+    indec_out_op_1 <= register_file(to_integer(unsigned(indec_reg_select_1)));
+
+    with indec_op2_sel select indec_out_op_2 <=
+        register_file(to_integer(unsigned(indec_reg_select_2))) when '0',
+        sign_extend(indec_immediate)                            when '1',
+        (others => '0')                                         when others;
+
+    indec_out_datastore   <= register_file(to_integer(unsigned(indec_reg_select_3)));
+    indec_out_flags_comp  <= register_file(to_integer(unsigned(reg_addr_flags)))(0);
+    indec_out_flags_carry <= register_file(to_integer(unsigned(reg_addr_flags)))(1);
+    indec_out_flags_of    <= register_file(to_integer(unsigned(reg_addr_flags)))(2);
+
+
+    ----------------------------------------------------------------------------
+    --- Execute
+
+    exec_pipeline: process (clk) is
     begin
         if rising_edge(clk) then
-            --decoder.instr <= instr_in;
-
-            reg_flags := register_file(to_integer(unsigned(reg_addr_flags)));
-
-            --indec_op_code <= decoder.op_code;
-            --indec_op_sel <= decoder.alu_op_sel;
-            --indec_target <= decoder.reg_target;
-
-            indec_op_1      <= register_file(to_integer(unsigned(indec_reg_select_1)));
-            indec_datastore <= register_file(to_integer(unsigned(indec_reg_select_3)));
-
-            if indec_op2_sel = '1' then
-                indec_op_2 <= register_file(to_integer(unsigned(indec_reg_select_2)));
-
-            elsif indec_op2_sel = '0' then
-                -- sign extend
-                --indec_op_2 <= sign_extend(decoder.immediate);
-                indec_op_2 <= sign_extend(indec_immediate);
-
-            else
-                -- TODO is just else sufficient?
-                report "indec_op2_sel was neither 0 nor 1"
-                severity error;
-            end if;
-
-            -- Read flags
-            -- 00000000000000000000000000000000
-            --                                ^compare
-            --                               ^carry
-            --                              ^overflow
-            indec_flags_comp  <= reg_flags(0);
-            indec_flags_carry <= reg_flags(1);
-            indec_flags_of    <= reg_flags(2);
-
-            --indec_reg_write_enable <= decoder.write_en;
-            indec_next_seq_pc <= fetch_next_seq_pc;
+            exec_in_datastore        <= indec_out_datastore;
+            exec_in_flags_carry      <= indec_out_flags_carry;
+            exec_in_flags_comp       <= indec_out_flags_comp;
+            exec_in_flags_of         <= indec_out_flags_of;
+            exec_in_next_seq_pc      <= indec_out_next_seq_pc;
+            exec_in_op_1             <= indec_out_op_1;
+            exec_in_op_2             <= indec_out_op_2;
+            exec_in_op_code          <= indec_out_op_code;
+            exec_in_op_sel           <= indec_out_op_sel;
+            exec_in_reg_write_enable <= indec_out_reg_write_enable;
+            exec_in_target           <= indec_out_target;
         end if;
-    end process inst_decode;
+    end process exec_pipeline;
+
+    -- passthrough
+    exec_out_op_code          <= exec_in_op_code;
+    exec_out_target           <= exec_in_target;
+    exec_out_datastore        <= exec_in_datastore;
+    exec_out_next_seq_pc      <= exec_in_next_seq_pc;
+    exec_out_reg_write_enable <= exec_in_reg_write_enable;
 
     alu_instance: alu
         generic map (
@@ -177,111 +227,89 @@ begin
         )
         port map (
             -- Inputs
-            alu_op_code => indec_op_sel,
-            op_1        => indec_op_1,
-            op_2        => indec_op_2,
-            carry_in    => indec_flags_carry,
-            of_in       => indec_flags_of,
-            comp_in     => indec_flags_comp,
+            alu_op_code => exec_in_op_sel,
+            op_1        => exec_in_op_1,
+            op_2        => exec_in_op_2,
+            carry_in    => exec_in_flags_carry,
+            of_in       => exec_in_flags_of,
+            comp_in     => exec_in_flags_comp,
 
             -- Outputs
-            result    => exec_result,
-            carry_out => exec_flags_carry,
-            of_out    => exec_flags_of,
-            comp_out  => exec_flags_comp
+            result    => exec_out_result,
+            carry_out => exec_out_flags_carry,
+            of_out    => exec_out_flags_of,
+            comp_out  => exec_out_flags_comp
         );
 
-    execute: process (clk) is
-    begin
-        if rising_edge(clk) then
-            exec_op_code          <= indec_op_code;
-            exec_target           <= indec_target;
-            exec_datastore        <= indec_datastore;
-            exec_next_seq_pc      <= indec_next_seq_pc;
-            exec_reg_write_enable <= indec_reg_write_enable;
 
-            --alu.alu_op_sel <= indec_op_sel;
-            
-            
-            --alu.op_1 <= indec_op_1
-		    --alu.op_2 <= indec_op_2
-            --alu.carry_in <= indec_flags_carry;
-            --alu.of_in <= indec_flags_of
-            --alu.comp_in <= indec_flags_comp;
-
-            --wait;
-
-            --exec_flags_carry <= alu.carry_out;
-            --exec_flags_of <= alu.of_out;
-            --exec_flags_comp <=  alu.comp_out;
-
-
-            --exec_result <= alu.result;
-
-        end if;
-    end process execute;
+    ----------------------------------------------------------------------------
+    --- Memory access
 
     mem_access: process (clk) is
     begin
         if rising_edge(clk) then
 
-            macc_op_code     <= exec_op_code;
-            macc_target      <= exec_target;
-            macc_result      <= exec_result;
-            macc_flags_comp  <= exec_flags_comp;
-            macc_flags_carry <= exec_flags_carry;
-            macc_flags_of    <= exec_flags_of;
+            macc_op_code     <= exec_out_op_code;
+            macc_target      <= exec_out_target;
+            macc_result      <= exec_out_result;
+            macc_flags_comp  <= exec_out_flags_comp;
+            macc_flags_carry <= exec_out_flags_carry;
+            macc_flags_of    <= exec_out_flags_of;
 
-            macc_reg_write_enable <= exec_reg_write_enable;
+            macc_reg_write_enable <= exec_out_reg_write_enable;
 
             case macc_op_code is
 
                 when op_JMP =>
-                    register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_result;
-                    register_file(to_integer(unsigned(reg_addr_link))) <= exec_next_seq_pc;
-                    --instr_addr <= exec_result;
+                    register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_out_result;
+                    register_file(to_integer(unsigned(reg_addr_link))) <= exec_out_next_seq_pc;
+                    --instr_addr <= exec_out_result;
 
                 when op_B =>
-                    if exec_flags_comp = '1' then
-                        register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_result;
-                        register_file(to_integer(unsigned(reg_addr_link))) <= exec_next_seq_pc;
-                        --instr_addr <= exec_result;
+                    if exec_out_flags_comp = '1' then
+                        register_file(to_integer(unsigned(reg_addr_pc)))   <= exec_out_result;
+                        register_file(to_integer(unsigned(reg_addr_link))) <= exec_out_next_seq_pc;
+                        --instr_addr <= exec_out_result;
 
-                    elsif exec_flags_comp = '0' then
-                        register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
-                        --instr_addr <= exec_next_seq_pc;
+                    elsif exec_out_flags_comp = '0' then
+                        register_file(to_integer(unsigned(reg_addr_pc))) <= exec_out_next_seq_pc;
+                        --instr_addr <= exec_out_next_seq_pc;
 
                     else
                         -- TODO is just else sufficient?
-                        report "exec_flags_comp was neither 0 nor 1"
+                        report "exec_out_flags_comp was neither 0 nor 1"
                         severity error;
                     end if;
 
                 when op_LDR =>
                     --macc_result <= memory_get(result);
                     data_we     <= '0';
-                    data_addr   <= exec_result;
+                    data_addr   <= exec_out_result;
                     macc_result <= data_in;  -- TODO does this work (-> timing)?
 
-                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
-                    --instr_addr <= exec_next_seq_pc;
+                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_out_next_seq_pc;
+                    --instr_addr <= exec_out_next_seq_pc;
                     
                 when op_STR =>
-                    --memory_write(result, exec_datastore); --addr then value
-                    data_addr <= exec_result;
-                    data_out  <= exec_datastore;
+                    --memory_write(result, exec_out_datastore); --addr then value
+                    data_addr <= exec_out_result;
+                    data_out  <= exec_out_datastore;
                     data_we   <= '1';
 
-                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
-                    --instr_addr <= exec_next_seq_pc;
+                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_out_next_seq_pc;
+                    --instr_addr <= exec_out_next_seq_pc;
                     
                 when others =>
-                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_next_seq_pc;
-                    --instr_addr <= exec_next_seq_pc;
+                    register_file(to_integer(unsigned(reg_addr_pc))) <= exec_out_next_seq_pc;
+                    --instr_addr <= exec_out_next_seq_pc;
 
             end case;
         end if;
     end process mem_access;
+
+
+    ----------------------------------------------------------------------------
+    --- Write back
 
     write_back: process (clk) is
     begin
