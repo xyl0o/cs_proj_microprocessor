@@ -377,11 +377,7 @@ begin
         end if;
     end process wback_pipeline;
 
-    wback_write: process (
-            clk,
-            macc_out_target,
-            macc_out_result,
-            macc_out_reg_write_enable) is
+    wback_write: process (clk) is
     begin
         if rising_edge(clk) then
             reg_pc   <= macc_out_new_pc;
