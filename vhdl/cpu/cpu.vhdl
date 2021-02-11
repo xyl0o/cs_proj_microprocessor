@@ -373,28 +373,6 @@ begin
     end process wback_pipeline;
 
     -- TODO creates 'x' values ??
-    --reg_flag <= (
-    --    0      => wback_in_flags_comp,
-    --    1      => wback_in_flags_carry,
-    --    2      => wback_in_flags_of,
-    --    others => '0');
-
-    --wback_write_to_flags: process (
-    --        clk,
-    --        macc_out_flags_comp,
-    --        macc_out_flags_carry,
-    --        macc_out_flags_of) is
-    --begin
-    --    if rising_edge(clk) then
-    --        reg_flag <= (
-    --            0      => macc_out_flags_comp,
-    --            1      => macc_out_flags_carry,
-    --            2      => macc_out_flags_of,
-    --            others => '0'
-    --        );
-    --    end if;
-    --end process wback_write_to_flags;
-
     -- TODO creates 'x' values ??
     wback_write_to_target: process (
             clk,
@@ -403,6 +381,13 @@ begin
             macc_out_reg_write_enable) is
     begin
         if rising_edge(clk) then
+
+            reg_flag <= (
+                0      => wback_in_flags_comp,
+                1      => wback_in_flags_carry,
+                2      => wback_in_flags_of,
+                others => '0');
+
             if macc_out_reg_write_enable = '1' then
 
                 -- disallow writes to pc and zero register
