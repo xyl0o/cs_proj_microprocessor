@@ -40,10 +40,10 @@ begin
     uop_1 <= '0' & unsigned(op_1);
     uop_2 <= '0' & unsigned(op_2);
 
-    op_equals <= '1' when to_integer(uop_1) = to_integer(uop_2) else
+    op_equals <= '1' when to_integer(signed(op_1)) = to_integer(signed(op_2)) else
                  '0';
 
-    op_greater <= '1' when to_integer(uop_1) > to_integer(uop_2) else
+    op_greater <= '1' when to_integer(signed(op_1)) > to_integer(signed(op_2)) else
                   '0';
 
     -- TODO ignore for now.
