@@ -192,7 +192,7 @@ begin
     instr_addr <= fetch_in_pc;
 
     fetch_out_instr       <= instr_in;
-    fetch_out_next_seq_pc <= std_logic_vector(unsigned(fetch_in_pc) + 4);
+    fetch_out_next_seq_pc <= std_logic_vector(unsigned(reg_pc) + 4);
 
 
     ----------------------------------------------------------------------------
