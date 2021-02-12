@@ -378,6 +378,6 @@ begin
                 end case;
             end if;
         end if;
-    end process wback_write;
+    end process wback_pipeline;
 
 end cpu_arc;
