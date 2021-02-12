@@ -1,0 +1,158 @@
+[*]
+[*] GTKWave Analyzer v3.3.108 (w)1999-2020 BSI
+[*] Fri Feb 12 01:27:52 2021
+[*]
+[dumpfile] "/home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/vhdl/processor/processor.vcd"
+[dumpfile_mtime] "Fri Feb 12 01:11:07 2021"
+[dumpfile_size] 37925
+[savefile] "/home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/gtkwave/full_cpu.gtkw"
+[timestart] 7041000000
+[size] 1656 974
+[pos] -1 -1
+*-28.000000 2249000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] processor.
+[treeopen] processor.cpu_instance.
+[sst_width] 231
+[signals_width] 437
+[sst_expanded] 1
+[sst_vpaned_height] 282
+@28
+processor.cpu_instance.clk
+@22
+processor.cpu_instance.debug_pc[31:0]
+processor.cpu_instance.fetch_out_instr[31:0]
+@200
+-
+-Instruction Decode
+@2024
+^1 /home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/gtkwave/special_reg_filter
+processor.cpu_instance.indec_reg_select_1[4:0]
+^1 /home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/gtkwave/special_reg_filter
+processor.cpu_instance.indec_reg_select_2[4:0]
+^1 /home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/gtkwave/special_reg_filter
+processor.cpu_instance.indec_reg_select_3[4:0]
+@28
+processor.cpu_instance.indec_op2_sel
+@200
+-
+@2028
+^2 /home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/gtkwave/op_code_filter
+processor.cpu_instance.indec_out_op_code[4:0]
+@22
+processor.cpu_instance.indec_out_op_1[31:0]
+processor.cpu_instance.indec_out_op_2[31:0]
+@2025
+^1 /home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/gtkwave/special_reg_filter
+processor.cpu_instance.indec_out_target[4:0]
+@28
+processor.cpu_instance.indec_out_reg_write_enable
+@200
+-
+-Execute
+@2028
+^2 /home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/gtkwave/op_code_filter
+processor.cpu_instance.exec_in_op_code[4:0]
+^3 /home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/gtkwave/alu_op_code_filter
+processor.cpu_instance.exec_in_op_sel[4:0]
+@22
+processor.cpu_instance.exec_in_op_1[31:0]
+@420
+processor.cpu_instance.exec_in_op_1[31:0]
+@22
+processor.cpu_instance.exec_in_op_2[31:0]
+@420
+processor.cpu_instance.exec_in_op_2[31:0]
+@28
+processor.cpu_instance.exec_in_flags_carry
+processor.cpu_instance.exec_in_flags_comp
+processor.cpu_instance.exec_in_flags_of
+@200
+-
+@22
+processor.cpu_instance.exec_out_result[31:0]
+@420
+processor.cpu_instance.exec_out_result[31:0]
+@28
+processor.cpu_instance.exec_out_flags_carry
+processor.cpu_instance.exec_out_flags_comp
+processor.cpu_instance.exec_out_flags_of
+@200
+-
+-Memory Access
+@2028
+^2 /home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/gtkwave/op_code_filter
+processor.cpu_instance.macc_in_op_code[4:0]
+@200
+-
+@22
+processor.cpu_instance.data_addr[31:0]
+processor.cpu_instance.macc_in_datastore[31:0]
+processor.cpu_instance.data_out[31:0]
+@28
+processor.cpu_instance.data_we
+@22
+processor.cpu_instance.data_in[31:0]
+@200
+-
+@28
+processor.cpu_instance.macc_will_jump
+@22
+processor.cpu_instance.macc_out_new_pc[31:0]
+processor.cpu_instance.macc_out_new_link[31:0]
+@200
+-
+-Write Back
+@22
+processor.cpu_instance.macc_out_target[4:0]
+processor.cpu_instance.macc_out_result[31:0]
+@28
+processor.cpu_instance.macc_out_reg_write_enable
+@200
+-
+@28
+processor.cpu_instance.macc_out_flags_carry
+processor.cpu_instance.macc_out_flags_comp
+processor.cpu_instance.macc_out_flags_of
+@200
+-
+@22
+processor.cpu_instance.debug_flags[31:0]
+processor.cpu_instance.debug_pc[31:0]
+processor.cpu_instance.debug_link[31:0]
+@200
+-
+-Registers
+@22
+processor.cpu_instance.debug_flags[31:0]
+processor.cpu_instance.debug_02[31:0]
+processor.cpu_instance.debug_03[31:0]
+processor.cpu_instance.debug_04[31:0]
+processor.cpu_instance.debug_05[31:0]
+processor.cpu_instance.debug_06[31:0]
+processor.cpu_instance.debug_07[31:0]
+processor.cpu_instance.debug_08[31:0]
+processor.cpu_instance.debug_09[31:0]
+processor.cpu_instance.debug_10[31:0]
+processor.cpu_instance.debug_11[31:0]
+processor.cpu_instance.debug_12[31:0]
+processor.cpu_instance.debug_13[31:0]
+processor.cpu_instance.debug_14[31:0]
+processor.cpu_instance.debug_15[31:0]
+processor.cpu_instance.debug_16[31:0]
+processor.cpu_instance.debug_17[31:0]
+processor.cpu_instance.debug_18[31:0]
+processor.cpu_instance.debug_19[31:0]
+processor.cpu_instance.debug_20[31:0]
+processor.cpu_instance.debug_21[31:0]
+processor.cpu_instance.debug_22[31:0]
+processor.cpu_instance.debug_23[31:0]
+processor.cpu_instance.debug_24[31:0]
+processor.cpu_instance.debug_25[31:0]
+processor.cpu_instance.debug_26[31:0]
+processor.cpu_instance.debug_27[31:0]
+processor.cpu_instance.debug_28[31:0]
+processor.cpu_instance.debug_29[31:0]
+processor.cpu_instance.debug_pc[31:0]
+processor.cpu_instance.debug_link[31:0]
+[pattern_trace] 1
+[pattern_trace] 0
