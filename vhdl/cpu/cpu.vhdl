@@ -384,9 +384,9 @@ begin
             reg_link <= macc_out_new_link;
 
             reg_flag <= (
-                0      => wback_in_flags_comp,
-                1      => wback_in_flags_carry,
-                2      => wback_in_flags_of,
+                0      => macc_out_flags_comp,
+                1      => macc_out_flags_carry,
+                2      => macc_out_flags_of,
                 others => '0');
 
             if macc_out_reg_write_enable = '1' then
