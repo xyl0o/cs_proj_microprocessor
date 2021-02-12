@@ -28,83 +28,66 @@ entity alu is
 end alu;
 
 architecture alu_arc of alu is
-	subtype t_data is std_logic_vector(data_len - 1 downto 0);
-	subtype t_data_ext is unsigned(data_len downto 0);
+    subtype t_data is std_logic_vector(data_len - 1 downto 0);
+    subtype t_udata_ext is unsigned(data_len downto 0);
+
+    signal uop_1, uop_2, uresult : t_udata_ext;
+
+    signal op_equals  : std_logic;
+    signal op_greater : std_logic;
 begin
-	arithmetic : process (alu_op_code, op_1, op_2, carry_in, of_in, comp_in)
-		variable tmp_result : t_data_ext;
-		variable uop_1      : t_data_ext;
-		variable uop_2      : t_data_ext;
-	begin
 
-		carry_out <= carry_in;
-		comp_out  <= comp_in;
+    uop_1 <= '0' & unsigned(op_1);
+    uop_2 <= '0' & unsigned(op_2);
 
-		-- ignore for now.
-		-- needs special handling
-		of_out <= of_in;
+    op_equals <= '1' when to_integer(uop_1) = to_integer(uop_1) else
+                 '0';
 
-		uop_1 := '0' & unsigned(op_1);
-		uop_2 := '0' & unsigned(op_2);
+    op_greater <= '1' when to_integer(uop_1) > to_integer(uop_1) else
+                  '0';
 
-		case alu_op_code is
+    -- TODO ignore for now.
+    -- needs special handling
+    of_out <= of_in;
 
-			when aluop_ADD =>
-				tmp_result := uop_1 + uop_2;
+    with alu_op_code select
+        comp_out <= op_equals  when aluop_CMPEQ,
+                    op_greater when aluop_CMPGT,
+                    comp_in    when others;
 
-			when aluop_ADC =>
-			    -- https://electronics.stackexchange.com/questions/463586/vhdl-convert-std-logic-to-std-logic-vector
-				tmp_result := uop_1 + uop_2 + "0" & carry_in;
-				carry_out <= tmp_result(data_len);
+    with alu_op_code select
+        carry_out <= uresult(data_len) when aluop_ADC, -- TODO
+                     uresult(data_len) when aluop_SBC, -- TODO
+                     carry_in          when others;
 
-			when aluop_SBC =>
-				tmp_result := uop_1 - uop_2 - 1 + "0" & carry_in;
-				carry_out <= tmp_result(data_len);
+    calc: process (alu_op_code, uop_1, uop_2) is
+    begin
+        case alu_op_code is
+            when aluop_ADD =>
+                uresult <= uop_1 + uop_2;
+            when aluop_ADC =>
+                uresult <= uop_1 + uop_2 + ("" & carry_in);
+            when aluop_SBC =>
+                uresult <= uop_1 - uop_2 - 1 + ("" & carry_in);
+            when aluop_SL =>
+                uresult <= shift_left(uop_1, to_integer(uop_2));
+            when aluop_SRA =>
+                uresult <= unsigned(shift_right(signed(uop_1), to_integer(uop_2)));
+            when aluop_SRL =>
+                uresult <= shift_right(uop_1, to_integer(uop_2));
+            when aluop_AND =>
+                uresult <= uop_1 and uop_2;
+            when aluop_ORR =>
+                uresult <= uop_1 or uop_2;
+            when aluop_XOR =>
+                uresult <= uop_1 xor uop_2;
+            when aluop_IDOP2 =>
+                uresult <= uop_2;
+            when others =>
+                null;
+        end case;
+    end process calc;
 
-			when aluop_SL =>
-				tmp_result := shift_left(uop_1, to_integer(uop_2));
+    result <= std_logic_vector(uresult(result'range));
 
-			when aluop_SRA =>
-				tmp_result := uop_1(data_len) & shift_right(uop_1, to_integer(uop_2))(data_len downto 1);
-
-			when aluop_SRL =>
-				tmp_result := shift_right(uop_1, to_integer(uop_2));
-
-			when aluop_AND =>
-				tmp_result := uop_1 and uop_2;
-
-			when aluop_ORR =>
-				tmp_result := uop_1 or uop_2;
-
-			when aluop_XOR =>
-				tmp_result := uop_1 xor uop_2;
-
-			when aluop_CMPEQ =>
-				if to_integer(uop_1) = to_integer(uop_2) then
-					comp_out <= '1';
-				else
-					comp_out <= '0';
-				end if;
-
-			when aluop_CMPGT =>
-				if to_integer(uop_1) > to_integer(uop_2) then
-					comp_out <= '1';
-				else
-					comp_out <= '0';
-				end if;
-
-			when aluop_IDOP2 =>
-				tmp_result := uop_2;
-
-			when aluop_NOOP =>
-				null;
-
-			when others =>
-				null;
-
-		end case;
-
-		result <= std_logic_vector(tmp_result(data_len - 1 downto 0));
-
-	end process arithmetic;
 end alu_arc;
