@@ -139,7 +139,8 @@ architecture cpu_arc of cpu is
     signal macc_out_flags_carry      : std_logic := '0';
     signal macc_out_flags_of         : std_logic := '0';
     signal macc_out_reg_write_enable : std_logic;
-
+    signal macc_out_new_pc           : t_data;
+    signal macc_out_new_link         : t_data;
 
     ----------------------------------------------------------------------------
     --- Write back signals
@@ -323,8 +324,12 @@ begin
                       '0';
 
     with macc_will_jump select
-        reg_pc <= macc_in_result      when '1',
-                  macc_in_next_seq_pc when others;
+        macc_out_new_pc <= macc_in_result      when '1',
+                           macc_in_next_seq_pc when others;
+
+    with macc_will_jump select
+        macc_out_new_link <= macc_in_next_seq_pc when '1',
+                             reg_link            when others;
 
     -- TODO: can we do this somewhat cleaner?
     -- use process because no else path wanted (do not assign if no jump)
@@ -372,37 +377,18 @@ begin
         end if;
     end process wback_pipeline;
 
-    -- TODO creates 'x' values ??
-    --reg_flag <= (
-    --    0      => wback_in_flags_comp,
-    --    1      => wback_in_flags_carry,
-    --    2      => wback_in_flags_of,
-    --    others => '0');
-
-    --wback_write_to_flags: process (
-    --        clk,
-    --        macc_out_flags_comp,
-    --        macc_out_flags_carry,
-    --        macc_out_flags_of) is
-    --begin
-    --    if rising_edge(clk) then
-    --        reg_flag <= (
-    --            0      => macc_out_flags_comp,
-    --            1      => macc_out_flags_carry,
-    --            2      => macc_out_flags_of,
-    --            others => '0'
-    --        );
-    --    end if;
-    --end process wback_write_to_flags;
-
-    -- TODO creates 'x' values ??
-    wback_write_to_target: process (
-            clk,
-            macc_out_target,
-            macc_out_result,
-            macc_out_reg_write_enable) is
+    wback_write: process (clk) is
     begin
         if rising_edge(clk) then
+            reg_pc   <= macc_out_new_pc;
+            reg_link <= macc_out_new_link;
+
+            reg_flag <= (
+                0      => wback_in_flags_comp,
+                1      => wback_in_flags_carry,
+                2      => wback_in_flags_of,
+                others => '0');
+
             if macc_out_reg_write_enable = '1' then
 
                 -- disallow writes to pc and zero register
@@ -413,10 +399,10 @@ begin
                         null;
                     when others =>
                         -- TODO disabled for now
-                        -- register_file(to_integer(unsigned(macc_out_target))) <= macc_out_result;
+                        register_file(to_integer(unsigned(macc_out_target))) <= macc_out_result;
                 end case;
             end if;
         end if;
-    end process wback_write_to_target;
+    end process wback_write;
 
 end cpu_arc;
