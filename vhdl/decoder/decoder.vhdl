@@ -39,7 +39,7 @@ architecture decoder_arc of decoder is
     alias instr_opZ : t_reg_addr is instr(15 downto 11);
 
 begin
-    with instr_op_code(3 downto 2) select
+    with instr_op_code(4 downto 3) select
         op_layout <= ONEOP   when "00",
                      TWOOP   when "01",
                      THREEOP when others;
