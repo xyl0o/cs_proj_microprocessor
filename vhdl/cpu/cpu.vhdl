@@ -142,18 +142,6 @@ architecture cpu_arc of cpu is
     signal macc_out_new_pc           : t_data;
     signal macc_out_new_link         : t_data;
 
-    ----------------------------------------------------------------------------
-    --- Write back signals
-
-    -- Inputs
-    signal wback_in_op_code          : t_op_code := op_NOP;
-    signal wback_in_target           : t_reg_addr;
-    signal wback_in_result           : t_data;
-    signal wback_in_flags_comp       : std_logic := '0';
-    signal wback_in_flags_carry      : std_logic := '0';
-    signal wback_in_flags_of         : std_logic := '0';
-    signal wback_in_reg_write_enable : std_logic;
-
 
     ----------------------------------------------------------------------------
     --- Functions
@@ -365,19 +353,6 @@ begin
     --- Write back
 
     wback_pipeline: process (clk) is
-    begin
-        if rising_edge(clk) then
-            wback_in_op_code          <= macc_out_op_code;
-            wback_in_target           <= macc_out_target;
-            wback_in_result           <= macc_out_result;
-            wback_in_flags_comp       <= macc_out_flags_comp;
-            wback_in_flags_carry      <= macc_out_flags_carry;
-            wback_in_flags_of         <= macc_out_flags_of;
-            wback_in_reg_write_enable <= macc_out_reg_write_enable;
-        end if;
-    end process wback_pipeline;
-
-    wback_write: process (clk) is
     begin
         if rising_edge(clk) then
             reg_pc   <= macc_out_new_pc;
