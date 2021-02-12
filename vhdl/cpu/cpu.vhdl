@@ -331,14 +331,6 @@ begin
         macc_out_new_link <= macc_in_next_seq_pc when '1',
                              reg_link            when others;
 
-    -- TODO: can we do this somewhat cleaner?
-    -- use process because no else path wanted (do not assign if no jump)
-    process (macc_will_jump, macc_in_next_seq_pc) is begin
-        if macc_will_jump = '1' then
-            reg_link <= macc_in_next_seq_pc;
-        end if;
-    end process;
-
     -- When STR or LDF instruction: set data_addr to macc_in_result
     with macc_in_op_code select
         data_addr <= macc_in_result  when op_LDR,
