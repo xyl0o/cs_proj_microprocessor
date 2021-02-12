@@ -31,8 +31,36 @@ architecture cpu_arc of cpu is
 
     -- debug
     signal debug_flags : t_data;
-    signal debug_pc    : t_data;
+    signal debug_02    : t_data;
+    signal debug_03    : t_data;
+    signal debug_04    : t_data;
+    signal debug_05    : t_data;
+    signal debug_06    : t_data;
+    signal debug_07    : t_data;
+    signal debug_08    : t_data;
+    signal debug_09    : t_data;
+    signal debug_10    : t_data;
+    signal debug_11    : t_data;
+    signal debug_12    : t_data;
+    signal debug_13    : t_data;
+    signal debug_14    : t_data;
+    signal debug_15    : t_data;
+    signal debug_16    : t_data;
+    signal debug_17    : t_data;
+    signal debug_18    : t_data;
+    signal debug_19    : t_data;
+    signal debug_20    : t_data;
+    signal debug_21    : t_data;
+    signal debug_22    : t_data;
+    signal debug_23    : t_data;
+    signal debug_24    : t_data;
+    signal debug_25    : t_data;
+    signal debug_26    : t_data;
+    signal debug_27    : t_data;
+    signal debug_28    : t_data;
+    signal debug_29    : t_data;
     signal debug_link  : t_data;
+    signal debug_pc    : t_data;
 
 
     ----------------------------------------------------------------------------
@@ -161,9 +189,36 @@ begin
 
     -- debug output
     debug_flags <= reg_flag;
-    debug_pc    <= reg_pc;
+    debug_02    <= register_file(2);
+    debug_03    <= register_file(3);
+    debug_04    <= register_file(4);
+    debug_05    <= register_file(5);
+    debug_06    <= register_file(6);
+    debug_07    <= register_file(7);
+    debug_08    <= register_file(8);
+    debug_09    <= register_file(9);
+    debug_10    <= register_file(10);
+    debug_11    <= register_file(11);
+    debug_12    <= register_file(12);
+    debug_13    <= register_file(13);
+    debug_14    <= register_file(14);
+    debug_15    <= register_file(15);
+    debug_16    <= register_file(16);
+    debug_17    <= register_file(17);
+    debug_18    <= register_file(18);
+    debug_19    <= register_file(19);
+    debug_20    <= register_file(20);
+    debug_21    <= register_file(21);
+    debug_22    <= register_file(22);
+    debug_23    <= register_file(23);
+    debug_24    <= register_file(24);
+    debug_25    <= register_file(25);
+    debug_26    <= register_file(26);
+    debug_27    <= register_file(27);
+    debug_28    <= register_file(28);
+    debug_29    <= register_file(29);
     debug_link  <= reg_link;
-
+    debug_pc    <= reg_pc;
 
     ----------------------------------------------------------------------------
     --- Fetch
