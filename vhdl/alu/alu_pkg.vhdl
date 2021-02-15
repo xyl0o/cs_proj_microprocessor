@@ -21,6 +21,7 @@ package alu_pkg is
     constant aluop_CMPEQ : t_alu_op_code := "01010";
     constant aluop_CMPGT : t_alu_op_code := "01011";
     constant aluop_IDOP2 : t_alu_op_code := "01100";
+    constant aluop_SUB   : t_alu_op_code := "01101";
 
     component alu is
         generic (
