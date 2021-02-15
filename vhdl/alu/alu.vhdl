@@ -49,13 +49,13 @@ begin
     -- TODO ignore for now.
     -- needs special handling
     with alu_op_code select 
-    of_out <=       (uop_1(data_len - 1) nor uop_2(data_len - 1) and uresult(data_len - 1)) or 
-                    (uop_1(data_len - 1) and uop_2(data_len - 1) and not uresult(data_len - 1)) when aluop_ADD,
+        of_out <= (uop_1(data_len - 1) nor uop_2(data_len - 1) and uresult(data_len - 1)) or
+                  (uop_1(data_len - 1) and uop_2(data_len - 1) and not uresult(data_len - 1)) when aluop_ADD,
 
-                    (not uop_1(data_len -1) and uop_2(data_len -1) and uresult(data_len - 1)) or 
-                    (uop_1(data_len - 1) and not uop_2 (data_len - 1) and not uresult(data_len - 1)) when aluop_SUB,
-                    
-                    '0' when others; --what about handling of_in?
+                  (not uop_1(data_len -1) and uop_2(data_len -1) and uresult(data_len - 1)) or
+                  (uop_1(data_len - 1) and not uop_2 (data_len - 1) and not uresult(data_len - 1)) when aluop_SUB,
+
+                  '0' when others; --what about handling of_in?
 
     with alu_op_code select
         comp_out <= op_equals  when aluop_CMPEQ,
