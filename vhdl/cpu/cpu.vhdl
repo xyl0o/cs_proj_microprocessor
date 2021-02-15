@@ -192,7 +192,7 @@ begin
     instr_addr <= fetch_in_pc;
 
     fetch_out_instr       <= instr_in;
-    fetch_out_next_seq_pc <= std_logic_vector(unsigned(fetch_in_pc) + 4);
+    fetch_out_next_seq_pc <= std_logic_vector(unsigned(reg_pc) + 4);
 
 
     ----------------------------------------------------------------------------
@@ -330,14 +330,6 @@ begin
     with macc_will_jump select
         macc_out_new_link <= macc_in_next_seq_pc when '1',
                              reg_link            when others;
-
-    -- TODO: can we do this somewhat cleaner?
-    -- use process because no else path wanted (do not assign if no jump)
-    process (macc_will_jump, macc_in_next_seq_pc) is begin
-        if macc_will_jump = '1' then
-            reg_link <= macc_in_next_seq_pc;
-        end if;
-    end process;
 
     -- When STR or LDF instruction: set data_addr to macc_in_result
     with macc_in_op_code select
