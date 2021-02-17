@@ -67,6 +67,8 @@ begin
                 uresult <= uop_1 + uop_2;
             when aluop_ADC =>
                 uresult <= uop_1 + uop_2 + ("" & carry_in);
+            when aluop_SUB =>
+                uresult <= uop_1 - uop_2;
             when aluop_SBC =>
                 uresult <= uop_1 - uop_2 - 1 + ("" & carry_in);
             when aluop_SL =>

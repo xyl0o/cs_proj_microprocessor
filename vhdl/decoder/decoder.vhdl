@@ -55,7 +55,7 @@ begin
                       aluop_ADC   when op_ADC,
                       aluop_ADD   when op_ADD,
                       aluop_SBC   when op_SBC,
-                      aluop_ADD   when op_SUB,
+                      aluop_SUB   when op_SUB,
                       aluop_SL    when op_SL,
                       aluop_SRA   when op_SRA,
                       aluop_SRL   when op_SRL,
