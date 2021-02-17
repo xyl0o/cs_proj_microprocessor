@@ -1,6 +1,6 @@
 How to use Compiler.jar:
 1. Download Compiler.jar
-2. java -jar compiler.jar inputfile outputfile
+2. java -jar compiler.jar inputfile.txt outputfile.txt/outputfile.dat
 
 Help:
 java -jar compiler.jar -help
