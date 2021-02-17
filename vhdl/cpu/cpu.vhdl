@@ -334,14 +334,20 @@ begin
         macc_out_result <= data_in        when op_LDR,
                            macc_in_result when others;
 
-
     ----------------------------------------------------------------------------
     --- Write back
+
+    wback_pc_set: process(clk) is
+    begin
+        if rising_edge(clk) then
+            reg_pc <= std_logic_vector(unsigned(reg_pc) + 1);
+        end if;
+    end process wback_pc_set;
+
 
     wback_pipeline: process (clk) is
     begin
         if rising_edge(clk) then
-            reg_pc   <= macc_out_new_pc;
             reg_link <= macc_out_new_link;
 
             reg_flag <= (
