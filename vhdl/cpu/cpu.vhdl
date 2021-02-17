@@ -46,7 +46,7 @@ architecture cpu_arc of cpu is
     alias reg_flag : t_data is register_file(to_integer(unsigned(reg_addr_flags)));
     alias reg_link : t_data is register_file(to_integer(unsigned(reg_addr_link)));
 
-    signal reg_pc : t_data;
+    signal reg_pc : t_data := (others => '0');
 
 
     ----------------------------------------------------------------------------
