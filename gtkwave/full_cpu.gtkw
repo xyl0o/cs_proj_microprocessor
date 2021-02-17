@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.108 (w)1999-2020 BSI
-[*] Fri Feb 12 01:27:52 2021
+[*] Wed Feb 17 19:52:59 2021
 [*]
 [dumpfile] "/home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/vhdl/processor/processor.vcd"
-[dumpfile_mtime] "Fri Feb 12 01:11:07 2021"
-[dumpfile_size] 37925
+[dumpfile_mtime] "Wed Feb 17 19:50:55 2021"
+[dumpfile_size] 183258
 [savefile] "/home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/gtkwave/full_cpu.gtkw"
-[timestart] 7041000000
-[size] 1656 974
+[timestart] 1141000000
+[size] 2536 1364
 [pos] -1 -1
-*-28.000000 2249000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-28.000000 2017000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] processor.
 [treeopen] processor.cpu_instance.
 [sst_width] 231
@@ -38,10 +38,20 @@ processor.cpu_instance.indec_op2_sel
 @2028
 ^2 /home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/gtkwave/op_code_filter
 processor.cpu_instance.indec_out_op_code[4:0]
+@28
+processor.cpu_instance.indec_op2_sel
+@2024
+^1 /home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/gtkwave/special_reg_filter
+processor.cpu_instance.indec_reg_select_1[4:0]
+^1 /home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/gtkwave/special_reg_filter
+processor.cpu_instance.indec_reg_select_2[4:0]
+@2025
+^1 /home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/gtkwave/special_reg_filter
+processor.cpu_instance.indec_reg_select_3[4:0]
 @22
 processor.cpu_instance.indec_out_op_1[31:0]
 processor.cpu_instance.indec_out_op_2[31:0]
-@2025
+@2024
 ^1 /home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/gtkwave/special_reg_filter
 processor.cpu_instance.indec_out_target[4:0]
 @28
@@ -102,8 +112,10 @@ processor.cpu_instance.macc_out_new_link[31:0]
 @200
 -
 -Write Back
-@22
+@2024
+^1 /home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/gtkwave/special_reg_filter
 processor.cpu_instance.macc_out_target[4:0]
+@22
 processor.cpu_instance.macc_out_result[31:0]
 @28
 processor.cpu_instance.macc_out_reg_write_enable
@@ -131,9 +143,11 @@ processor.cpu_instance.debug_05[31:0]
 processor.cpu_instance.debug_06[31:0]
 processor.cpu_instance.debug_07[31:0]
 processor.cpu_instance.debug_08[31:0]
+@24
 processor.cpu_instance.debug_09[31:0]
 processor.cpu_instance.debug_10[31:0]
 processor.cpu_instance.debug_11[31:0]
+@22
 processor.cpu_instance.debug_12[31:0]
 processor.cpu_instance.debug_13[31:0]
 processor.cpu_instance.debug_14[31:0]
@@ -146,13 +160,15 @@ processor.cpu_instance.debug_20[31:0]
 processor.cpu_instance.debug_21[31:0]
 processor.cpu_instance.debug_22[31:0]
 processor.cpu_instance.debug_23[31:0]
+@24
 processor.cpu_instance.debug_24[31:0]
+@22
 processor.cpu_instance.debug_25[31:0]
 processor.cpu_instance.debug_26[31:0]
 processor.cpu_instance.debug_27[31:0]
 processor.cpu_instance.debug_28[31:0]
 processor.cpu_instance.debug_29[31:0]
-processor.cpu_instance.debug_pc[31:0]
 processor.cpu_instance.debug_link[31:0]
+processor.cpu_instance.debug_pc[31:0]
 [pattern_trace] 1
 [pattern_trace] 0
