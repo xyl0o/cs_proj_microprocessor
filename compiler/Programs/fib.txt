@@ -2,18 +2,15 @@
 MOV r9, 10; 		#counter
 MOV r10, 1; 		#fib0
 MOV r11, 1; 		#fib1 result in r11
-MOV r31, 3;			#Abbruch
-
+MOV r24, 3;			#Abbruch
 .fib
-CMPGT r31, r9;      #prüfe ob ziel erreicht wurde
+CMPGT r24, r9;      #prüfe ob ziel erreicht wurde
 B r0, .end;         #springe zum ende
 ADD r12, r10, r11;  #berechne neue Fib in zwischen register
 MOV r10, r11;       #alte Fib nach r10 schreiben        
 MOV r11, r12;       #neue Zahl in ergebnisregister schreiben
 SUB r9, r9, 1;      #Zähler dekrementieren
 JMP r0, .fib;       #zum schleifenanfang springen
-
 .end
 NOP;
-
 
