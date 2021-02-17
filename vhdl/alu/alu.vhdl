@@ -58,6 +58,8 @@ begin
     with alu_op_code select
         carry_out <= uresult(data_len) when aluop_ADC, -- TODO
                      uresult(data_len) when aluop_SBC, -- TODO
+                     uresult(data_len) when aluop_ADD,
+                     uresult(data_len) when aluop_SUB,
                      carry_in          when others;
 
     calc: process (alu_op_code, uop_1, uop_2) is
