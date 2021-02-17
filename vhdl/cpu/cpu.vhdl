@@ -131,8 +131,6 @@ architecture cpu_arc of cpu is
     signal macc_out_flags_carry      : std_logic := '0';
     signal macc_out_flags_of         : std_logic := '0';
     signal macc_out_reg_write_enable : std_logic;
-    signal macc_out_new_pc           : t_data;
-    signal macc_out_new_link         : t_data;
     signal macc_out_will_jump        : std_logic;
 
 
@@ -302,14 +300,6 @@ begin
     macc_out_will_jump <= '1'                when macc_in_op_code = op_JMP else
                           macc_in_flags_comp when macc_in_op_code = op_B   else
                           '0';
-
-    with macc_will_jump select
-        macc_out_new_pc <= macc_in_result      when '1',
-                           (others => '0')     when others;
-
-    with macc_will_jump select
-        macc_out_new_link <= (others => '0')     when '1',
-                             reg_link            when others;
 
     -- When STR or LDF instruction: set data_addr to macc_in_result
     with macc_in_op_code select
