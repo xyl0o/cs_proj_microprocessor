@@ -328,7 +328,11 @@ begin
     wback_pc_set: process(clk) is
     begin
         if rising_edge(clk) then
-            reg_pc <= std_logic_vector(unsigned(reg_pc) + 1);
+            if macc_out_will_jump = '1' then
+                reg_pc <= macc_out_result;
+            else
+                reg_pc <= std_logic_vector(unsigned(reg_pc) + 1);
+            end if;
         end if;
     end process wback_pc_set;
 
