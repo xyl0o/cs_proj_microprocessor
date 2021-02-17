@@ -53,6 +53,12 @@ public interface TestVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMul_op(TestParser.Mul_opContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link TestParser#not_op}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNot_op(TestParser.Not_opContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link TestParser#save_label}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -94,6 +100,12 @@ public interface TestVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitMul_opcode(TestParser.Mul_opcodeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link TestParser#not_opcode}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNot_opcode(TestParser.Not_opcodeContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link TestParser#regOne}.
 	 * @param ctx the parse tree

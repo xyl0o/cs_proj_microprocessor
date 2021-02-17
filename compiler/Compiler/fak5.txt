@@ -1,0 +1,13 @@
+MOV r10, 5;
+MOV r0, 0;
+MOV r31, r10;
+
+.fak
+CMPGT r0, r31;
+B r0, .end;
+
+SUB r31, r31, 1;
+MUL r10, r10, r31;
+
+.end;
+NOP; 

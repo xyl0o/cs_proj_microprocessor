@@ -9,7 +9,8 @@ command: no_op
 	| three_op
 	| save_label
 	| jmp_op
-	| mul_op;
+	| mul_op
+	| not_op;
 	
 no_op: no_op_opcode COLON;
 two_op: two_op_opcode regOne COMMA regOrIm COLON;
@@ -17,6 +18,7 @@ three_op: three_op_opcode regOne COMMA regTwo COMMA regOrIm COLON;
 
 jmp_op: jmp_op_opcode regOne COMMA load_label COLON;
 mul_op: mul_opcode regOne COMMA regTwo COMMA regOrIm COLON;
+not_op: not_opcode regOne COMMA regOrIm COLON;
 
 save_label: LABEL;
 load_label: LABEL;
@@ -44,11 +46,12 @@ three_op_opcode:
 	
 jmp_op_opcode: JMP | B;
 mul_opcode: MUL;
+not_opcode: NOT;
 
 regOne: 'r' registernumber=NUMBER;
 regTwo: 'r' registernumber=NUMBER;
 regOrIm: 'r' registernumber=NUMBER 
-				|immediate=NUMBER specifier=SPECIFIER;
+				|immediate=NUMBER;
 
 
 // <----------- LEXER RULES ----------->
@@ -80,7 +83,7 @@ NUMBER: [0-9]+;
 
 //Macros
 MUL: 'MUL';
-
+NOT: 'NOT';
 
 COMMA: ',';
 COLON: ';';

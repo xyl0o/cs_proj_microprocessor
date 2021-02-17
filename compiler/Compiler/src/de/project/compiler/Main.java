@@ -26,6 +26,7 @@ public class Main {
 	
 	public static void main(String[] args) throws Exception {
 		
+		
 		String data = preProcess(path);
 		CharStream charStream = CharStreams.fromString(data);
 		TestLexer lexer = new TestLexer(charStream);
@@ -48,10 +49,20 @@ public class Main {
 	}
 	
 	private static String preProcess(String path) throws IOException {
-		CharStream preCharStream = CharStreams.fromFileName(path);
+		CharStream macroCharStream = CharStreams.fromFileName(path);
+		TestLexer macroLexer = new TestLexer(macroCharStream);
+		TestParser macroParser = new TestParser(new CommonTokenStream(macroLexer));
+		ParseTree macroTree = macroParser.start();
+		
+		MacroVisitor macroVisitor = new MacroVisitor();
+		String macroFree = macroVisitor.visit(macroTree);
+		
+		
+		CharStream preCharStream = CharStreams.fromString(macroFree);
 		TestLexer preLexer = new TestLexer(preCharStream);
 		TestParser preParser = new TestParser(new CommonTokenStream(preLexer));
 		ParseTree preTree = preParser.start();
+		
 		PreProcessor preProcessor = new PreProcessor(labels);
 		String result = preProcessor.visit(preTree);
 		System.out.println(result);

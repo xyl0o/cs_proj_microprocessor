@@ -19,19 +19,20 @@ public class TestParser extends Parser {
 	public static final int
 		T__0=1, CMPEQ=2, CMPGT=3, MOV=4, JMP=5, B=6, ADC=7, ADD=8, SBC=9, SUB=10, 
 		SL=11, SRA=12, SRL=13, AND=14, ORR=15, XOR=16, LDR=17, STR=18, NOP=19, 
-		NUMBER=20, MUL=21, COMMA=22, COLON=23, SPECIFIER=24, COMMENT=25, LINE_COMMENT=26, 
-		ALT_LINE_COMMENT=27, WS=28, LABEL=29;
+		NUMBER=20, MUL=21, NOT=22, COMMA=23, COLON=24, SPECIFIER=25, COMMENT=26, 
+		LINE_COMMENT=27, ALT_LINE_COMMENT=28, WS=29, LABEL=30;
 	public static final int
 		RULE_start = 0, RULE_command = 1, RULE_no_op = 2, RULE_two_op = 3, RULE_three_op = 4, 
-		RULE_jmp_op = 5, RULE_mul_op = 6, RULE_save_label = 7, RULE_load_label = 8, 
-		RULE_no_op_opcode = 9, RULE_two_op_opcode = 10, RULE_three_op_opcode = 11, 
-		RULE_jmp_op_opcode = 12, RULE_mul_opcode = 13, RULE_regOne = 14, RULE_regTwo = 15, 
-		RULE_regOrIm = 16;
+		RULE_jmp_op = 5, RULE_mul_op = 6, RULE_not_op = 7, RULE_save_label = 8, 
+		RULE_load_label = 9, RULE_no_op_opcode = 10, RULE_two_op_opcode = 11, 
+		RULE_three_op_opcode = 12, RULE_jmp_op_opcode = 13, RULE_mul_opcode = 14, 
+		RULE_not_opcode = 15, RULE_regOne = 16, RULE_regTwo = 17, RULE_regOrIm = 18;
 	private static String[] makeRuleNames() {
 		return new String[] {
 			"start", "command", "no_op", "two_op", "three_op", "jmp_op", "mul_op", 
-			"save_label", "load_label", "no_op_opcode", "two_op_opcode", "three_op_opcode", 
-			"jmp_op_opcode", "mul_opcode", "regOne", "regTwo", "regOrIm"
+			"not_op", "save_label", "load_label", "no_op_opcode", "two_op_opcode", 
+			"three_op_opcode", "jmp_op_opcode", "mul_opcode", "not_opcode", "regOne", 
+			"regTwo", "regOrIm"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -40,7 +41,7 @@ public class TestParser extends Parser {
 		return new String[] {
 			null, "'r'", "'CMPEQ'", "'CMPGT'", "'MOV'", "'JMP'", "'B'", "'ADC'", 
 			"'ADD'", "'SBC'", "'SUB'", "'SL'", "'SRA'", "'SRL'", "'AND'", "'OR'", 
-			"'XOR'", "'LDR'", "'STR'", "'NOP'", null, "'MUL'", "','", "';'"
+			"'XOR'", "'LDR'", "'STR'", "'NOP'", null, "'MUL'", "'NOT'", "','", "';'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -48,7 +49,7 @@ public class TestParser extends Parser {
 		return new String[] {
 			null, null, "CMPEQ", "CMPGT", "MOV", "JMP", "B", "ADC", "ADD", "SBC", 
 			"SUB", "SL", "SRA", "SRL", "AND", "ORR", "XOR", "LDR", "STR", "NOP", 
-			"NUMBER", "MUL", "COMMA", "COLON", "SPECIFIER", "COMMENT", "LINE_COMMENT", 
+			"NUMBER", "MUL", "NOT", "COMMA", "COLON", "SPECIFIER", "COMMENT", "LINE_COMMENT", 
 			"ALT_LINE_COMMENT", "WS", "LABEL"
 		};
 	}
@@ -137,11 +138,11 @@ public class TestParser extends Parser {
 			enterOuterAlt(_localctx, 1);
 			{
 			{
-			setState(35);
+			setState(39);
 			command();
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(41);
+			setState(45);
 			_errHandler.sync(this);
 			_alt = getInterpreter().adaptivePredict(_input,0,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
@@ -152,14 +153,14 @@ public class TestParser extends Parser {
 					{
 					_localctx = new StartContext(_parentctx, _parentState);
 					pushNewRecursionContext(_localctx, _startState, RULE_start);
-					setState(37);
+					setState(41);
 					if (!(precpred(_ctx, 2))) throw new FailedPredicateException(this, "precpred(_ctx, 2)");
-					setState(38);
+					setState(42);
 					command();
 					}
 					} 
 				}
-				setState(43);
+				setState(47);
 				_errHandler.sync(this);
 				_alt = getInterpreter().adaptivePredict(_input,0,_ctx);
 			}
@@ -195,6 +196,9 @@ public class TestParser extends Parser {
 		public Mul_opContext mul_op() {
 			return getRuleContext(Mul_opContext.class,0);
 		}
+		public Not_opContext not_op() {
+			return getRuleContext(Not_opContext.class,0);
+		}
 		public CommandContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -210,13 +214,13 @@ public class TestParser extends Parser {
 		CommandContext _localctx = new CommandContext(_ctx, getState());
 		enterRule(_localctx, 2, RULE_command);
 		try {
-			setState(50);
+			setState(55);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case NOP:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(44);
+				setState(48);
 				no_op();
 				}
 				break;
@@ -225,7 +229,7 @@ public class TestParser extends Parser {
 			case MOV:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(45);
+				setState(49);
 				two_op();
 				}
 				break;
@@ -243,14 +247,14 @@ public class TestParser extends Parser {
 			case STR:
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(46);
+				setState(50);
 				three_op();
 				}
 				break;
 			case LABEL:
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(47);
+				setState(51);
 				save_label();
 				}
 				break;
@@ -258,15 +262,22 @@ public class TestParser extends Parser {
 			case B:
 				enterOuterAlt(_localctx, 5);
 				{
-				setState(48);
+				setState(52);
 				jmp_op();
 				}
 				break;
 			case MUL:
 				enterOuterAlt(_localctx, 6);
 				{
-				setState(49);
+				setState(53);
 				mul_op();
+				}
+				break;
+			case NOT:
+				enterOuterAlt(_localctx, 7);
+				{
+				setState(54);
+				not_op();
 				}
 				break;
 			default:
@@ -306,9 +317,9 @@ public class TestParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(52);
+			setState(57);
 			no_op_opcode();
-			setState(53);
+			setState(58);
 			match(COLON);
 			}
 		}
@@ -352,15 +363,15 @@ public class TestParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(55);
+			setState(60);
 			two_op_opcode();
-			setState(56);
+			setState(61);
 			regOne();
-			setState(57);
+			setState(62);
 			match(COMMA);
-			setState(58);
+			setState(63);
 			regOrIm();
-			setState(59);
+			setState(64);
 			match(COLON);
 			}
 		}
@@ -410,19 +421,19 @@ public class TestParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(61);
-			three_op_opcode();
-			setState(62);
-			regOne();
-			setState(63);
-			match(COMMA);
-			setState(64);
-			regTwo();
-			setState(65);
-			match(COMMA);
 			setState(66);
-			regOrIm();
+			three_op_opcode();
 			setState(67);
+			regOne();
+			setState(68);
+			match(COMMA);
+			setState(69);
+			regTwo();
+			setState(70);
+			match(COMMA);
+			setState(71);
+			regOrIm();
+			setState(72);
 			match(COLON);
 			}
 		}
@@ -466,15 +477,15 @@ public class TestParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(69);
+			setState(74);
 			jmp_op_opcode();
-			setState(70);
+			setState(75);
 			regOne();
-			setState(71);
+			setState(76);
 			match(COMMA);
-			setState(72);
+			setState(77);
 			load_label();
-			setState(73);
+			setState(78);
 			match(COLON);
 			}
 		}
@@ -524,19 +535,71 @@ public class TestParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(75);
-			mul_opcode();
-			setState(76);
-			regOne();
-			setState(77);
-			match(COMMA);
-			setState(78);
-			regTwo();
-			setState(79);
-			match(COMMA);
 			setState(80);
-			regOrIm();
+			mul_opcode();
 			setState(81);
+			regOne();
+			setState(82);
+			match(COMMA);
+			setState(83);
+			regTwo();
+			setState(84);
+			match(COMMA);
+			setState(85);
+			regOrIm();
+			setState(86);
+			match(COLON);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Not_opContext extends ParserRuleContext {
+		public Not_opcodeContext not_opcode() {
+			return getRuleContext(Not_opcodeContext.class,0);
+		}
+		public RegOneContext regOne() {
+			return getRuleContext(RegOneContext.class,0);
+		}
+		public TerminalNode COMMA() { return getToken(TestParser.COMMA, 0); }
+		public RegOrImContext regOrIm() {
+			return getRuleContext(RegOrImContext.class,0);
+		}
+		public TerminalNode COLON() { return getToken(TestParser.COLON, 0); }
+		public Not_opContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_not_op; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TestVisitor ) return ((TestVisitor<? extends T>)visitor).visitNot_op(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Not_opContext not_op() throws RecognitionException {
+		Not_opContext _localctx = new Not_opContext(_ctx, getState());
+		enterRule(_localctx, 14, RULE_not_op);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(88);
+			not_opcode();
+			setState(89);
+			regOne();
+			setState(90);
+			match(COMMA);
+			setState(91);
+			regOrIm();
+			setState(92);
 			match(COLON);
 			}
 		}
@@ -566,11 +629,11 @@ public class TestParser extends Parser {
 
 	public final Save_labelContext save_label() throws RecognitionException {
 		Save_labelContext _localctx = new Save_labelContext(_ctx, getState());
-		enterRule(_localctx, 14, RULE_save_label);
+		enterRule(_localctx, 16, RULE_save_label);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(83);
+			setState(94);
 			match(LABEL);
 			}
 		}
@@ -600,11 +663,11 @@ public class TestParser extends Parser {
 
 	public final Load_labelContext load_label() throws RecognitionException {
 		Load_labelContext _localctx = new Load_labelContext(_ctx, getState());
-		enterRule(_localctx, 16, RULE_load_label);
+		enterRule(_localctx, 18, RULE_load_label);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(85);
+			setState(96);
 			match(LABEL);
 			}
 		}
@@ -634,11 +697,11 @@ public class TestParser extends Parser {
 
 	public final No_op_opcodeContext no_op_opcode() throws RecognitionException {
 		No_op_opcodeContext _localctx = new No_op_opcodeContext(_ctx, getState());
-		enterRule(_localctx, 18, RULE_no_op_opcode);
+		enterRule(_localctx, 20, RULE_no_op_opcode);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(87);
+			setState(98);
 			match(NOP);
 			}
 		}
@@ -670,12 +733,12 @@ public class TestParser extends Parser {
 
 	public final Two_op_opcodeContext two_op_opcode() throws RecognitionException {
 		Two_op_opcodeContext _localctx = new Two_op_opcodeContext(_ctx, getState());
-		enterRule(_localctx, 20, RULE_two_op_opcode);
+		enterRule(_localctx, 22, RULE_two_op_opcode);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(89);
+			setState(100);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << CMPEQ) | (1L << CMPGT) | (1L << MOV))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -724,12 +787,12 @@ public class TestParser extends Parser {
 
 	public final Three_op_opcodeContext three_op_opcode() throws RecognitionException {
 		Three_op_opcodeContext _localctx = new Three_op_opcodeContext(_ctx, getState());
-		enterRule(_localctx, 22, RULE_three_op_opcode);
+		enterRule(_localctx, 24, RULE_three_op_opcode);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(91);
+			setState(102);
 			_la = _input.LA(1);
 			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ADC) | (1L << ADD) | (1L << SBC) | (1L << SUB) | (1L << SL) | (1L << SRA) | (1L << SRL) | (1L << AND) | (1L << ORR) | (1L << XOR) | (1L << LDR) | (1L << STR))) != 0)) ) {
 			_errHandler.recoverInline(this);
@@ -768,12 +831,12 @@ public class TestParser extends Parser {
 
 	public final Jmp_op_opcodeContext jmp_op_opcode() throws RecognitionException {
 		Jmp_op_opcodeContext _localctx = new Jmp_op_opcodeContext(_ctx, getState());
-		enterRule(_localctx, 24, RULE_jmp_op_opcode);
+		enterRule(_localctx, 26, RULE_jmp_op_opcode);
 		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(93);
+			setState(104);
 			_la = _input.LA(1);
 			if ( !(_la==JMP || _la==B) ) {
 			_errHandler.recoverInline(this);
@@ -811,12 +874,46 @@ public class TestParser extends Parser {
 
 	public final Mul_opcodeContext mul_opcode() throws RecognitionException {
 		Mul_opcodeContext _localctx = new Mul_opcodeContext(_ctx, getState());
-		enterRule(_localctx, 26, RULE_mul_opcode);
+		enterRule(_localctx, 28, RULE_mul_opcode);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(95);
+			setState(106);
 			match(MUL);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	public static class Not_opcodeContext extends ParserRuleContext {
+		public TerminalNode NOT() { return getToken(TestParser.NOT, 0); }
+		public Not_opcodeContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_not_opcode; }
+		@Override
+		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
+			if ( visitor instanceof TestVisitor ) return ((TestVisitor<? extends T>)visitor).visitNot_opcode(this);
+			else return visitor.visitChildren(this);
+		}
+	}
+
+	public final Not_opcodeContext not_opcode() throws RecognitionException {
+		Not_opcodeContext _localctx = new Not_opcodeContext(_ctx, getState());
+		enterRule(_localctx, 30, RULE_not_opcode);
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(108);
+			match(NOT);
 			}
 		}
 		catch (RecognitionException re) {
@@ -846,13 +943,13 @@ public class TestParser extends Parser {
 
 	public final RegOneContext regOne() throws RecognitionException {
 		RegOneContext _localctx = new RegOneContext(_ctx, getState());
-		enterRule(_localctx, 28, RULE_regOne);
+		enterRule(_localctx, 32, RULE_regOne);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(97);
+			setState(110);
 			match(T__0);
-			setState(98);
+			setState(111);
 			((RegOneContext)_localctx).registernumber = match(NUMBER);
 			}
 		}
@@ -883,13 +980,13 @@ public class TestParser extends Parser {
 
 	public final RegTwoContext regTwo() throws RecognitionException {
 		RegTwoContext _localctx = new RegTwoContext(_ctx, getState());
-		enterRule(_localctx, 30, RULE_regTwo);
+		enterRule(_localctx, 34, RULE_regTwo);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(100);
+			setState(113);
 			match(T__0);
-			setState(101);
+			setState(114);
 			((RegTwoContext)_localctx).registernumber = match(NUMBER);
 			}
 		}
@@ -907,9 +1004,7 @@ public class TestParser extends Parser {
 	public static class RegOrImContext extends ParserRuleContext {
 		public Token registernumber;
 		public Token immediate;
-		public Token specifier;
 		public TerminalNode NUMBER() { return getToken(TestParser.NUMBER, 0); }
-		public TerminalNode SPECIFIER() { return getToken(TestParser.SPECIFIER, 0); }
 		public RegOrImContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -923,27 +1018,25 @@ public class TestParser extends Parser {
 
 	public final RegOrImContext regOrIm() throws RecognitionException {
 		RegOrImContext _localctx = new RegOrImContext(_ctx, getState());
-		enterRule(_localctx, 32, RULE_regOrIm);
+		enterRule(_localctx, 36, RULE_regOrIm);
 		try {
-			setState(107);
+			setState(119);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case T__0:
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(103);
+				setState(116);
 				match(T__0);
-				setState(104);
+				setState(117);
 				((RegOrImContext)_localctx).registernumber = match(NUMBER);
 				}
 				break;
 			case NUMBER:
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(105);
+				setState(118);
 				((RegOrImContext)_localctx).immediate = match(NUMBER);
-				setState(106);
-				((RegOrImContext)_localctx).specifier = match(SPECIFIER);
 				}
 				break;
 			default:
@@ -977,32 +1070,34 @@ public class TestParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\37p\4\2\t\2\4\3\t"+
-		"\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4"+
-		"\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22\3\2\3"+
-		"\2\3\2\3\2\3\2\7\2*\n\2\f\2\16\2-\13\2\3\3\3\3\3\3\3\3\3\3\3\3\5\3\65"+
-		"\n\3\3\4\3\4\3\4\3\5\3\5\3\5\3\5\3\5\3\5\3\6\3\6\3\6\3\6\3\6\3\6\3\6\3"+
-		"\6\3\7\3\7\3\7\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\b\3\t\3\t\3\n"+
-		"\3\n\3\13\3\13\3\f\3\f\3\r\3\r\3\16\3\16\3\17\3\17\3\20\3\20\3\20\3\21"+
-		"\3\21\3\21\3\22\3\22\3\22\3\22\5\22n\n\22\3\22\2\3\2\23\2\4\6\b\n\f\16"+
-		"\20\22\24\26\30\32\34\36 \"\2\5\3\2\4\6\3\2\t\24\3\2\7\b\2e\2$\3\2\2\2"+
-		"\4\64\3\2\2\2\6\66\3\2\2\2\b9\3\2\2\2\n?\3\2\2\2\fG\3\2\2\2\16M\3\2\2"+
-		"\2\20U\3\2\2\2\22W\3\2\2\2\24Y\3\2\2\2\26[\3\2\2\2\30]\3\2\2\2\32_\3\2"+
-		"\2\2\34a\3\2\2\2\36c\3\2\2\2 f\3\2\2\2\"m\3\2\2\2$%\b\2\1\2%&\5\4\3\2"+
-		"&+\3\2\2\2\'(\f\4\2\2(*\5\4\3\2)\'\3\2\2\2*-\3\2\2\2+)\3\2\2\2+,\3\2\2"+
-		"\2,\3\3\2\2\2-+\3\2\2\2.\65\5\6\4\2/\65\5\b\5\2\60\65\5\n\6\2\61\65\5"+
-		"\20\t\2\62\65\5\f\7\2\63\65\5\16\b\2\64.\3\2\2\2\64/\3\2\2\2\64\60\3\2"+
-		"\2\2\64\61\3\2\2\2\64\62\3\2\2\2\64\63\3\2\2\2\65\5\3\2\2\2\66\67\5\24"+
-		"\13\2\678\7\31\2\28\7\3\2\2\29:\5\26\f\2:;\5\36\20\2;<\7\30\2\2<=\5\""+
-		"\22\2=>\7\31\2\2>\t\3\2\2\2?@\5\30\r\2@A\5\36\20\2AB\7\30\2\2BC\5 \21"+
-		"\2CD\7\30\2\2DE\5\"\22\2EF\7\31\2\2F\13\3\2\2\2GH\5\32\16\2HI\5\36\20"+
-		"\2IJ\7\30\2\2JK\5\22\n\2KL\7\31\2\2L\r\3\2\2\2MN\5\34\17\2NO\5\36\20\2"+
-		"OP\7\30\2\2PQ\5 \21\2QR\7\30\2\2RS\5\"\22\2ST\7\31\2\2T\17\3\2\2\2UV\7"+
-		"\37\2\2V\21\3\2\2\2WX\7\37\2\2X\23\3\2\2\2YZ\7\25\2\2Z\25\3\2\2\2[\\\t"+
-		"\2\2\2\\\27\3\2\2\2]^\t\3\2\2^\31\3\2\2\2_`\t\4\2\2`\33\3\2\2\2ab\7\27"+
-		"\2\2b\35\3\2\2\2cd\7\3\2\2de\7\26\2\2e\37\3\2\2\2fg\7\3\2\2gh\7\26\2\2"+
-		"h!\3\2\2\2ij\7\3\2\2jn\7\26\2\2kl\7\26\2\2ln\7\32\2\2mi\3\2\2\2mk\3\2"+
-		"\2\2n#\3\2\2\2\5+\64m";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3 |\4\2\t\2\4\3\t\3"+
+		"\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t\13\4\f"+
+		"\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22\4\23\t"+
+		"\23\4\24\t\24\3\2\3\2\3\2\3\2\3\2\7\2.\n\2\f\2\16\2\61\13\2\3\3\3\3\3"+
+		"\3\3\3\3\3\3\3\3\3\5\3:\n\3\3\4\3\4\3\4\3\5\3\5\3\5\3\5\3\5\3\5\3\6\3"+
+		"\6\3\6\3\6\3\6\3\6\3\6\3\6\3\7\3\7\3\7\3\7\3\7\3\7\3\b\3\b\3\b\3\b\3\b"+
+		"\3\b\3\b\3\b\3\t\3\t\3\t\3\t\3\t\3\t\3\n\3\n\3\13\3\13\3\f\3\f\3\r\3\r"+
+		"\3\16\3\16\3\17\3\17\3\20\3\20\3\21\3\21\3\22\3\22\3\22\3\23\3\23\3\23"+
+		"\3\24\3\24\3\24\5\24z\n\24\3\24\2\3\2\25\2\4\6\b\n\f\16\20\22\24\26\30"+
+		"\32\34\36 \"$&\2\5\3\2\4\6\3\2\t\24\3\2\7\b\2p\2(\3\2\2\2\49\3\2\2\2\6"+
+		";\3\2\2\2\b>\3\2\2\2\nD\3\2\2\2\fL\3\2\2\2\16R\3\2\2\2\20Z\3\2\2\2\22"+
+		"`\3\2\2\2\24b\3\2\2\2\26d\3\2\2\2\30f\3\2\2\2\32h\3\2\2\2\34j\3\2\2\2"+
+		"\36l\3\2\2\2 n\3\2\2\2\"p\3\2\2\2$s\3\2\2\2&y\3\2\2\2()\b\2\1\2)*\5\4"+
+		"\3\2*/\3\2\2\2+,\f\4\2\2,.\5\4\3\2-+\3\2\2\2.\61\3\2\2\2/-\3\2\2\2/\60"+
+		"\3\2\2\2\60\3\3\2\2\2\61/\3\2\2\2\62:\5\6\4\2\63:\5\b\5\2\64:\5\n\6\2"+
+		"\65:\5\22\n\2\66:\5\f\7\2\67:\5\16\b\28:\5\20\t\29\62\3\2\2\29\63\3\2"+
+		"\2\29\64\3\2\2\29\65\3\2\2\29\66\3\2\2\29\67\3\2\2\298\3\2\2\2:\5\3\2"+
+		"\2\2;<\5\26\f\2<=\7\32\2\2=\7\3\2\2\2>?\5\30\r\2?@\5\"\22\2@A\7\31\2\2"+
+		"AB\5&\24\2BC\7\32\2\2C\t\3\2\2\2DE\5\32\16\2EF\5\"\22\2FG\7\31\2\2GH\5"+
+		"$\23\2HI\7\31\2\2IJ\5&\24\2JK\7\32\2\2K\13\3\2\2\2LM\5\34\17\2MN\5\"\22"+
+		"\2NO\7\31\2\2OP\5\24\13\2PQ\7\32\2\2Q\r\3\2\2\2RS\5\36\20\2ST\5\"\22\2"+
+		"TU\7\31\2\2UV\5$\23\2VW\7\31\2\2WX\5&\24\2XY\7\32\2\2Y\17\3\2\2\2Z[\5"+
+		" \21\2[\\\5\"\22\2\\]\7\31\2\2]^\5&\24\2^_\7\32\2\2_\21\3\2\2\2`a\7 \2"+
+		"\2a\23\3\2\2\2bc\7 \2\2c\25\3\2\2\2de\7\25\2\2e\27\3\2\2\2fg\t\2\2\2g"+
+		"\31\3\2\2\2hi\t\3\2\2i\33\3\2\2\2jk\t\4\2\2k\35\3\2\2\2lm\7\27\2\2m\37"+
+		"\3\2\2\2no\7\30\2\2o!\3\2\2\2pq\7\3\2\2qr\7\26\2\2r#\3\2\2\2st\7\3\2\2"+
+		"tu\7\26\2\2u%\3\2\2\2vw\7\3\2\2wz\7\26\2\2xz\7\26\2\2yv\3\2\2\2yx\3\2"+
+		"\2\2z\'\3\2\2\2\5/9y";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
