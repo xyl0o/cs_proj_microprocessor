@@ -4,6 +4,7 @@ import de.projekt.parser.TestBaseVisitor;
 import de.projekt.parser.TestParser.CommandContext;
 import de.projekt.parser.TestParser.Jmp_opContext;
 import de.projekt.parser.TestParser.Mul_opContext;
+import de.projekt.parser.TestParser.No_opContext;
 import de.projekt.parser.TestParser.Not_opContext;
 import de.projekt.parser.TestParser.Save_labelContext;
 import de.projekt.parser.TestParser.Three_opContext;
@@ -88,6 +89,12 @@ public class MacroVisitor extends TestBaseVisitor<String>{
 	public String visitSave_label(Save_labelContext ctx) {
 		return ctx.getText() + "\n";
 	}
+	
+	@Override
+	public String visitNo_op(No_opContext ctx) {
+		return ctx.getText() + "\n";
+	}
+	
 	
 	@Override
 	protected String aggregateResult(String aggregate, String nextResult) {

@@ -44,8 +44,7 @@ public class MyVisitor extends TestBaseVisitor<String> {
 		opcodes.put("LDR", 0b11011);
 		opcodes.put("STR", 0b11100);
 		opcodes.put("NOP", 0b11111);
-		// für die Nop überprüfung die delta Zeit der Register in einen erlaubten
-		// bereich einstellen
+
 	}
 
 	/******** Visitor Methoden ********/
@@ -69,9 +68,7 @@ public class MyVisitor extends TestBaseVisitor<String> {
 			isIm = "1";
 			padding = "";
 		}
-		
 		String regOrIm = visitRegOrIm(ctx.regOrIm());
-		
 		return line + "\t" + opcode + isIm + regOne + regTwo + regOrIm + padding + "\n";
 	}
 
@@ -80,16 +77,15 @@ public class MyVisitor extends TestBaseVisitor<String> {
 		String opcode = visitTwo_op_opcode(ctx.two_op_opcode());
 		String regOne = visitRegOne(ctx.regOne());
 		String isIm = "0";
-		String padding = "0000000000000000";
+		String regOrIm = visitRegOrIm(ctx.regOrIm());
 		
 		if (ctx.regOrIm().immediate != null) {
 			isIm = "1";
-			padding = "00000";
+			return line + "\t" + opcode + isIm+ "00000" + regOne + regOrIm +  "\n";
 		}
-		
-		String regOrIm = visitRegOrIm(ctx.regOrIm());
-		
-		return line + "\t" + opcode + isIm + regOne + regOrIm + padding + "\n";
+		else {
+			return line + "\t" + opcode + isIm+ "00000" + regOne + regOrIm +  "00000000000 \n";
+		}
 	}
 
 	@Override
@@ -104,8 +100,7 @@ public class MyVisitor extends TestBaseVisitor<String> {
 		String opcode = visitJmp_op_opcode(ctx.jmp_op_opcode());
 		String address = visitLoad_label(ctx.load_label());
 		String regOne = visitRegOne(ctx.regOne());
-		
-		return line + "\t" + opcode + "1" + regOne + address + "00000 \n";
+		return line + "\t" + opcode + "100000" + regOne + address + "\n";
 	}
 
 	@Override
