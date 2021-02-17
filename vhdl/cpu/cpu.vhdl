@@ -123,9 +123,6 @@ architecture cpu_arc of cpu is
     signal macc_in_flags_of         : std_logic := '0';
     signal macc_in_reg_write_enable : std_logic;
 
-    -- internal signals to mem_access
-    signal macc_will_jump : std_logic;
-
     -- Outputs
     signal macc_out_op_code          : t_op_code := op_NOP;
     signal macc_out_target           : t_reg_addr;
@@ -136,6 +133,7 @@ architecture cpu_arc of cpu is
     signal macc_out_reg_write_enable : std_logic;
     signal macc_out_new_pc           : t_data;
     signal macc_out_new_link         : t_data;
+    signal macc_out_will_jump        : std_logic;
 
 
     ----------------------------------------------------------------------------
@@ -301,9 +299,9 @@ begin
     macc_out_reg_write_enable <= macc_in_reg_write_enable;
 
     -- determine pc and link values
-    macc_will_jump <= '1'                when macc_in_op_code = op_JMP else
-                      macc_in_flags_comp when macc_in_op_code = op_B   else
-                      '0';
+    macc_out_will_jump <= '1'                when macc_in_op_code = op_JMP else
+                          macc_in_flags_comp when macc_in_op_code = op_B   else
+                          '0';
 
     with macc_will_jump select
         macc_out_new_pc <= macc_in_result      when '1',
