@@ -35,6 +35,10 @@ architecture alu_arc of alu is
 
     signal op_equals  : std_logic;
     signal op_greater : std_logic;
+
+    signal of_add : std_logic;
+    signal of_sub : std_logic;
+
 begin
 
     uop_1 <= '0' & unsigned(op_1);
@@ -46,16 +50,18 @@ begin
     op_greater <= '1' when to_integer(uop_1) > to_integer(uop_1) else
                   '0';
 
-    -- TODO ignore for now.
-    -- needs special handling
+    of_add <= (uop_1(data_len - 1) nor uop_2(data_len - 1) and uresult(data_len - 1)) or
+              (uop_1(data_len - 1) and uop_2(data_len - 1) and not uresult(data_len - 1));
+
+    of_sub <= (not uop_1(data_len -1) and uop_2(data_len -1) and uresult(data_len - 1)) or
+              (uop_1(data_len - 1) and not uop_2 (data_len - 1) and not uresult(data_len - 1));
+
     with alu_op_code select 
-        of_out <= (uop_1(data_len - 1) nor uop_2(data_len - 1) and uresult(data_len - 1)) or
-                  (uop_1(data_len - 1) and uop_2(data_len - 1) and not uresult(data_len - 1)) when aluop_ADD,
-
-                  (not uop_1(data_len -1) and uop_2(data_len -1) and uresult(data_len - 1)) or
-                  (uop_1(data_len - 1) and not uop_2 (data_len - 1) and not uresult(data_len - 1)) when aluop_SUB,
-
-                  of_in when others;
+        of_out <= of_add when aluop_ADD,
+                  of_add when aluop_ADC,
+                  of_sub when aluop_SUB,
+                  of_sub when aluop_SBC,
+                  of_in  when others;
 
     with alu_op_code select
         comp_out <= op_equals  when aluop_CMPEQ,
