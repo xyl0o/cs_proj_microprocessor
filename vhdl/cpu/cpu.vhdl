@@ -52,7 +52,7 @@ architecture cpu_arc of cpu is
     ----------------------------------------------------------------------------
     --- Fetch signals
 
-    signal fetch_in_pc : t_data;
+    signal fetch_in_instr       : t_data := (others => '0');
 
     -- Outputs
     signal fetch_out_instr       : t_data := (others => '0');
@@ -169,16 +169,17 @@ begin
     ----------------------------------------------------------------------------
     --- Fetch
 
+    instr_addr <= reg_pc;
+
     fetch_pipeline: process (clk) is
     begin
         if rising_edge(clk) then
-            fetch_in_pc <= reg_pc;
+            fetch_in_instr <= instr_in;
         end if;
     end process fetch_pipeline;
 
-    instr_addr <= fetch_in_pc;
-
-    fetch_out_instr       <= instr_in;
+    -- passthrough
+    fetch_out_instr <= fetch_in_instr;
 
 
     ----------------------------------------------------------------------------
