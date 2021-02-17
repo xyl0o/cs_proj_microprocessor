@@ -38,14 +38,15 @@ architecture cpu_arc of cpu is
     ----------------------------------------------------------------------------
     --- Registers
 
-    type t_register_file is array(0 to 31) of t_data;
+    type t_register_file is array(0 to 30) of t_data;
 
     signal register_file : t_register_file := (others => (others => '0'));
 
     alias reg_zero : t_data is register_file(to_integer(unsigned(reg_addr_zero)));
     alias reg_flag : t_data is register_file(to_integer(unsigned(reg_addr_flags)));
     alias reg_link : t_data is register_file(to_integer(unsigned(reg_addr_link)));
-    alias reg_pc   : t_data is register_file(to_integer(unsigned(reg_addr_pc)));
+
+    signal reg_pc : t_data;
 
 
     ----------------------------------------------------------------------------
@@ -148,7 +149,11 @@ architecture cpu_arc of cpu is
 
     impure function reg_access(reg_addr: t_reg_addr) return t_data is
     begin
-        return register_file(to_integer(unsigned(reg_addr)));
+        if reg_addr = reg_addr_pc then
+            return reg_pc;
+        else
+            return register_file(to_integer(unsigned(reg_addr)));
+        end if;
     end function;
 
     function sign_extend(imm_value : t_op_imm) return t_data is
