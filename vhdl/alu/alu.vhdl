@@ -55,7 +55,7 @@ begin
                   (not uop_1(data_len -1) and uop_2(data_len -1) and uresult(data_len - 1)) or
                   (uop_1(data_len - 1) and not uop_2 (data_len - 1) and not uresult(data_len - 1)) when aluop_SUB,
 
-                  '0' when others; --what about handling of_in?
+                  of_in when others;
 
     with alu_op_code select
         comp_out <= op_equals  when aluop_CMPEQ,
