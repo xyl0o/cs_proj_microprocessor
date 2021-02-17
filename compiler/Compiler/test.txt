@@ -1,6 +1,0 @@
-MOV r10, 1;
-MOV r11, 2;
-STR 1, r10;
-LDR r12, 1;
-ADD r10, r11, r12;
-STR 2, r10;
