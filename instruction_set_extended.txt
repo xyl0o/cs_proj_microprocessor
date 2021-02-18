@@ -64,7 +64,7 @@ instb   inst  mem wb aluop lay op1 op2 tgt dst wbe
 11011   LDR    l  ✓  ADD    3   BY  CZ  AX  _   1           tgt := m[op1 + op2]
 11100   STR    s  ✗  ADD    3   BY  CZ  _   AX  0  m[op1 + op2] := dst
 11101          ✗  ✗  _      3   _   _   _   _   0              no op
-11110          ✗  ✗  _      3   _   _   _   _   0              no op
+11110   HLT    ✗  ✗  NOP    3   _   _   _   _   0              no op
 11111   NOP    ✗  ✗  NOP    3   _   _   _   _   0              NO OP
 
 

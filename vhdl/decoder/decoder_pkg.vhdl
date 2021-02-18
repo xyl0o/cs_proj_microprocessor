@@ -24,6 +24,7 @@ package decoder_pkg is
   constant op_XOR:   t_op_code := "11010";
   constant op_LDR:   t_op_code := "11011";
   constant op_STR:   t_op_code := "11100";
+  constant op_HLT:   t_op_code := "11110";
   constant op_NOP:   t_op_code := "11111";
 
   component decoder is

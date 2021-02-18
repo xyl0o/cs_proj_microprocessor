@@ -29,5 +29,5 @@ XOR     XOR     Y     Z     X    (X)   1
 LDR     ADD     Y     Z     X    (X)   1
 STR     ADD     Y     Z    (X)    X    0
         (NOP)  (Y)   (Z)   (X)   (X)   0
-        (NOP)  (Y)   (Z)   (X)   (X)   0
+HLT     NOP    (Y)   (Z)   (X)   (X)   0
 NOP     NOP    (Y)   (Z)   (X)   (X)   0

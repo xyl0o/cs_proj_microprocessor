@@ -53,6 +53,7 @@ One-op layout:
 
 No-op layout:
  * NOP (Do nothing)
+ * HLT (Do nothing forever)
 
 ## Flags
  * Carry
