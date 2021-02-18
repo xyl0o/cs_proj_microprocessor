@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.108 (w)1999-2020 BSI
-[*] Wed Feb 17 19:52:59 2021
+[*] Thu Feb 18 01:28:14 2021
 [*]
 [dumpfile] "/home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/vhdl/processor/processor.vcd"
-[dumpfile_mtime] "Wed Feb 17 19:50:55 2021"
-[dumpfile_size] 183258
+[dumpfile_mtime] "Thu Feb 18 01:25:48 2021"
+[dumpfile_size] 168142
 [savefile] "/home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/gtkwave/full_cpu.gtkw"
-[timestart] 1141000000
+[timestart] 41212000000
 [size] 2536 1364
 [pos] -1 -1
-*-28.000000 2017000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-28.000000 42528000000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] processor.
 [treeopen] processor.cpu_instance.
 [sst_width] 231
@@ -45,7 +45,6 @@ processor.cpu_instance.indec_op2_sel
 processor.cpu_instance.indec_reg_select_1[4:0]
 ^1 /home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/gtkwave/special_reg_filter
 processor.cpu_instance.indec_reg_select_2[4:0]
-@2025
 ^1 /home/xyl0o/Projects/Studium/Inf_BSc_UHH/13_WS20/PROJ/gtkwave/special_reg_filter
 processor.cpu_instance.indec_reg_select_3[4:0]
 @22
@@ -75,7 +74,6 @@ processor.cpu_instance.exec_in_op_2[31:0]
 @28
 processor.cpu_instance.exec_in_flags_carry
 processor.cpu_instance.exec_in_flags_comp
-processor.cpu_instance.exec_in_flags_of
 @200
 -
 @22
@@ -83,9 +81,11 @@ processor.cpu_instance.exec_out_result[31:0]
 @420
 processor.cpu_instance.exec_out_result[31:0]
 @28
-processor.cpu_instance.exec_out_flags_carry
 processor.cpu_instance.exec_out_flags_comp
-processor.cpu_instance.exec_out_flags_of
+processor.cpu_instance.exec_out_alu_carry
+processor.cpu_instance.exec_out_alu_comp_eq
+processor.cpu_instance.exec_out_alu_comp_gt
+processor.cpu_instance.exec_out_alu_of
 @200
 -
 -Memory Access
@@ -104,12 +104,6 @@ processor.cpu_instance.data_we
 processor.cpu_instance.data_in[31:0]
 @200
 -
-@28
-processor.cpu_instance.macc_will_jump
-@22
-processor.cpu_instance.macc_out_new_pc[31:0]
-processor.cpu_instance.macc_out_new_link[31:0]
-@200
 -
 -Write Back
 @2024
@@ -119,18 +113,10 @@ processor.cpu_instance.macc_out_target[4:0]
 processor.cpu_instance.macc_out_result[31:0]
 @28
 processor.cpu_instance.macc_out_reg_write_enable
-@200
--
-@28
-processor.cpu_instance.macc_out_flags_carry
-processor.cpu_instance.macc_out_flags_comp
-processor.cpu_instance.macc_out_flags_of
-@200
--
-@22
-processor.cpu_instance.debug_flags[31:0]
-processor.cpu_instance.debug_pc[31:0]
-processor.cpu_instance.debug_link[31:0]
+processor.cpu_instance.macc_in_alu_carry
+processor.cpu_instance.macc_in_alu_comp_eq
+processor.cpu_instance.macc_in_alu_comp_gt
+processor.cpu_instance.macc_in_alu_of
 @200
 -
 -Registers
