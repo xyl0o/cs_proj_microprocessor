@@ -194,7 +194,8 @@ begin
 
     -- passthrough
     fetch_out_instr <= fetch_in_instr;
-    fetch_out_flush <= fetch_in_instr;
+
+    fetch_out_flush <= sig_flush;
 
 
     ----------------------------------------------------------------------------
@@ -209,7 +210,8 @@ begin
     end process indec_pipeline;
 
     -- passthrough
-    indec_out_flush <= indec_in_flush;
+
+    indec_out_flush <= indec_in_flush or sig_flush;
 
     decoder_instance: decoder
         generic map (
@@ -270,7 +272,8 @@ begin
     exec_out_op_code          <= exec_in_op_code;
     exec_out_reg_write_enable <= exec_in_reg_write_enable;
     exec_out_target           <= exec_in_target;
-    exec_out_flush            <= exec_in_flush;
+
+    exec_out_flush <= exec_in_flush or sig_flush;
 
     alu_instance: alu
         generic map (
@@ -320,7 +323,8 @@ begin
     macc_out_op_code          <= macc_in_op_code;
     macc_out_reg_write_enable <= macc_in_reg_write_enable;
     macc_out_target           <= macc_in_target;
-    macc_out_flush            <= macc_in_flush;
+
+    macc_out_flush <= macc_in_flush or sig_flush;
 
     -- determine pc and link values
     macc_out_will_jump <= '1'                when macc_in_op_code = op_JMP else
