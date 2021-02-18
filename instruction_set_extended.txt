@@ -43,8 +43,8 @@ instb   inst  mem wb aluop lay op1 op2 tgt dst wbe
 00110          ✗  ✗  _      1   _   _   _   _   0              no op
 00111          ✗  ✗  _      1   _   _   _   _   0              no op
 01000          ✗  ✗  _      2   _   _   _   _   0              no op
-01001   CMPEQ  ✗  c  CMPEQ  2   AY  BZ  _   _   0          fCMP := op1 == op2
-01010   CMPGT  ✗  c  CMPGT  2   AY  BZ  _   _   0          fCMP := op1 - op2 > 0
+01001   CMPEQ  ✗  c  NOP    2   AY  BZ  _   _   0          fCMP := op1 == op2
+01010   CMPGT  ✗  c  NOP    2   AY  BZ  _   _   0          fCMP := op1 - op2 > 0
 01011   MOV    ✗  ✓  IDOP2  2   _   BZ  AY  _   1           tgt := op2
 01100   JMP    j  ✗  ADD    2   AY  BZ  _   _   0            PC := op1 + op2 if fCMP
 01101   B      b  ✗  ADD    2   AY  BZ  _   _   0            PC := op1 + op2

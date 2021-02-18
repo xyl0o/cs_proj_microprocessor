@@ -8,8 +8,8 @@ inst    aluop  op1   op2   tgt   dst  wbe
         (NOP)  (Y)   (Z)   (0)   (0)   0
         (NOP)  (Y)   (Z)   (0)   (0)   0
         (NOP)  (Y)   (Z)   (0)   (0)   0
-CMPEQ   CMPEQ   Y     Z    (0)   (0)   0
-CMPGT   CMPGT   Y     Z    (0)   (0)   0
+CMPEQ   NOP     Y     Z    (0)   (0)   0
+CMPGT   NOP     Y     Z    (0)   (0)   0
 MOV     IDOP2  (Y)    Z     Y    (Y)   1
 JMP     ADD     Y     Z    (0)   (0)   0
 B       ADD     Y     Z    (0)   (0)   0
