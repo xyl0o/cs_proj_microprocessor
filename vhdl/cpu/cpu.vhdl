@@ -78,9 +78,9 @@ architecture cpu_arc of cpu is
     signal indec_out_datastore        : t_data;
     signal indec_out_op_1             : t_data;
     signal indec_out_op_2             : t_data;
-    signal indec_out_flags_comp       : std_logic := '0';
-    signal indec_out_flags_carry      : std_logic := '0';
-    signal indec_out_flags_of         : std_logic := '0';
+    signal indec_out_flags_comp       : std_logic;
+    signal indec_out_flags_carry      : std_logic;
+    signal indec_out_flags_of         : std_logic;
     signal indec_out_reg_write_enable : std_logic;
 
 
@@ -94,9 +94,9 @@ architecture cpu_arc of cpu is
     signal exec_in_datastore        : t_data;
     signal exec_in_op_1             : t_data;
     signal exec_in_op_2             : t_data;
-    signal exec_in_flags_comp       : std_logic := '0';
-    signal exec_in_flags_carry      : std_logic := '0';
-    signal exec_in_flags_of         : std_logic := '0';
+    signal exec_in_flags_comp       : std_logic;
+    signal exec_in_flags_carry      : std_logic;
+    signal exec_in_flags_of         : std_logic;
     signal exec_in_reg_write_enable : std_logic;
 
     -- Outputs
@@ -104,9 +104,9 @@ architecture cpu_arc of cpu is
     signal exec_out_target           : t_reg_addr;
     signal exec_out_datastore        : t_data;
     signal exec_out_result           : t_data;
-    signal exec_out_flags_comp       : std_logic := '0';
-    signal exec_out_flags_carry      : std_logic := '0';
-    signal exec_out_flags_of         : std_logic := '0';
+    signal exec_out_flags_comp       : std_logic;
+    signal exec_out_flags_carry      : std_logic;
+    signal exec_out_flags_of         : std_logic;
     signal exec_out_reg_write_enable : std_logic;
 
 
@@ -118,18 +118,18 @@ architecture cpu_arc of cpu is
     signal macc_in_target           : t_reg_addr;
     signal macc_in_datastore        : t_data;
     signal macc_in_result           : t_data;
-    signal macc_in_flags_comp       : std_logic := '0';
-    signal macc_in_flags_carry      : std_logic := '0';
-    signal macc_in_flags_of         : std_logic := '0';
+    signal macc_in_flags_comp       : std_logic;
+    signal macc_in_flags_carry      : std_logic;
+    signal macc_in_flags_of         : std_logic;
     signal macc_in_reg_write_enable : std_logic;
 
     -- Outputs
     signal macc_out_op_code          : t_op_code := op_NOP;
     signal macc_out_target           : t_reg_addr;
     signal macc_out_result           : t_data;
-    signal macc_out_flags_comp       : std_logic := '0';
-    signal macc_out_flags_carry      : std_logic := '0';
-    signal macc_out_flags_of         : std_logic := '0';
+    signal macc_out_flags_comp       : std_logic;
+    signal macc_out_flags_carry      : std_logic;
+    signal macc_out_flags_of         : std_logic;
     signal macc_out_reg_write_enable : std_logic;
     signal macc_out_will_jump        : std_logic;
 
