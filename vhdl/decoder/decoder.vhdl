@@ -47,9 +47,7 @@ begin
     op_code <= instr_op_code;
 
     with instr_op_code select
-        alu_op_sel <= aluop_CMPEQ when op_CMPEQ,
-                      aluop_CMPGT when op_CMPGT,
-                      aluop_IDOP2 when op_MOV,
+        alu_op_sel <= aluop_IDOP2 when op_MOV,
                       aluop_ADD   when op_JMP,
                       aluop_ADD   when op_B,
                       aluop_ADC   when op_ADC,

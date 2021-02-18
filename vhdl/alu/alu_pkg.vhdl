@@ -18,8 +18,6 @@ package alu_pkg is
     constant aluop_AND   : t_alu_op_code := "00111";
     constant aluop_ORR   : t_alu_op_code := "01000";
     constant aluop_XOR   : t_alu_op_code := "01001";
-    constant aluop_CMPEQ : t_alu_op_code := "01010";
-    constant aluop_CMPGT : t_alu_op_code := "01011";
     constant aluop_IDOP2 : t_alu_op_code := "01100";
     constant aluop_SUB   : t_alu_op_code := "01101";
 
@@ -33,14 +31,13 @@ package alu_pkg is
             op_1        : in std_logic_vector(data_len - 1 downto 0);
             op_2        : in std_logic_vector(data_len - 1 downto 0);
             carry_in    : in std_logic;
-            of_in       : in std_logic;
-            comp_in     : in std_logic;
 
             -- Outputs
             result    : out std_logic_vector(data_len - 1 downto 0);
             carry_out : out std_logic;
-            of_out    : out std_logic;
-            comp_out  : out std_logic
+            overflow  : out std_logic;
+            comp_eq   : out std_logic;
+            comp_gt   : out std_logic
         );
     end component alu;
 end package alu_pkg;

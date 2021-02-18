@@ -16,14 +16,13 @@ entity alu is
         op_1        : in std_logic_vector(data_len - 1 downto 0);
         op_2        : in std_logic_vector(data_len - 1 downto 0);
         carry_in    : in std_logic;
-        of_in       : in std_logic;
-        comp_in     : in std_logic;
 
         -- Outputs
         result    : out std_logic_vector(data_len - 1 downto 0);
         carry_out : out std_logic;
-        of_out    : out std_logic;
-        comp_out  : out std_logic
+        overflow  : out std_logic;
+        comp_eq   : out std_logic;
+        comp_gt   : out std_logic
     );
 end alu;
 
@@ -33,9 +32,6 @@ architecture alu_arc of alu is
 
     signal uop_1, uop_2, uresult : t_udata_ext;
 
-    signal op_equals  : std_logic;
-    signal op_greater : std_logic;
-
     signal of_add : std_logic;
     signal of_sub : std_logic;
 
@@ -44,11 +40,11 @@ begin
     uop_1 <= '0' & unsigned(op_1);
     uop_2 <= '0' & unsigned(op_2);
 
-    op_equals <= '1' when to_integer(signed(op_1)) = to_integer(signed(op_2)) else
-                 '0';
+    comp_eq <= '1' when to_integer(signed(op_1)) = to_integer(signed(op_2)) else
+               '0';
 
-    op_greater <= '1' when to_integer(signed(op_1)) > to_integer(signed(op_2)) else
-                  '0';
+    comp_gt <= '1' when to_integer(signed(op_1)) > to_integer(signed(op_2)) else
+               '0';
 
     of_add <= (uop_1(data_len - 1) nor uop_2(data_len - 1) and uresult(data_len - 1)) or
               (uop_1(data_len - 1) and uop_2(data_len - 1) and not uresult(data_len - 1));
@@ -57,23 +53,13 @@ begin
               (uop_1(data_len - 1) and not uop_2 (data_len - 1) and not uresult(data_len - 1));
 
     with alu_op_code select 
-        of_out <= of_add when aluop_ADD,
-                  of_add when aluop_ADC,
-                  of_sub when aluop_SUB,
-                  of_sub when aluop_SBC,
-                  of_in  when others;
+        overflow <= of_add when aluop_ADD,
+                    of_add when aluop_ADC,
+                    of_sub when aluop_SUB,
+                    of_sub when aluop_SBC,
+                    'U'    when others;
 
-    with alu_op_code select
-        comp_out <= op_equals  when aluop_CMPEQ,
-                    op_greater when aluop_CMPGT,
-                    comp_in    when others;
-
-    with alu_op_code select
-        carry_out <= uresult(data_len) when aluop_ADC, -- TODO
-                     uresult(data_len) when aluop_SBC, -- TODO
-                     uresult(data_len) when aluop_ADD,
-                     uresult(data_len) when aluop_SUB,
-                     carry_in          when others;
+    carry_out <= uresult(data_len);
 
     calc: process (alu_op_code, uop_1, uop_2) is
     begin
