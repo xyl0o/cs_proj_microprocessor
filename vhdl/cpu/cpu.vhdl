@@ -375,7 +375,7 @@ begin
 
     wback_pipeline: process (clk) is
     begin
-        if rising_edge(clk) then
+        if rising_edge(clk) and (macc_out_flush = '0') then
             if macc_out_will_jump = '1' then
                 reg_link <= reg_pc; -- TODO - 4 ??
             end if;
