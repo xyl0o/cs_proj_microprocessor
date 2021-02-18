@@ -1,5 +1,0 @@
-ADD r1, r2, 1d;
-.test
-ADD r5, r4, 1d;
-JMP r0, .test;
-SUB r1, r2, r3;
