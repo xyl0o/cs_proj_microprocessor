@@ -12,7 +12,7 @@ import de.projekt.parser.TestParser.Two_opContext;
 
 public class MacroVisitor extends TestBaseVisitor<String>{
 	int counter = 0;
-	String tmp = "25";
+	String tmp = "r25";
 	String tmpResult = "r24";
 	
 	@Override
