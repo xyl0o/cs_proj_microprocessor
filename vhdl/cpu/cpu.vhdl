@@ -52,17 +52,21 @@ architecture cpu_arc of cpu is
     ----------------------------------------------------------------------------
     --- Fetch signals
 
-    signal fetch_in_instr       : t_data := (others => '0');
+    -- Inputs
+    signal fetch_in_instr : t_data := (others => '0');
+    signal fetch_in_flush : std_logic;
 
     -- Outputs
-    signal fetch_out_instr       : t_data := (others => '0');
+    signal fetch_out_instr : t_data := (others => '0');
+    signal fetch_out_flush : std_logic;
 
 
     ----------------------------------------------------------------------------
     --- Instruction decode signals
 
     -- Inputs
-    signal indec_in_instr       : t_data := (others => '1');
+    signal indec_in_instr : t_data := (others => '1');
+    signal indec_in_flush : std_logic;
 
     -- internal signals to inst_decode
     signal indec_reg_select_1 : t_reg_addr;
@@ -81,6 +85,7 @@ architecture cpu_arc of cpu is
     signal indec_out_flags_comp       : std_logic;
     signal indec_out_flags_carry      : std_logic;
     signal indec_out_reg_write_enable : std_logic;
+    signal indec_out_flush            : std_logic;
 
 
     ----------------------------------------------------------------------------
@@ -96,6 +101,7 @@ architecture cpu_arc of cpu is
     signal exec_in_flags_comp       : std_logic;
     signal exec_in_flags_carry      : std_logic;
     signal exec_in_reg_write_enable : std_logic;
+    signal exec_in_flush            : std_logic;
 
     -- Outputs
     signal exec_out_op_code          : t_op_code := op_NOP;
@@ -108,6 +114,7 @@ architecture cpu_arc of cpu is
     signal exec_out_alu_comp_gt      : std_logic;
     signal exec_out_alu_of           : std_logic;
     signal exec_out_reg_write_enable : std_logic;
+    signal exec_out_flush            : std_logic;
 
 
     ----------------------------------------------------------------------------
@@ -124,6 +131,7 @@ architecture cpu_arc of cpu is
     signal macc_in_alu_comp_gt      : std_logic;
     signal macc_in_alu_of           : std_logic;
     signal macc_in_reg_write_enable : std_logic;
+    signal macc_in_flush            : std_logic;
 
     -- Outputs
     signal macc_out_op_code          : t_op_code := op_NOP;
@@ -135,6 +143,7 @@ architecture cpu_arc of cpu is
     signal macc_out_alu_of           : std_logic;
     signal macc_out_reg_write_enable : std_logic;
     signal macc_out_will_jump        : std_logic;
+    signal macc_out_flush            : std_logic;
 
 
     ----------------------------------------------------------------------------
@@ -179,6 +188,7 @@ begin
 
     -- passthrough
     fetch_out_instr <= fetch_in_instr;
+    fetch_out_flush <= fetch_in_instr;
 
 
     ----------------------------------------------------------------------------
@@ -187,11 +197,13 @@ begin
     indec_pipeline: process (clk) is
     begin
         if rising_edge(clk) then
-            indec_in_instr       <= instr_in;
+            indec_in_instr <= instr_in;
+            indec_in_flush <= fetch_out_flush;
         end if;
     end process indec_pipeline;
 
     -- passthrough
+    indec_out_flush <= indec_in_flush;
 
     decoder_instance: decoder
         generic map (
@@ -242,6 +254,7 @@ begin
             exec_in_op_sel           <= indec_out_op_sel;
             exec_in_reg_write_enable <= indec_out_reg_write_enable;
             exec_in_target           <= indec_out_target;
+            exec_in_flush            <= indec_out_flush;
         end if;
     end process exec_pipeline;
 
@@ -251,6 +264,7 @@ begin
     exec_out_op_code          <= exec_in_op_code;
     exec_out_reg_write_enable <= exec_in_reg_write_enable;
     exec_out_target           <= exec_in_target;
+    exec_out_flush            <= exec_in_flush;
 
     alu_instance: alu
         generic map (
@@ -288,6 +302,7 @@ begin
             macc_in_reg_write_enable <= exec_out_reg_write_enable;
             macc_in_result           <= exec_out_result;
             macc_in_target           <= exec_out_target;
+            macc_in_flush            <= exec_out_flush;
         end if;
     end process macc_pipeline;
 
@@ -299,6 +314,7 @@ begin
     macc_out_op_code          <= macc_in_op_code;
     macc_out_reg_write_enable <= macc_in_reg_write_enable;
     macc_out_target           <= macc_in_target;
+    macc_out_flush            <= macc_in_flush;
 
     -- determine pc and link values
     macc_out_will_jump <= '1'                when macc_in_op_code = op_JMP else
