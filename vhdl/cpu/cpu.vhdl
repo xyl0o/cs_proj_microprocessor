@@ -326,13 +326,16 @@ begin
         macc_out_result <= data_in        when op_LDR,
                            macc_in_result when others;
 
+
     ----------------------------------------------------------------------------
     --- Write back
 
     wback_pc_set: process(clk) is
     begin
         if rising_edge(clk) then
-            if macc_out_will_jump = '1' then
+            if macc_out_op_code = op_HLT then
+                null; -- TODO signal other stages to do nothing (flush)
+            elsif macc_out_will_jump = '1' then
                 reg_pc <= macc_out_result;
             else
                 reg_pc <= std_logic_vector(unsigned(reg_pc) + 1);
