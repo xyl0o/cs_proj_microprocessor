@@ -46,8 +46,11 @@ begin
     comp_gt <= '1' when to_integer(signed(op_1)) > to_integer(signed(op_2)) else
                '0';
 
-    of_add <= '0';
-    of_sub <= '0';
+    of_add <= ((uop_1(data_len - 1) nor uop_2(data_len - 1)) and uresult(data_len - 1)) or
+               (uop_1(data_len - 1) and uop_2(data_len - 1)  and not uresult(data_len - 1));
+
+    of_sub <= (not uop_1(data_len - 1) and uop_2(data_len - 1)     and uresult(data_len - 1)) or
+              (uop_1(data_len - 1)     and not uop_2(data_len - 1) and not uresult(data_len - 1));
 
     with alu_op_code select 
         overflow <= of_add when aluop_ADD,
