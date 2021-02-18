@@ -80,7 +80,6 @@ architecture cpu_arc of cpu is
     signal indec_out_op_2             : t_data;
     signal indec_out_flags_comp       : std_logic;
     signal indec_out_flags_carry      : std_logic;
-    signal indec_out_flags_of         : std_logic;
     signal indec_out_reg_write_enable : std_logic;
 
 
@@ -96,7 +95,6 @@ architecture cpu_arc of cpu is
     signal exec_in_op_2             : t_data;
     signal exec_in_flags_comp       : std_logic;
     signal exec_in_flags_carry      : std_logic;
-    signal exec_in_flags_of         : std_logic;
     signal exec_in_reg_write_enable : std_logic;
 
     -- Outputs
@@ -105,8 +103,10 @@ architecture cpu_arc of cpu is
     signal exec_out_datastore        : t_data;
     signal exec_out_result           : t_data;
     signal exec_out_flags_comp       : std_logic;
-    signal exec_out_flags_carry      : std_logic;
-    signal exec_out_flags_of         : std_logic;
+    signal exec_out_alu_carry        : std_logic;
+    signal exec_out_alu_comp_eq      : std_logic;
+    signal exec_out_alu_comp_gt      : std_logic;
+    signal exec_out_alu_of           : std_logic;
     signal exec_out_reg_write_enable : std_logic;
 
 
@@ -119,17 +119,20 @@ architecture cpu_arc of cpu is
     signal macc_in_datastore        : t_data;
     signal macc_in_result           : t_data;
     signal macc_in_flags_comp       : std_logic;
-    signal macc_in_flags_carry      : std_logic;
-    signal macc_in_flags_of         : std_logic;
+    signal macc_in_alu_carry        : std_logic;
+    signal macc_in_alu_comp_eq      : std_logic;
+    signal macc_in_alu_comp_gt      : std_logic;
+    signal macc_in_alu_of           : std_logic;
     signal macc_in_reg_write_enable : std_logic;
 
     -- Outputs
     signal macc_out_op_code          : t_op_code := op_NOP;
     signal macc_out_target           : t_reg_addr;
     signal macc_out_result           : t_data;
-    signal macc_out_flags_comp       : std_logic;
-    signal macc_out_flags_carry      : std_logic;
-    signal macc_out_flags_of         : std_logic;
+    signal macc_out_alu_carry        : std_logic;
+    signal macc_out_alu_comp_eq      : std_logic;
+    signal macc_out_alu_comp_gt      : std_logic;
+    signal macc_out_alu_of           : std_logic;
     signal macc_out_reg_write_enable : std_logic;
     signal macc_out_will_jump        : std_logic;
 
@@ -222,7 +225,6 @@ begin
     indec_out_datastore   <= reg_access(indec_reg_select_3);
     indec_out_flags_comp  <= reg_flag(0);
     indec_out_flags_carry <= reg_flag(1);
-    indec_out_flags_of    <= reg_flag(2);
 
 
     ----------------------------------------------------------------------------
@@ -234,7 +236,6 @@ begin
             exec_in_datastore        <= indec_out_datastore;
             exec_in_flags_carry      <= indec_out_flags_carry;
             exec_in_flags_comp       <= indec_out_flags_comp;
-            exec_in_flags_of         <= indec_out_flags_of;
             exec_in_op_1             <= indec_out_op_1;
             exec_in_op_2             <= indec_out_op_2;
             exec_in_op_code          <= indec_out_op_code;
@@ -245,10 +246,11 @@ begin
     end process exec_pipeline;
 
     -- passthrough
-    exec_out_op_code          <= exec_in_op_code;
-    exec_out_target           <= exec_in_target;
     exec_out_datastore        <= exec_in_datastore;
+    exec_out_flags_comp       <= exec_in_flags_comp;
+    exec_out_op_code          <= exec_in_op_code;
     exec_out_reg_write_enable <= exec_in_reg_write_enable;
+    exec_out_target           <= exec_in_target;
 
     alu_instance: alu
         generic map (
@@ -260,14 +262,13 @@ begin
             op_1        => exec_in_op_1,
             op_2        => exec_in_op_2,
             carry_in    => exec_in_flags_carry,
-            of_in       => exec_in_flags_of,
-            comp_in     => exec_in_flags_comp,
 
             -- Outputs
             result    => exec_out_result,
-            carry_out => exec_out_flags_carry,
-            of_out    => exec_out_flags_of,
-            comp_out  => exec_out_flags_comp
+            carry_out => exec_out_alu_carry,
+            overflow  => exec_out_alu_of,
+            comp_eq   => exec_out_alu_comp_eq,
+            comp_gt   => exec_out_alu_comp_gt
         );
 
 
@@ -278,9 +279,11 @@ begin
     begin
         if rising_edge(clk) then
             macc_in_datastore        <= exec_out_datastore;
-            macc_in_flags_carry      <= exec_out_flags_carry;
             macc_in_flags_comp       <= exec_out_flags_comp;
-            macc_in_flags_of         <= exec_out_flags_of;
+            macc_in_alu_carry        <= exec_out_alu_carry;
+            macc_in_alu_comp_eq      <= exec_out_alu_comp_eq;
+            macc_in_alu_comp_gt      <= exec_out_alu_comp_gt;
+            macc_in_alu_of           <= exec_out_alu_of;
             macc_in_op_code          <= exec_out_op_code;
             macc_in_reg_write_enable <= exec_out_reg_write_enable;
             macc_in_result           <= exec_out_result;
@@ -289,12 +292,13 @@ begin
     end process macc_pipeline;
 
     -- passthrough
-    macc_out_flags_carry      <= macc_in_flags_carry;
-    macc_out_flags_comp       <= macc_in_flags_comp;
-    macc_out_flags_of         <= macc_in_flags_of;
+    macc_out_alu_carry        <= macc_in_alu_carry;
+    macc_out_alu_comp_eq      <= macc_in_alu_comp_eq;
+    macc_out_alu_comp_gt      <= macc_in_alu_comp_gt;
+    macc_out_alu_of           <= macc_in_alu_of;
     macc_out_op_code          <= macc_in_op_code;
-    macc_out_target           <= macc_in_target;
     macc_out_reg_write_enable <= macc_in_reg_write_enable;
+    macc_out_target           <= macc_in_target;
 
     -- determine pc and link values
     macc_out_will_jump <= '1'                when macc_in_op_code = op_JMP else
@@ -344,11 +348,21 @@ begin
                 reg_link <= reg_pc; -- TODO - 4 ??
             end if;
 
-            reg_flag <= (
-                0      => macc_out_flags_comp,
-                1      => macc_out_flags_carry,
-                2      => macc_out_flags_of,
-                others => '0');
+            case macc_out_op_code is
+
+                when op_CMPEQ =>
+                    reg_flag(0) <= macc_out_alu_comp_eq;
+
+                when op_CMPGT =>
+                    reg_flag(0) <= macc_out_alu_comp_gt;
+
+                when op_ADD | op_ADC | op_SUB | op_SBC =>
+                    reg_flag(1) <= macc_out_alu_carry;
+                    reg_flag(2) <= macc_out_alu_of;
+
+                when others =>
+                    null;
+            end case;
 
             if macc_out_reg_write_enable = '1' then
 
