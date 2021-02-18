@@ -343,9 +343,10 @@ begin
                     (others => '0')   when others;
 
     -- When STR instruction: set data_we to '1'
-    with macc_in_op_code select
-        data_we <= '1' when op_STR,
-                   '0' when others;
+    -- do not set when flushing
+    data_we <= '0' when macc_out_flush  = '1'    else
+               '1' when macc_in_op_code = op_STR else
+               '0';
 
     -- When LDR instruction: set macc_out_result to data_in
     with macc_in_op_code select
