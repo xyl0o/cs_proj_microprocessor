@@ -38,24 +38,24 @@ architecture cpu_arc of cpu is
     ----------------------------------------------------------------------------
     --- Registers
 
-    type t_register_file is array(0 to 31) of t_data;
+    type t_register_file is array(0 to 30) of t_data;
 
     signal register_file : t_register_file := (others => (others => '0'));
 
     alias reg_zero : t_data is register_file(to_integer(unsigned(reg_addr_zero)));
     alias reg_flag : t_data is register_file(to_integer(unsigned(reg_addr_flags)));
     alias reg_link : t_data is register_file(to_integer(unsigned(reg_addr_link)));
-    alias reg_pc   : t_data is register_file(to_integer(unsigned(reg_addr_pc)));
+
+    signal reg_pc : t_data := (others => '0');
 
 
     ----------------------------------------------------------------------------
     --- Fetch signals
 
-    signal fetch_in_pc : t_data;
+    signal fetch_in_instr       : t_data := (others => '0');
 
     -- Outputs
     signal fetch_out_instr       : t_data := (others => '0');
-    signal fetch_out_next_seq_pc : t_data := (others => '0');
 
 
     ----------------------------------------------------------------------------
@@ -63,7 +63,6 @@ architecture cpu_arc of cpu is
 
     -- Inputs
     signal indec_in_instr       : t_data := (others => '1');
-    signal indec_in_next_seq_pc : t_data := (1 => '1', 0 => '1', others => '0'); -- decimal: 3
 
     -- internal signals to inst_decode
     signal indec_reg_select_1 : t_reg_addr;
@@ -83,7 +82,6 @@ architecture cpu_arc of cpu is
     signal indec_out_flags_carry      : std_logic := '0';
     signal indec_out_flags_of         : std_logic := '0';
     signal indec_out_reg_write_enable : std_logic;
-    signal indec_out_next_seq_pc      : t_data;
 
 
     ----------------------------------------------------------------------------
@@ -100,7 +98,6 @@ architecture cpu_arc of cpu is
     signal exec_in_flags_carry      : std_logic := '0';
     signal exec_in_flags_of         : std_logic := '0';
     signal exec_in_reg_write_enable : std_logic;
-    signal exec_in_next_seq_pc      : t_data := (1 => '1', others => '0'); -- decimal: 2
 
     -- Outputs
     signal exec_out_op_code          : t_op_code := op_NOP;
@@ -111,7 +108,6 @@ architecture cpu_arc of cpu is
     signal exec_out_flags_carry      : std_logic := '0';
     signal exec_out_flags_of         : std_logic := '0';
     signal exec_out_reg_write_enable : std_logic;
-    signal exec_out_next_seq_pc      : t_data;
 
 
     ----------------------------------------------------------------------------
@@ -126,10 +122,6 @@ architecture cpu_arc of cpu is
     signal macc_in_flags_carry      : std_logic := '0';
     signal macc_in_flags_of         : std_logic := '0';
     signal macc_in_reg_write_enable : std_logic;
-    signal macc_in_next_seq_pc      : t_data := (0 => '1', others => '0'); -- decimal: 1
-
-    -- internal signals to mem_access
-    signal macc_will_jump : std_logic;
 
     -- Outputs
     signal macc_out_op_code          : t_op_code := op_NOP;
@@ -139,8 +131,7 @@ architecture cpu_arc of cpu is
     signal macc_out_flags_carry      : std_logic := '0';
     signal macc_out_flags_of         : std_logic := '0';
     signal macc_out_reg_write_enable : std_logic;
-    signal macc_out_new_pc           : t_data;
-    signal macc_out_new_link         : t_data;
+    signal macc_out_will_jump        : std_logic;
 
 
     ----------------------------------------------------------------------------
@@ -148,7 +139,11 @@ architecture cpu_arc of cpu is
 
     impure function reg_access(reg_addr: t_reg_addr) return t_data is
     begin
-        return register_file(to_integer(unsigned(reg_addr)));
+        if reg_addr = reg_addr_pc then
+            return reg_pc;
+        else
+            return register_file(to_integer(unsigned(reg_addr)));
+        end if;
     end function;
 
     function sign_extend(imm_value : t_op_imm) return t_data is
@@ -170,17 +165,17 @@ begin
     ----------------------------------------------------------------------------
     --- Fetch
 
+    instr_addr <= reg_pc;
+
     fetch_pipeline: process (clk) is
     begin
         if rising_edge(clk) then
-            fetch_in_pc <= reg_pc;
+            fetch_in_instr <= instr_in;
         end if;
     end process fetch_pipeline;
 
-    instr_addr <= fetch_in_pc;
-
-    fetch_out_instr       <= instr_in;
-    fetch_out_next_seq_pc <= std_logic_vector(unsigned(reg_pc) + 4);
+    -- passthrough
+    fetch_out_instr <= fetch_in_instr;
 
 
     ----------------------------------------------------------------------------
@@ -190,12 +185,10 @@ begin
     begin
         if rising_edge(clk) then
             indec_in_instr       <= instr_in;
-            indec_in_next_seq_pc <= fetch_out_next_seq_pc;
         end if;
     end process indec_pipeline;
 
     -- passthrough
-    indec_out_next_seq_pc <= indec_in_next_seq_pc;
 
     decoder_instance: decoder
         generic map (
@@ -242,7 +235,6 @@ begin
             exec_in_flags_carry      <= indec_out_flags_carry;
             exec_in_flags_comp       <= indec_out_flags_comp;
             exec_in_flags_of         <= indec_out_flags_of;
-            exec_in_next_seq_pc      <= indec_out_next_seq_pc;
             exec_in_op_1             <= indec_out_op_1;
             exec_in_op_2             <= indec_out_op_2;
             exec_in_op_code          <= indec_out_op_code;
@@ -256,7 +248,6 @@ begin
     exec_out_op_code          <= exec_in_op_code;
     exec_out_target           <= exec_in_target;
     exec_out_datastore        <= exec_in_datastore;
-    exec_out_next_seq_pc      <= exec_in_next_seq_pc;
     exec_out_reg_write_enable <= exec_in_reg_write_enable;
 
     alu_instance: alu
@@ -290,7 +281,6 @@ begin
             macc_in_flags_carry      <= exec_out_flags_carry;
             macc_in_flags_comp       <= exec_out_flags_comp;
             macc_in_flags_of         <= exec_out_flags_of;
-            macc_in_next_seq_pc      <= exec_out_next_seq_pc;
             macc_in_op_code          <= exec_out_op_code;
             macc_in_reg_write_enable <= exec_out_reg_write_enable;
             macc_in_result           <= exec_out_result;
@@ -307,17 +297,9 @@ begin
     macc_out_reg_write_enable <= macc_in_reg_write_enable;
 
     -- determine pc and link values
-    macc_will_jump <= '1'                when macc_in_op_code = op_JMP else
-                      macc_in_flags_comp when macc_in_op_code = op_B   else
-                      '0';
-
-    with macc_will_jump select
-        macc_out_new_pc <= macc_in_result      when '1',
-                           macc_in_next_seq_pc when others;
-
-    with macc_will_jump select
-        macc_out_new_link <= macc_in_next_seq_pc when '1',
-                             reg_link            when others;
+    macc_out_will_jump <= '1'                when macc_in_op_code = op_JMP else
+                          macc_in_flags_comp when macc_in_op_code = op_B   else
+                          '0';
 
     -- When STR or LDF instruction: set data_addr to macc_in_result
     with macc_in_op_code select
@@ -340,15 +322,27 @@ begin
         macc_out_result <= data_in        when op_LDR,
                            macc_in_result when others;
 
-
     ----------------------------------------------------------------------------
     --- Write back
+
+    wback_pc_set: process(clk) is
+    begin
+        if rising_edge(clk) then
+            if macc_out_will_jump = '1' then
+                reg_pc <= macc_out_result;
+            else
+                reg_pc <= std_logic_vector(unsigned(reg_pc) + 1);
+            end if;
+        end if;
+    end process wback_pc_set;
+
 
     wback_pipeline: process (clk) is
     begin
         if rising_edge(clk) then
-            reg_pc   <= macc_out_new_pc;
-            reg_link <= macc_out_new_link;
+            if macc_out_will_jump = '1' then
+                reg_link <= reg_pc; -- TODO - 4 ??
+            end if;
 
             reg_flag <= (
                 0      => macc_out_flags_comp,
