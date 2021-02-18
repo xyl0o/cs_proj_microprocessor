@@ -50,6 +50,12 @@ architecture cpu_arc of cpu is
 
 
     ----------------------------------------------------------------------------
+    --- Control signals
+
+    signal sig_flush  : std_logic;
+
+
+    ----------------------------------------------------------------------------
     --- Fetch signals
 
     -- Inputs
@@ -346,11 +352,13 @@ begin
     ----------------------------------------------------------------------------
     --- Write back
 
+    sig_flush <= '1' when macc_out_op_code = op_HLT else '0';
+
     wback_pc_set: process(clk) is
     begin
         if rising_edge(clk) then
             if macc_out_op_code = op_HLT then
-                null; -- TODO signal other stages to do nothing (flush)
+                null;
             elsif macc_out_will_jump = '1' then
                 reg_pc <= macc_out_result;
             else
