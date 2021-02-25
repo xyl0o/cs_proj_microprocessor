@@ -13,6 +13,8 @@ build paper:
   timeout: 5m
   after_script:
     - cat paper/*.log
+  tags:
+    - xelatex
 
 # Runner deps:
 # apt-get install -y \
