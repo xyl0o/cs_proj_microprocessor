@@ -1,0 +1,151 @@
+\documentclass[paper=a4,fontsize=10pt]{scrreprt}
+
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage[babelshorthands=true]{german}
+
+\usepackage[autostyle,german=quotes]{csquotes}
+\usepackage[autostyle]{csquotes}
+
+\usepackage[toc,page]{appendix}
+
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{hyperref}
+\usepackage{url}
+
+\usepackage{graphicx}
+
+\usepackage[
+    backend=biber,
+    style=numeric,
+    citestyle=authoryear,
+]{biblatex}
+
+\addbibresource{./literature.bib}
+
+\usepackage{amsmath}
+
+\title{Project::Foo Abschlussbericht}
+\author{Maximilian Bauregger \and Leonard Caanitz \and Lennart Clasmeier \and Patrizio Ferrara \and Luca Müller \and Frederic Voigt}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Abstract}
+
+\begin{itemize}
+    \item Was wurde wie erreicht?
+    \item Wo pflegt sich das in den den aktuellen stand der Forschung ein - wir haben also eine Reduzierte Arm Version gebaut
+\end{itemize}
+
+
+\chapter{Einführung}
+\begin{itemize}
+    \item Hier wird das Projekt kurz vorgestellt
+    \item Was haben wir gemacht? Was haben wir vor? Welche Tools wurden benutzt?
+    \item Welche Schwierigkeiten haben sich abgezeichnet?
+    \item welche Struktur hat der Vortrag - Welche Informationen können die Leser\_Innen in welchen Kapiteln erwarten.
+\end{itemize}
+
+\chapter{Planungsphase}
+
+\section{IS}
+
+\begin{itemize}
+    \item 32 Bit Befehlswortlänge
+    \item 32 Register
+    \item 3 Addressmaschine
+    \item reduzierter ARM Befehlssatz
+    \item Pipelining
+    \item Int als einziger Datentyp
+    \item Immediate Bit
+    \item Relative Jumps
+    \item Relative Speicheraddresssierung
+    \item 0 register
+    \item Python Sketch als Struktur
+\end{itemize}
+
+// appendix full instruction set
+
+\section{Diskussionen}
+
+\subsection{16 bit vs. 32 bit vs. 64 bit}
+Wir haben uns für 32 bit entschieden, warum?
+
+\subsection{5bit opcode vs 6bit opcode}
+Wir haben 5opcode mit nem zusätzlichen immediate bit, warum?
+
+\subsection{3 Addressmaschine? abhängig von der bit-Zahl}
+32 bit erlauben uns 3 address op codes
+
+\subsection{Relative Jumps (nur immediate jumps?)}
+Wir haben uns für relative und absolute jumps entschieden (JMP ist ein twoop).
+
+\chapter{Software}
+
+\section{Diskussion}
+\begin{itemize}
+    \item
+\end{itemize}
+
+\section{ANTLR}
+\subsection{Grammatik}
+\begin{itemize}
+    \item Einführung
+    \item Lexer
+    \item Parser
+\end{itemize}
+
+\section{Compiler Implementation}
+\subsection{ANTLR - Implementierung}
+\begin{itemize}
+    \item Automatisch erzeugte Klassen
+\end{itemize}
+
+\subsection{Algorithmus}
+\begin{itemize}
+    \item Macros ersetzen
+    \item Nops und Labels parsen
+    \item Übersetzen
+\end{itemize}
+
+\chapter{Hardware}
+
+\begin{itemize}
+    \item VHDL
+    \begin{itemize}
+        \item Struktur der Komponenten
+        \item Zu "wörtliche" Umsetztung des Python-Sketches (alles in entities verpackt, wir wussten nicht wie Register funktionieren)
+        \item Probleme mit dem reinen Entity - Architecture - Ansatz
+        \item Parallelität und sequenzielle Abläufe
+        \item Finaler Entwurf
+    \end{itemize}
+    \item Tests
+    \item Nice additions
+\end{itemize}
+
+\chapter{Test}
+\begin{itemize}
+    \item Wie lief das beim Fibonacci Test
+    \item Padding passte nicht
+    \item Nicht passende noops
+    \item manuelles Fixen des Mashinencodes
+    \item Problem mit Carry-flags (Durchschleifproblem)
+    \item Problem mit Jumpaddressen (Durchschleifproblem)
+\end{itemize}
+
+\chapter{Konklusion und Ausblick}
+\begin{itemize}
+    \item HLT op
+    \item Refactoring (unused signals)
+    \item Overflow out
+    \item link register is wrong
+    \item Reset Signal / Initialization
+    \item Pipeline flushing
+\end{itemize}
+
+\end{document}
