@@ -1,0 +1,27 @@
+
+stages:
+  - build
+
+build paper:
+  stage: build
+  before_script: [cd paper]
+  script: latexmk -cd -f -xelatex -interaction=nonstopmode -synctex=1 paper.tex
+  artifacts:
+    expose_as: 'paper pdf'
+    paths:
+      - paper/paper.pdf
+  timeout: 5m
+  after_script:
+    - cat paper/*.log
+
+# Runner deps:
+# apt-get install -y \
+#   latexmk \
+#   texlive-bibtex-extra biber \
+#   texlive-fonts-recommended \
+#   texlive-lang-german \
+#   texlive-latex-base \
+#   texlive-latex-extra \
+#   texlive-science \
+#   texlive-xetex \
+#   xzdec
