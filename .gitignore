@@ -1,2 +1,27 @@
+# latex build stuff
+**/*.aux
+**/*.bbl
+**/*.bcf
+**/*.blg
+**/*.dvi
+**/*.fdb_latexmk
+**/*.fls
+**/*.log
+**/*.out
+**/*.out.ps
+**/*.pdf
+**/*.run.xml
+**/*.synctex(busy)
+**/*.synctex.gz
+**/*.toc
+**/*.xdv
+
+# latex build stuff (beamer)
+**/*.nav
+**/*.snm
+
+# editors
+**/*.sublime-workspace
+
 **/__pycache__/
 *.sublime-workspace
