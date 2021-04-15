@@ -356,7 +356,17 @@ Die Outputs des Decoders bestimmen, welche Operation die ALU ausführt und welch
 Im \texttt{decoder\_pkg} sind die \texttt{decoder} Component und alle Opcodes definiert.
 
 \section{Input / Output}
-% RAM/ROM anbindung
+
+Die CPU benötigt natürlich noch Speicher für Daten und Instruktionen um ein Programm ausführen zu können.
+Dieser wird in der \texttt{processor} Entity mit der CPU verbunden.
+Es wurde die \texttt{sram2} Entity, welche uns von Andreas Mäder zur Verfügung gestellt worden ist, verwendet.
+Im \texttt{processor} werden zwei Instanzen dieses Speichers erzeugt - eine für Daten, eine für Instruktionen.
+Der Address-Input dieser Speicher ist mit den jeweiligen Adress-Outputs der CPU verbunden.
+Da die Speicher nicht mit vollen 32 bit Adressen operieren, werden die Outputadressen der CPU \enquote{beschnitten}.
+Es ist somit nicht möglich den vollen 32 bit Adressraum zu nutzen.
+So wird aber nicht der gesamte 32 bit Raum beim simulieren alloziiert.
+
+Desweiteren stellt der \texttt{processor} ein \texttt{clk} Signal für Speicher und CPU bereit.
 
 \section{Register}
 % write im writeback
