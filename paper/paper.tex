@@ -1,6 +1,6 @@
 % !TEX program = xelatex
 
-\documentclass[paper=a4,fontsize=12pt]{scrreprt}
+\documentclass[paper=a4,fontsize=12pt,twocolumn]{scrreprt}
 
 \usepackage{fontspec}
 \usepackage{polyglossia}
@@ -62,8 +62,15 @@
 
 \chapter{Planungsphase}
 
-Um die vorgegebenen Ziele zu erfüllen, sind wir systematisch an das Projekt herangegangen.
-Zuerst haben wir in einem Python Sketch die Struktur des Prozessors definiert. Danach wurde gemeinsam über den möglichen Befehlssatz diskutiert. Nachdem diese Dinge geklärt sind, haben sich die Gruppen in den jeweiligen Bereich Software und Hardware aufgeteilt um so das besprochenen zu realisieren. Im Anschluss sollen die programmierte Hardware und Software zusammen verbunden und getestet werden und eventuelle Fehler behoben werden, bis keine Fehler vorhanden sind. Falls noch Zeit übrig sein sollte, sind Erweiterungen des Befehlssatzes, sowie weitere Datentypen mögliche Punkte um den Prozessor qualitativ zu verbessern.
+%Um die vorgegebenen Ziele zu erfüllen, sind wir systematisch an das Projekt herangegangen. %% TODO kann weg
+Zuerst haben wir in einem Python Sketch die Struktur des Prozessors definiert.
+Danach wird gemeinsam über den möglichen Befehlssatz diskutiert.
+Nachdem diese Dinge geklärt sind, haben sich die Gruppen in den jeweiligen Bereich Software und Hardware aufgeteilt, um so das Besprochene zu realisieren.
+Im Anschluss soll die programmierte Hardware und Software zusammen verbunden, getestet und eventuelle Fehler behoben werden, bis keine Fehler vorhanden sind.
+Falls noch Zeit übrig sein sollte, sind Erweiterungen des Befehlssatzes, sowie weitere Datentypen mögliche Punkte, um den Prozessor qualitativ zu verbessern.
+Während der Bearbeitung des Projekts sind einige Fragestellungen und Diskussionspunkte aufgekommen, die im Nachfolgenden genauer besprochen werden sollen. Darunter finden sich auch Punkte oder Konzepte, die im Diskussionsprozess ausgeschlossen und nicht im finalen Projekt manifestiert wurden. Diese wollen wir dennoch beleuchten.
+
+%% TODO Kein Wasserfall
 
 \section{Aufbau des Prozessors}
 
@@ -98,55 +105,110 @@ Zuerst haben wir in einem Python Sketch die Struktur des Prozessors definiert. D
 
 \section{Instructionset}
 
-Während der Bearbeitung des Projekts sind einige Fragestellungen und Diskussionspunkte aufgekommen, die im Nachfolgenden genauer besprochen werden sollen. Darunter finden sich auch Punkte oder Konzepte, die im Diskussionsprozess ausgeschlossen und nicht im finalen Projekt manifestiert wurden. Diese wollen wir dennoch beleuchten.
+
+%%TODO Eingführung ins Kapitel Instruction Set sschreiben, was wird in welcher tiefe vorgetsellt was passiert in welchen kapitel später mit deiesen infromationen, wozu ist das wichtig?
 
 \subsection{Wortlänge}
 
-Als erster großer Diskussionspunkt kam die fundamentale Entscheidung der Wortlänge. Zur Auswahl standen 32 oder 64 Bit. Alle kleineren Längen haben wir aufgrund der impraktikablen Natur und dem Mehraufwand für die Ausarbeitung geeigneter Konzepte ausgeschlossen. Den Befehlssatz auf einer 16 Bit oder gar 8 Bit Wortlänge und die komplizierte, bit-sparende Arbeit mit diesem wollten wir umgehen. Bei einer Länge von 16-Bit hätte wir uns für eine 2-Adress-Maschine entschieden, da durch die geringe Länge die Kapazität der einzelnen Adressen, sowie der möglichen Immediate-Werte, unserer Auffassung nach, nicht skalierbar genug gewesen wäre.
+Als erster großer Diskussionspunkt gab es die fundamentale Entscheidung der Wortlänge.
+Zur Auswahl standen 32 oder 64 Bit. Alle kleineren Längen haben wir ausgeschlossen, da wir 16-Bit immidate-Werte haben wollten.
+Den Befehlssatz auf einer 16 Bit oder gar 8 Bit Wortlänge und die komplizierte, bit-sparende Arbeit mit diesem wollten wir umgehen.
+Bei einer Länge von 16-Bit hätte wir uns für eine 2-Adress-Maschine entschieden, da durch die geringe Länge die Kapazität der einzelnen Adressen, sowie der möglichen Immediate-Werte, unserer Auffassung nach, nicht skalierbar genug gewesen wäre. %anstelle des anderen satzes
 
-Die 32 bzw. 64 Bit Wortlänge bietet dann den Vorteil, dass wir hier große Intermediates nutzen können und wir bei der Wahl des OP-layouts volle Entscheidungsfreiheit haben.
-Gegen die 64 Bit-Länge haben wir uns unter dem Gesichtspunkt entschieden, dass in unserem Anwendungsfall und dem Zugrundeliegenden Instruction-set und den groben Konzepten für die einigen wenigen bis zich Befehle, die Wortlänge kaum ausgeschöpft werden würde. Wir hätten also stets das Problem, einen gewissen Bit Overhead durch unser Programm zu schleifen. Zudem ist der Aspekt der Fehlersuche bei kleineren Beriechen immer etwas einfacher und der Debugging-Aufwand bei 32 Bit gegebener Maßen geringer, als bei 64 Bit.
-Insbesondere, da moderne Betriebssysteme problemlos auf 32-Bit operieren, sind wir davon ausgegangen, dass der funktional eingeschränkte Prozessor, den wir ausarbeiten, das auch problemlos schaffen sollte. So sind wir mit der jetzigen 32 Bit Implementation verblieben.
+Die 32 bzw. 64 Bit Wortlänge bietet den Vorteil, dass große Intermediates genutzt werden können und bei der Wahl des OP-layouts die volle Entscheidungsfreiheit bleibt.
+Gegen die 64 Bit-Länge haben wir uns unter dem Gesichtspunkt entschieden, dass in unserem Anwendungsfall und dem Zugrundeliegenden Instruction-set und den groben Konzepten für die einigen wenigen bis zich Befehle, die Wortlänge kaum ausgeschöpft werden würde. %zu lang
+%Insbesondere, da moderne Betriebssysteme problemlos auf 32-Bit operieren, sind wir davon ausgegangen, dass der funktional eingeschränkte Prozessor, den wir ausarbeiten, das auch problemlos schaffen sollte. %%brauchen wir diesen Satz?
+So sind wir mit der jetzigen 32 Bit Implementation verblieben.
+
+%% TODO warum genau ist 64bit besser/schlechter?
 
 \subsection{Adressmaschine}
-
-Auf Basis der Wortlänge haben wir uns nun der Frage der Adressmaschine zugewandt, welche vor allem zwischen den Alternativen 2-Adress oder 3-Adress Maschine schwankte. Eine 1-Adress Maschine haben wir ausgeschlossen, da wir diese als nicht sinnvoll für die Projekt Zielsetzung betrachtet haben und auch die Programmierung eines Prozessors darauf nicht sinnvoll funktioniert hätte.
-Zunächst tendierte die Gruppe eher zu einer 2-Adresse Maschine. Diese sahen wir in der Komplexität etwas weiter unten an, als die 3 Adressmaschine und sie wäre darum einfacher auszuarbeiten. Zudem sparen die weniger Adressen auch Befehlswortlänge. Das wäre, so der Ansatz, auch für die beschränkten 32 Bit Ressourcen schonender.
+%haben uns für 3-adress maschien entscheieden, ermöglicht auch pipelining, 1 adress zu kompliziert
+% für pipelining ist ein ein addresse doof, weil du für eine operation, die bei drei adress maschine einen befehl braucht, mehrere vwerdenden musst. das ist tötlich fürs pipelining. ständig flushes/abhängikkeiten, etc.. 3 adress == weniger abhängigkeiten als bei ein oder zwei addressmaschine.
+Auf Basis der Wortlänge haben wir uns nun der Frage der Adressmaschine zugewandt, welche vor allem zwischen den Alternativen 2-Adress oder 3-Adress Maschine schwankte.
+Eine 1-Adress Maschine haben wir ausgeschlossen, da wir diese als nicht sinnvoll für die Projekt Zielsetzung betrachtet haben und auch die Programmierung eines Prozessors darauf nicht sinnvoll funktioniert hätte. %bis hier hin umschreiben
+Zunächst tendierte die Gruppe eher zu einer 2-Adresse Maschine.
+Diese sahen wir in der Komplexität etwas weiter unten an, als die 3 Adressmaschine und sie wäre darum einfacher auszuarbeiten.
+Zudem sparen die weniger Adressen auch Befehlswortlänge.
+Das wäre, so der Ansatz, auch für die beschränkten 32 Bit Ressourcen schonender.
 Die 32 Bit bieten genug Platz für eine 3-Adresse Maschine und die Wortlänge würde - auch hier- in keinem Fall ausgeschöpft werden.
-Die höhere Programmierkomplexität, die durch eine zusätzliche Adresse natürlich gegebenen ist, bringt den Vorteil mit sich, dass der Komfort deutlich erhöht würde.
+Die höhere Programmierkomplexität, die durch eine zusätzliche Adresse gegebenen ist, bringt den Vorteil mit sich, dass der Komfort deutlich erhöht würde.
+% trotz komplexität, nicht wegen. Und wir erhöhen nicht unbedingt konfort sondern "pipelining-eignung" und reduzieren die menge an befehlen, die für ein programm benötigt werden (das mag das softwareteam auch gern)
 
 \subsection{Befehlssatz}
 
-Nachdem die Länge und die Adressierung des Befehlswortes entschieden war, mussten die einzelnen Befehle festgelegt werden. Dabei haben wir uns an den ARM Befehlssatz orientiert\footnotemark.
+Nachdem die Länge und die Adressierung des Befehlswortes entschieden war, mussten die einzelnen Befehle festgelegt werden.
+Dabei haben wir uns an den ARM Befehlssatz orientiert\footnotemark.
 \footnotetext{//(*link zum ARM Befehlssatz)//}
-Dieser wurde von uns noch reduziert, sodass wir eine gute Basis hatten. Bei der Reduzierung haben wir die Befehle in 3 Kategorien unterteilt: \enquote{must-have}, \enquote{nice-to-have} und \enquote{irrelevant}. Diese Verteilung wurde unter Beachtung der Machbarkeit in der gegebenen Zeit und der Relevanz zu unserem Projekt getätigt.
+Dieser wurde von uns noch reduziert, sodass wir eine gute Basis hatten.
+Bei der Reduzierung haben wir die Befehle in 3 Kategorien unterteilt: \enquote{must-have}, \enquote{nice-to-have} und \enquote{irrelevant}.
+Diese Verteilung wurde unter Beachtung der Machbarkeit in der gegebenen Zeit und der Relevanz zu unserem Projekt getätigt.
+% Wir haben uns das bare minimum da raus gepickt, von dem wir glaubten, das braucht ein prozessor
 
-Folgend der Auswahl des Befehlssatzes, mussten die einzelnen Befehle einem Opcode zugewiesen werden. Bei einer Auswahl von 18 Befehlen und zusätzlich bei einigen Befehlen die Unterscheidung zwischen einer direkten Eingabe über einen Immediate-Wert oder einer indirekten Angabe über eine Adresse kam die Überlegung, ob dem Opcode eine Länge von 5-Bit ausreichend ist oder auf 6-Bit erhöht werden muss. Beide Ansätze führen beim Befehlswort schlussendlich zum selben Ergebnis. Da die Hardware den selben Arbeitsaufwand bei einem Opcode der Länge von 5- oder 6-Bit hat, haben wir uns entschieden Softwareprogrammierung zu vereinfachen und einen Opcode zu erstellen, der zwischen einer Direktzuweisung und einer indirekten Zuweisung nicht unterscheidet. Sodass auch bei 18 Befehlen ein 5-Bit langer Opcode ausreichend ist und noch genügend nicht zugewiesene Codes hat, um den Befehlssatz noch zu erweitern.
+% die befehle passten in 5 bit opcode
+% Aufteilung in one, two, three op ??
+
+Folgend der Auswahl des Befehlssatzes, mussten die einzelnen Befehle einem Opcode zugewiesen werden.
+Bei einer Auswahl von 18 Befehlen und zusätzlich bei einigen Befehlen die Unterscheidung zwischen einer direkten Eingabe über einen Immediate-Wert oder einer indirekten Angabe über eine Adresse kam die Überlegung, ob dem Opcode eine Länge von 5-Bit ausreichend ist oder auf 6-Bit erhöht werden muss.
+% Die Debatte war doch, ob wir ein dediziertes immediate bit und 5bit opcodes haben oder "immediate befehle" und dann 6bit opcodes.
+Beide Ansätze führen beim Befehlswort schlussendlich zum selben Ergebnis.
+Da die Hardware den selben Arbeitsaufwand bei einem Opcode der Länge von 5- oder 6-Bit hat, haben wir uns entschieden Softwareprogrammierung zu vereinfachen und einen Opcode zu erstellen, der zwischen einer Direktzuweisung und einer indirekten Zuweisung nicht unterscheidet.
+Sodass auch bei 18 Befehlen ein 5-Bit langer Opcode ausreichend ist und noch genügend nicht zugewiesene Codes hat, um den Befehlssatz noch zu erweitern.
 Da wir die Unterscheidung der Direktzuweisung zur indirekten Zuweisung nicht im Opcode behandeln, haben wir uns dafür entschieden, ein Bit im Befehlswort als \enquote{Immediate-Bit} zu deklarieren.
-Das hat den Hintergrund, dass wir die dadurch entstehende Struktur als sinnvolle Ordnung der OP Codes ansehen. So waren wir in der Lage in unserer finalen Implementation, jeden der Befehle durch ein einziges Befehlswort auszudrücken und brauchten keine weitere Implementation für die immediate Version. (Beispielsweise gibt es nur den Befehl add, statt addi (für immediate).) Dieses Bit soll \enquote{0} sein, falls der Befehl eine Registerzuweisung ist, und \enquote{1}, falls es eine Direktzuweisung gibt. Somit wird im Befehlswort ersichtlich, was zugewiesen wird.
+% Wir haben uns entschieden, den opcode 5bit lang zu lassen und ein dediziertes immediate bit zu setzen:
+% das ist konsistent und macht es einfach zu entscheiden, ob immediate oder register gelesen wird.
+%Das hat den Hintergrund, dass wir die dadurch entstehende Struktur als sinnvolle Ordnung der OP Codes ansehen. kann weg? 
+So waren wir in der Lage in unserer finalen Implementation, jeden der Befehle durch ein einziges Befehlswort auszudrücken und brauchten keine weitere Implementation für die immediate Version.
+Beispielsweise gibt es nur den Befehl \texttt{ADD}, statt \texttt{ADDI} für Immediate.
+Dieses Bit soll \enquote{0} sein, falls der Befehl eine Registerzuweisung ist, und \enquote{1}, falls es eine Direktzuweisung gibt.
+Somit wird im Befehlswort ersichtlich, was zugewiesen wird.
 
-Bei diesen Diskussionen kam die Frage auf, welche Befehle Immediate-Werte annehmen und welche nicht. Betroffen waren vor allem 3 Befehle: der \enquote{Jump}-Befehl und der \enquote{Store}- bzw. \enquote{Load}-Befehl. Bei diesen Befehlen ging es vor allem darum, dass ein Betriebssystem den Speicher reserviert und somit nur Anfangs- und Endadresse der Reservierung kennt. Das Betriebssystem arbeitet dann relativ zu den Anfangsadressen und nicht zu dem gesamten Speicher. Dies hat den Vorteil, dass mehrere Programme gleichzeitig laufen und man die \enquote{echte} Speicheradresse nicht kennen muss. Man weiß, an welcher Stelle die Speicheradresse relativ zur Anfangsadresse ist. Weiterhin ist es auch möglich, Arrays durch diese relativen Befehle einfach zu erstellen. Da wir aber in diesem Projekt ohne Betriebssystem arbeiten, war es fraglich, ob diese Ergänzung zum Befehl einen Nutzen haben würde, a der ausgeführte Code selbst geschrieben ist und damit jede Zuweisung der einzelnen Speicheradressen bekannt ist. So entfällt der Vorteil des indirekten Ansprechen der Speicheradressen, da diese immer direkt angesprochen werden können. Zusätzlich laufen keine weiteren Programme parallel, sodass auch dieser Vorteil hinfällig ist.
+Bei diesen Diskussionen kam die Frage auf, welche Befehle Immediate-Werte annehmen und welche nicht.
+Betroffen waren vor allem 3 Befehle: der \enquote{Jump}-Befehl und der \enquote{Store}- bzw. \enquote{Load}-Befehl.
+Bei diesen Befehlen ging es vor allem darum, dass ein Betriebssystem den Speicher reserviert und somit nur Anfangs- und Endadresse der Reservierung kennt.
+% Das war nicht die debatte hier, sondern wieviele Operanten haben die Befehle. Also ist Jump ein oneop oder threeop.
+Ein Threeop Jump Befehl hat den Vorteil, dass mehrere Programme gleichzeitig laufen und man die \enquote{echte} Speicheradresse nicht kennen muss.
+% "Das relative Sprünge möglich sind"
+%..man weiß umformulieren
+Dies ist zB. relevant um Arrays einfach addressieren zu können.
+Da wir aber in diesem Projekt ohne Betriebssystem arbeiten, war es fraglich, ob diese Ergänzung zum Befehl einen Nutzen haben würde.
+Der ausgeführte Code ist selbst geschrieben und damit ist jede Zuweisung der einzelnen Speicheradressen bekannt.
+%Absatz darunter neu 
+So entfällt der Vorteil des indirekten Ansprechens der Speicheradressen, da diese immer direkt angesprochen werden können.
+Zusätzlich laufen keine weiteren Programme parallel, sodass auch dieser Vorteil hinfällig ist.
 
 Da es aber unser Ziel ist einen möglich guten Prozessor zu erstellen, wurden die direkten Sprünge und Speicheradressierungen mit implementiert, da diese die Qualität des Prozessors steigern und eventuelle weitere Arbeiten mit dem Prozessor vereinfachen.
 
-Abschließend musste noch die Struktur des Befehlswortes festgelegt werden. Dabei unterscheiden wir zwischen Befehlen die einen, zwei oder drei Eingabeparameter haben. Alle haben gleichartige Strukturelemente.
+Abschließend musste noch die Struktur des Befehlswortes festgelegt werden. Dabei unterscheiden wir zwischen Befehlen die einen, zwei oder drei Eingabeparameter haben.
+Alle haben gleichartige Strukturelemente.
 
 (Von links nach rechts) Die ersten 5 Bits sind der Opcode, das 6. Bit, ist das Immediate-Bit, und falls ein Immediate-Wert vorhanden ist, befindet er sich immer an den letzten 16 Stellen.
 
-\enquote{Opcode/ \enquote{0}/ Zuweisungen}  // BILD \footnotetext{BILD}
+\enquote{Opcode/ \enquote{0}/ Zuweisungen}  // BILD \footnote{BILD}
 
-\enquote{Opcode / \enquote{1} / Zuweisungen / Immediate} // BILD\footnotetext{BILD}
+\enquote{Opcode / \enquote{1} / Zuweisungen / Immediate} // BILD\footnote{BILD}
 
-Die 16 Bits wurden deswegen ausgewählt, da die Register einen Speicher von 32 Bit haben und somit 16 Bits einfacher zu behandeln sind, da Zahlen größer 16 Bits durch 2 Zuweisungen und ein \enquote{Shift 16} einfach dargestellt werden können.
+Die 16 Bits wurden ausgewählt, da die Register einen Speicher von 32 Bit haben und somit 16 Bits einfacher zu behandeln sind, da Zahlen größer 16 Bits durch 2 Zuweisungen und ein \enquote{Shift 16} einfach dargestellt werden können.
+% Welche 16 bits: immediate
 
-Je nach Eingabeparameter sieht die Struktur des Eingabewortes aus :
+Je nach Eingabeparameter sieht die Struktur der Instruktionen folgendermaßen aus :
 
-// BILD\footnotetext{BILD}
+// BILD\footnote{BILD}
 
-Durch die Begrenzung der Eingabeparameter auf 5 Bits können somit nur 32 Register benutzt werden.
+Aus diesen Überlegungen ergab sich folgende Befehlsstruktru: Die ersten fünf bit stehen für den Opcode.
+Das darauf folgende Bit signalisiert ob es sich beim letzten Operanden um ein Emidiate Wert handelt.
+Die restlichen Bits sind für die Operanden reserviert.
+Instruktionen haben felder für register / immediate werd
+Sind 5bit lang (immediate 16)
+%ganze Befehlsstruktur einmal schriftlich niederlgen, vor diesem Teil
+Durch die Begrenzung der Eingabeparameter auf 5 Bits können somit 32 Register benutzt werden.
 
-Aus Einfachheit, für die Berechnungen der Alu, wurde weiterhin beschlossen, dass das "Register-0" ein 0-Register bleibt und alle Berechnungen im 2er-Komplement getätigt werden. Weiterhin wurde entschieden den Integer als einzigen Datentyp zu erlauben.
-
+%kann weg oder deutlich kürzer formulieren 
+% 2er komplemnt kann in alu erwähnt, hat nix mit 0 register zu tun 
+%inetger ist quatsch 
+Aus Einfachheit, für die Berechnungen der Alu, wurde weiterhin beschlossen, dass das "Register-0" ein 0-Register bleibt und alle Berechnungen im 2er-Komplement getätigt werden.
+Weiterhin wurde entschieden den Integer als einzigen Datentyp zu erlauben.
+% Alu rechnet einfahc nur, 2er komplement ist nur interpretation
 
 %\subsection{16 bit vs. 32 bit vs. 64 bit (x)}
 %Wir haben uns für 32 bit entschieden, warum?
@@ -168,80 +230,6 @@ Aus Einfachheit, für die Berechnungen der Alu, wurde weiterhin beschlossen, das
 %\subsection{Relative Jumps (nur immediate jumps?)(x)}
 %Wir haben uns für relative und absolute jumps entschieden (JMP ist ein TWOOP).
 
-\chapter{Software}
-\section{Anforderungsanalyse}
-Zu Beginn des Softwareentwicklungsprojektes bestand die erste Herausforderung darin, eine auf das Problem zugeschnittene Anforderungsbeschreibung zu erstellen. Die grundsätzlichen Anforderungen konnten dabei prinzipiell in zwei Kategorien eingeteilt werden.
-
-\subsection{Funktionale Anforderungen}
-Die funktionalen Anforderungen beschreiben, über welche Funktionen die Software am Ende des Entwicklungsprozesses verfügen muss. Um eine realistisch zu bewältigende Menge an Funktionen auswählen zu können, war eine sehr kritische Selektion notwendig. Beispielsweise stand zu Beginn die Möglichkeit einer diskreten Simulationsumgebung im Raum, welche dann aber schnell wieder verworfen wurde, da unklar war, wie hoch der konkrete Zeitaufwand dafür gewesen wäre mangels der Kenntnis über den Compiler selbst. Wir entschieden uns also zunächst dafür, uns ausschließlich auf den Compiler (Assemblercode zu Binärcode) zu fokussieren.
-Die dafür notwendigen funktionalen Anforderungen konnten relativ schnell ermittelt werden. Das Ziel bestand darin eine beliebige Textdatei mit Assemblercode automatisch einlesen zu können, aus dem eine neue Textdatei - bestehend aus Binärcode - generiert werden sollte. Zusätzlich dazu musste es eine geeignete Möglichkeit geben syntaktische Fehler innerhalb des Assemblercodes zu erkennen und auszugeben. Zuzüglich dazu sollten zwei wichtige Dinge während der Übersetzung passieren. Zum einen musste es die Möglichkeit geben innerhalb der Software Makros zu erstellen, welche Operationen ermöglichen sollten, die nicht im Instruction Set explizit definiert waren. Beispielsweise besitzt unser Instruction Set keinen Multiplikationsbefehl (\texttt{MUL}). Dennoch können wir den \texttt{MUL}-Befehl nutzen, da er intern durch die russische Bauernmultiplikation ersetzt wird. Zum anderen war zu diesem Zeitpunkt unklar, inwieweit das Hardwareentwicklungsteam auf mögliche Komplikationen im Rahmen des Pipelining reagieren konnte. Daher musste eine softwaretechnische Lösung entwickelt werden. Zu Beginn wurde lediglich festgelegt, dass wir nach jedem Befehl eine notwendige Anzahl NOOP-Befehle einfügen. Da dieses Prinzip allerdings völlig ungeeignet ist - wofür eine Pipeline benutzen, wenn sie obsolet gemacht wird? - entschieden wir uns auf bestimmte Abhängigkeiten von Beginn an zu reagieren (z.B. flushing der Pipeline vor einem Jump-Befehl oder das Erkennen der Abhängigkeiten von genutzten Registern).
-
-\subsection{Technische Anforderungen}
-Nach Fertigstellung der funktionalen Anforderungsanalyse gingen wir dazu über, eine Liste an technischen Anforderungen des Systems zu entwerfen.
-
-\subsubsection{Änderbarkeit}
-Aufgrund des (vorläufigen) Mangels an Fachkenntnis war es von sehr großer Bedeutung das System so zu gestalten, dass Änderungen an der Struktur des Assemblercodes oder an den funktionalen Anforderungen ohne großen Aufwand gemacht werden konnten.
-
-\subsubsection{Erweiterbarkeit}
-Da zu Beginn des Entwicklungsprozesses nur schwer abzuschätzen war, wie lange wir für die Implementation von bestimmten Funktionen brauchen, war es notwendig das System so zu gestalten, dass eine einfache Erweiterbarkeit von Funktionalitäten gegeben ist.
-
-\subsubsection{Korrektheit}
-In Folge der Tatsache, dass Binärcode nur äußerst schwer zu Debuggen ist, war eine Hauptanforderung eine 100\% Korrektheit der Übersetzung. Dieser Punkt stellte sich im Nachhinein als komplexer heraus als erwartet, da wir mangels eines Simulators auf die Fertigstellung des Hardwareentwicklungsteams warten mussten, um das Programm ausreichend testen zu können.
-
-\subsubsection{Vernachlässigte Qualitätsmerkmale}
-Standardmäßig gibt es im Laufe einer jeden Softwareentwicklung Entscheidungen zu signifikanten Qualitätsmerkmalen zu fällen. So entschieden wir uns bewusst dafür, dass die Effizienz des Programms eine sehr untergeordnete Rolle spielen sollte, da es praktisch ausgeschlossen war, dass wir große Mengen an Quellcode in sehr kurzer Zeit übersetzen müssen. Des Weiteren spielte aufgrund der Spezialisierung des Fachgebietes in dem wir uns bewegen, eine gute Benutzbarkeit des Programms eine geringe Rolle, da jeder der mit dem Programm arbeitet genug Expertise besitzen sollte, um eine Konsole zu nutzen.
-
-\section{ANTLR}
-%https://www.antlr.org/
-In der Vorbereitung für die Entwicklung des Compilers haben wir verschiedene Möglichkeiten abgewogen, wie die von uns gesteckten Ziele am besten zu erreichen sind. Die simpelste Möglichkeit wäre es gewesen den Quellcode direkt mit einem großen Switch Statement zu parsen und die einzelnen Befehle dann zu übersetzen. Da dies jedoch schnell relativ unübersichtlich zu werden schien, haben wir Ausschau nach möglichen Tools gehalten, die uns Arbeitsaufwand erparen könnten. Dabei sind wir auf ANTLR gestoßen.
-ANTLR (ANother Tool for Language Recognition) ist ein Parser Generator zum Lesen und Verarbeiten von strukturierten Textdateien auf der Basis von Grammatiken, der unter anderem verwendet werden kann, um eigene Programmiersprachen zu entwickeln.
-Um einen Compiler mit ANTLR zu erstellen, benötigt man zunächst eine Grammatik, in der die Formalen Regeln der Sprache beschrieben werden. Die Grammatik besteht aus Parser- und Lexer-Regeln. Dabei stehen die Parserregeln für die Struktur der Sprache (Nonterminale) und die Lexerregeln für die tatsächlichen Zeichen/Wörter (Terminale), die die Nonterminale ersetzen können.
-Die Grammatik kann mit Hilfe von ANTLR zu Java Klassen compiliert werden. ANTLR liefert dabei einen Lexer Parser und Tokenizer mit deren Hilfe ein Parsetree generiert werden kann. Dazu wird einfach eine Datei mit dem Quellcode eingelesen und durch die einzelnen Klassen geschleift. Der resultierende Parsetree kann dann mit Hilfe von Visitors durchlaufen werden, die dann die eigentliche Übersetzungsarbeit leisten.
-
-\section{Compiler Implementation}
-
-\subsection{Grammatik}
-Innerhalb einer Grammatik müssen wir grundsätzlich zwischen zwei unterschiedlichen Prinzipien unterschieden. Zum einen gibt es die sogenannten Parser-Regeln und zum anderen die Lexer-Regeln (oder auch Tokenizer-Regeln).
-
-\subsubsection{Lexer}
-Der Lexer stellt die unterste Ebene einer Grammatik dar. Jede Lexer-Regel definiert dabei genau ein Token. Ziel des Lexers ist es nun für jede mögliche Eingabe zu erkennen, um welches Token es sich handelt. Hierbei gilt zu beachten, dass ein Token nicht zwangsläufig exakt definiert werden muss, da die Nutzung von regulären Ausdrücken möglich ist.
-\begin{lstlisting}
-MOV: 'MOV'; // Als MOV-Token wird jeder Ausdruck der Form "MOV" erkannt
-BINARY: '0b' ([0-1])+;  // „0b1001…“ wird erkannt
-\end{lstlisting}
-Zu Beginn des Prozesses werden zunächst sämtliche Eingaben in Tokens überführt, welche dann von den Parser-Regeln in einen Syntax-Baum überführt werden.
-
-\subsubsection{Parser}
-Die Parser-Regeln definieren den Ableitungsbaum der formalen Grammatik. Dabei entspricht jede Verzweigung einer Parser-Regel, während jeder Blattknoten einem Token entspricht.
-
-\begin{figure}[h]
-\centering
-% \includegraphics{Figure 3.2.1}
-\caption{Syntaxbaum des Befehls: \texttt{MOV, r10, 10;}}
-\end{figure}
-
-Eine Parser-Regel hat immer die Form
-\begin{lstlisting}
-start: start command | command; //Startregel der Grammatik
-\end{lstlisting}
-wobei die Regel entweder direkt ein Token nutzt oder auf eine weitere Regel verweist.
-Anhand der Ableitungsregeln kann also eine Struktur erstellt werden, auf welche nun spezifisch reagiert werden kann. So ist es innerhalb des Programmes nun möglich auf jeden Knoten des Baumes sowie seine Eltern- und Kindknoten zuzugreifen.
-
-\subsection{Makros}
-Da unser Compiler mehrere Aufgaben erfüllen soll, die nur sequentiell erledigt werden können, wird dieser Ablauf insgesamt drei mal durchlaufen, wobei in jedem Durchlauf ein anderer Arbeitsschritt erledigt wird. Die drei Schritte sind das Ersetzen von Makros durch ihre jeweilige Implementation, das Einfügen von NOOPS zur Vermeidung von Race Conditions und die eigentliche Übersetzung.
-Makros wurden von uns mit eigenen Lexer und Parser Rules innerhalb der Grammatik implementiert. Dies ermöglicht es uns die so definierten Makros wie normale Befehle im Quellcode zu verwenden. Der Compiler kümmert sich dann darum die Mnemoniks durch entsprechende Codeschnipsel zu ersetzen. Zum aktuellen Zeitpunkt haben wir die russische Bauernmultiplikation für positive Zahlen (MUL) und ein simples binäres Invertieren (NOT) durch Makros verwirklicht. Es lassen sich leicht zusätzliche Makros hinzufügen, indem diese in der Grammatik definiert werden und ihre Implementation im Compiler verwirklicht wird. Bei der Verwendung von Makros muss beachtet werden, dass diese nicht immer \enquote{in place} implementiert werden können. Es ist daher empfehlenswert, zu dokumentieren, welche Register von den jeweiligen Makros verwendet werden, um Inkonsistenzen zu vermeiden.
-Das Vorgehen des Makrovisitors besteht also darin den übergebenen Quellcode größtenteils unverändert zurück zu geben und nur die Stellen, an denen ein Makro entdeckt wird, zu ersetzen.
-
-\subsection{Jumplabels und NOOPS}
-Im zweiten Übersetzungsschritt werden die jump Labels zu absoluten Zeilenangaben übersetzt und NOOPS eingefügt. Die Sprungaddressen werden ermittelt, indem der Compiler mitzählt, wie viele Befehle bereits gesehen wurden. Da Sprünge im Instruktionsspeicher über einen Befehlsindex implementiert sind, reicht dieser aus um Sprünge mit Immediate zu realisieren. Die Indizes werden in einer Hashmap zusammen mit den Labels gespeichert, sodass die Labels im Übersetzungsschritt durch die Immediate Werte ersetzt werden können.
-Eine weitere Aufgabe innerhalb dieses Schrittes ist das Einfügen von NOOPS, um Race Conditions auf die Register zu vermeiden. Um dies zu bewerkstelligen, merkt sich der Compiler für jedes Register die Anzahl der notwendigen NOOPS, die eingefügt werde müssten, falls das Register im aktuellen Befehl vorkommt. Ist der Wert 0 wird für das jeweilige Register der Wert auf 4 gesetzt, was der Anzahl unserer Pipelinestufen entspricht. Falls der Wert nicht 0 ist, werden entsprechend viele NOOPS eingefügt. Außerdem werden generell nach jedem jump (\texttt{JMP}, \texttt{B}) 3 NOOPS eingefügt, da wir für den Prozessor keinen Flush implementiert haben und auf diese Weise vermieden wird, dass ungewollte Befehle in die Pipeline geladen werden.
-
-\subsection{Übersetzung}
-Im letzten Schritt wird der auf diese Weise modifizierte Quellcode in den Maschinencode übersetzt. Die einzelnen Befehle werden je nach Befehlstyp (NOOP, TWOOP, THREEOP, Jump) unterschiedlich behandelt. Die Opcodes stehen in einer Hashmap zusammen mit den Mnemoniks für die einzelnen Befehle. Am letzten Operanden wird abgelesen, ob es sich um einen Immediate Befehl handelt oder nicht und das Immediate-Bit wird entsprechend gesetzt. Die Immediates werden aus dem angegebenen Zahlensystem (binär, hexadezimal, dezimal) zu einer Binärzahl übersetzt. Alle Operanden werden je nach Befehlsstruktur mit entsprechendem Padding versehen. Anschließend wird das Befehlswort zusammengesetzt und zusammen mit einem führenden Befehlsindex zurückgegeben.
-
-%\subsection{Probleme}
-%Die Implementation des Compilers verlief relativ Problemlos und das Ergebnis ermöglicht uns alle von uns gesetzten Ziele zu erreichen. Eine Schwäche unseres Vorgehens war jedoch die schlechte Testbarkeit des Programms, da diese von der Implementation der Hardware abhängig war. Das führte dazu, dass Fehler erst spät sichtbar wurden, da wir den compilierten Quellcode erst an dem fertigen Prozessor testen konnten (siehe Kapitel Test).
-%Simulator hätte das lösen können
 
 \chapter{Hardware}
 
@@ -263,52 +251,111 @@ Im letzten Schritt wird der auf diese Weise modifizierte Quellcode in den Maschi
 \section{Vorwort}
 
 Dieses Kapitel behandelt die Umsetzung unseres Mikroprozessors in Hardware Komponenten in VHDL.
-Historisch betrachtet schließt dieses Kapitel also an die Arbeitet des Hardware Teams nach der gemeinsamen Planungsphase des gesamten Teams an.
-In dieser vorangegangenen Planungsphase hat sich die Gruppe auf zentrale Orientierungspunkte geeinigt, welche die Arbeit des gesamten Teams strukturieren. Diese wurde bereits in Kapitel (?!) vorgestellt. Dazu zählen fundamentale Konzepte, wie die Wortbreite und der entlehnte ARM-Befehlssatz(siehe Anhang).
-Die durch das Team geleistete Vorbereitung stellt uns einen detaillierten Leitfaden zur Umsetzung bereit. Auf dem Papier ist bereits an diesem Punkt ein Prozessor in Python Pseudocode entstanden, der zur Orientierung dienen sollte (siehe Anhang), allerdings ohne Pipelining.
-Praktisch mussten dann nur der Python Code in funktionierenden VHDL Code umgewandelt werden. Das stellt die erste Herausforderung da, denn von uns hatte niemand Erfahrung auf dem Gebiet von Hardware-Beschreibungssprachen. Intern hat sich das Hardware-Team darauf geeinigt sich mindestens einmal pro Woche zu Treffen um erarbeitete Lösungen zu besprechen, das weitere Vorgehen zu Planen und die Arbeit aufzuteilen.
+Zeitlich betrachtet schließt dieses Kapitel also an die Arbeitet des Hardware Teams nach der gemeinsamen Planungsphase des gesamten Teams an.
+%eventeull als zeitliche einleitung für software übernehmen 
+In dieser vorangegangenen Planungsphase einigte sich die Gruppe auf zentrale Orientierungspunkte, welche die Arbeit des gesamten Teams strukturieren.
+Diese wurde bereits in Kapitel (?!) vorgestellt.
+Dazu zählen fundamentale Konzepte, wie die Wortbreite und der entlehnte ARM-Befehlssatz (siehe Anhang).
+% Referenzen schönmachen
+Die durch das Team geleistete Vorbereitung stellt uns einen detaillierten Leitfaden zur Umsetzung bereit.
+Auf dem Papier ist bereits an diesem Punkt ein Prozessor in Python Pseudocode entstanden, der zur Orientierung dienen sollte (siehe Anhang), allerdings ohne Pipelining.
+%pseudo code ist in pipeline allerdings funktional ohne zeitverhalten
+Praktisch musste dann nur der Python Code in funktionierenden VHDL Code umgewandelt werden. Das stellte die erste Herausforderung da, denn von uns hatte niemand Erfahrung auf dem Gebiet von Hardware-Beschreibungssprachen.
+Intern hat sich das Hardware-Team darauf geeinigt sich mindestens einmal pro Woche zu Treffen um erarbeitete Lösungen zu besprechen, das weitere Vorgehen zu Planen und die Arbeit aufzuteilen.
+%so etwas auch für software Einleitung vorgehen dies das 
 
-Im Folgenden soll einerseits der Prozess aus Sicht des Hardware Teams, der schlussendlich zu einer funktionierenden Lösung geführt hat, beschrieben werden. Andererseits soll die von uns erarbeitete Lösung vorgestellt und diskutiert werden.
-
+Im Folgenden soll einerseits der Prozess aus Sicht des Hardware Teams, der schlussendlich zu einer funktionierenden Lösung geführt hat, beschrieben werden.
+Andererseits soll die von uns erarbeitete Lösung vorgestellt und diskutiert werden.
+% Der folgende Ttext gibt einen einblick in den Prozess und stelltt die Inhaltichen schrittte vor.
 Im Fokus stehen dabei einerseits der .
 
 \section{Vorgehen}
 
-Als Hardware-Team haben wir uns intern darauf geeinigt uns einmal pro Woche zu treffen. Hier wurden selbstständig erarbeitete Lösungen, Probleme und die Arbeitsteilung besprochen. Da für alle beteiligten Programmieren in VHDL neu war, haben wir uns in der frühen Phase des Projekts bzw. unmittelbar am Anfang auf ein Drei-Phasen-Programm geeinigt.
-In der ersten Phase haben alle Teammitglieder sich allgemein mit VHDL vertraut gemacht. Wie blieb den einzelnen Gruppenmitgliedern überlassen. Vielversprechendes Material wurde im GitHub gesammelt. Darüber hinaus wurden Schwerpunkte vergeben zu denen unter anderem Entities, Architectures, Prozesse und mögliche Umsetzungen von Pipelining gehörten. Als Ergebnis dieser ersten Recherchen haben wir uns für einen strengen Entity Architecture Ansatz entschieden.
-Es erschien uns zu diesem Zeitpunkt logisch jeder Stage im Prozessor seine eigne Entity und Architecture zu geben. Die in den Entities definierten Schnittstellen sollten die Kommunikation der einzelnden Stages untereinander gewährleisten, während die jeweilige Architecture die gewünschte Datenverarbeitung übernähme.
-In der zweiten Phase wurden die Stages aufgeteilt, sodass jeder mindestens eine Komponente in VHDL programmiert hat. Dabei stand nicht im Vordergrund eine perfekte Lösung zu erarbeiten. Viel mehr sollte ein Rahmen konstruiert werden. In der dritten Phase würden dann die individuell erstellten Komponenten - so unsere Vorstellung - nach Baukastenprinzip zusammengesetzt und so lange verbessert werden bis ein lauffähiger Prototyp entsteht.
-Bei diesem Prozess haben wir zunächst noch einmal von unserem Entwurf abstrahiert und in der Umsetzung reduziert. So war zum Beispiel Pipelining kein Teil von dieser Lösung. Der Fokus lag klar darauf lauffähigen VHDL-Code zu produzieren.
+Als Hardware-Team haben wir uns intern darauf geeinigt uns einmal pro Woche zu treffen.
+%steht genau so in der Einleitung
+Hier wurden selbstständig erarbeitete Lösungen, Probleme und die Arbeitsteilung besprochen.
+Da für alle beteiligten Programmieren in VHDL neu war, haben wir uns in der frühen Phase des Projekts bzw. unmittelbar am Anfang auf ein Drei-Phasen-Programm geeinigt.
+In der ersten Phase haben alle Teammitglieder sich allgemein mit VHDL vertraut gemacht.
+Wie blieb den einzelnen Gruppenmitgliedern überlassen.
+Vielversprechendes Material wurde im GitHub gesammelt.
+Darüber hinaus wurden Schwerpunkte vergeben zu denen unter anderem Entities, Architectures, Prozesse und mögliche Umsetzungen von Pipelining gehörten.
+Als Ergebnis dieser ersten Recherchen haben wir uns für einen strengen Entity Architecture Ansatz entschieden.
+% was ist ein "strenger entity architecture" ansatz genau?
+Es erschien uns zu diesem Zeitpunkt logisch jeder Stage im Prozessor seine eigene Entity und Architecture zu geben.
+Die in den Entities definierten Schnittstellen sollten die Kommunikation der einzelnden Stages untereinander gewährleisten, während die jeweilige Architectures die gewünschte Datenverarbeitung übernähme.
+In der zweiten Phase wurden die Stages aufgeteilt, sodass jeder mindestens eine Komponente in VHDL programmiert hat.
+Dabei stand nicht im Vordergrund eine perfekte Lösung zu erarbeiten.
+Viel mehr sollte ein Rahmen konstruiert werden.
+In der dritten Phase würden dann die individuell erstellten Komponenten - so unsere Vorstellung - nach Baukastenprinzip zusammengesetzt und so lange verbessert werden bis ein lauffähiger Prototyp entsteht.
+Bei diesem Prozess haben wir zunächst noch einmal von unserem Entwurf abstrahiert und in der Umsetzung reduziert.
+So war zum Beispiel Pipelining kein Teil dieser Lösung.
+%klären inwie weit pipelining doch schon teil der lösung war 
+%piplininggg war schon imemr teiol der löszung, richtiger wäre wir hatten keine ahnung und haben pipeline register eher aussgespart bis wir dann wussten wie das ging
+Der Fokus lag darauf lauffähigen VHDL-Code zu produzieren.
 
+\begin{figure}
+    \centering
+    \includegraphics{}
+    \caption{Hier kommt vielleicht nochmal ne Grafik hin}
+    \label{fig:my_label}
+\end{figure}
 
-(
+% My gang,
+% ( ͡°( ͡° ͜ʖ( ͡° ͜ʖ ͡°)ʖ ͡°) ͡°)
+%
+% my dollars
+% [̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]
+%
+% my Voldemort
+% ( ͡° ͜V ͡°)
 
-Hier kommt vielleicht nochmal ne Grafik hin
+Dieser strikte Entity-Archittecture-Ansatz führte jedoch nicht zu einer Lösung und so ist die dritte Phase in der Form nie eingetreten.
+Der von uns verfolgte Ansatz führte aber insofern zum Erfolg als dass alle Teammitglieder erste theoretische und praktische Grundlagen in VHDL erlangt haben.
+Dadurch waren alle Teammitglieder in der Lage sich an Diskussionen zu beteiligen.
+Durch die individuelle Spezialierung konnten wir uns gegenseitig Hilfestellung leisten und es fielen Probleme auf, die andern zunächst verborgen blieben.
 
-)
-
-Dieser strikte Entity-Archittecture-Ansatz führte jedoch nicht zu einer Lösung und so ist die dritte Phase in der Form nie eingetreten. Der von uns verfolgte Ansatz führte aber insofern zum Erfolg als dass alle Teammitglieder erste theoretische und praktische Grundlagen in VHDL erlangt haben.
-Dadurch waren alle Teammitglieder in der Lage sich an Diskussionen zu beteiligen. Durch die individuelle Spezialierung konnten wir uns gegenseitig Hilfestellung leisten und es fielen Probleme auf, die andern zunächst verborgen blieben. Zeitlich gesehen stellt sich dieser Punkt als Halbzeit des Projekts dar.
+Zeitlich gesehen stellt sich dieser Punkt als Halbzeit des Projekts dar.
+%DAs nahm mehr als die hälfte der verwendetten zeitt ein
 Bis dahin haben wir E/A für CPU, ALU, Decoder, Sign-Ext, PC und Pipeline Register geschrieben.
-In der Diskussion um Flag Handling wurde uns klar, dass wir grundlegende Konzepte in VHDL nicht oder zumindest falsch verstanden haben. Am prominentesten ist hier wohl das Konzept von Nebenläufigkeit in VHDl zu nennen und die Frage danach wie genau Prozesse funktionieren. Der Umstand, dass Prozesse nebenläufig sind, die Statements innerhalb aber sequenziell abgearbeitet werden, führte im Folgenden immer wieder zu Problemen {\color{red}ZU WELCHEN EIGENTILICH??}
-In der Retrospektive könnte man sagen: "Wir haben zu funktional gedacht."
+In der Diskussion um Flag Handling wurde uns klar, dass wir grundlegende Konzepte in VHDL nicht oder falsch verstanden haben.
+Am prominentesten ist das Konzept von Nebenläufigkeit in VHDl zu nennen und die Frage danach wie genau Prozesse funktionieren.
+Der Umstand, dass Prozesse nebenläufig sind, die Statements innerhalb aber sequenziell abgearbeitet werden, führte im Folgenden immer wieder zu Problemen {\color{red}ZU WELCHEN EIGENTILICH??}
+In der Retrospektive könnte man sagen: \enquote{Wir haben zu funktional gedacht}.
+
+%Erzählperspektive
+
+
 % Vielleicht kommt das auch einfach raus oder woanders hin?
 %Es klingt vielleicht naiv aber die Erkenntnisse die Signale so zu betrachteten wie elektrische Leitungen in Silikon(Silizium ;) ) war ein gedanklicher Wendepunkt in unserer Arbeit.  {\color{red}Das ist irgendwie noch sehr holprig und belletristisch, da muss man nochmal ran}
 
 %Weil wir einfach die Signale durch pusten von Stage zu ssttaaggee durchpusten wollten und die Nebenläufigkeit der Komponenten total außer acht gelassen haben bzw. uns darüber nicht im klaren waren,
 
-Bis dato existierte noch kein RAM Speicher und Pipelining war auch noch nicht implementiert. Wir musssten also unseren Ansatz noch einmal Neudenken, genauer neu darüber nachdenken wie sich unser Ansatz in VHDL sinnvoll umsetzten ließe.
-Im folgenden Kapitel sollen die Probleme und die anschließend daraus gezogenen Schlüsse kurz Diskutiert werden um im Anschluss in [Kapitel BLANK] den letzendlichen Entwurf vorzustelllen. 
+Bis dato existierte noch kein Speicher und Pipelining war auch noch nicht implementiert.
+Wir mussten unseren Ansatz noch einmal neu denken. Genauer: neu darüber nachdenken, wie sich unser Ansatz in VHDL sinnvoll umsetzten lässt.
+Im folgenden Kapitel sollen die Probleme und die anschließend daraus gezogenen Schlüsse kurz Diskutiert werden um im Anschluss in [Kapitel BLANK] den letztendlichen Entwurf vorzustellen. 
 
 \subsection{Vorläufige Problemanalyse}
+% feels like a leap - vllt anderer titel?
 
-Hier werden einige Probleme unserer ersten besprochen und lösunngssanssätze kurz besprochen werden. Dabei soll davon abgesehen werden jede kleine Änderung im Code abzuarbeiten welche die letzttednliche Lösunng zum Resulatt hatten. Viel mehr soll ein Eindruck davon vermittelt werden welche entscheidenden Impulse diese Auseinandersetzung geliefert um im nächsten Kapitel unsere Lösung detailliert vorzusttellen.
+Hier werden einige Probleme unserer ersten besprochen und Lösungsansätze kurz besprochen werden. Dabei soll davon abgesehen werden jede kleine Änderung im Code abzuarbeiten welche die letztendliche Lösung zum Resultat hatten. Viel mehr soll ein Eindruck davon vermittelt werden welche entscheidenden Impulse diese Auseinandersetzung geliefert um im nächsten Kapitel unsere Lösung detailliert vorzustellen.
 
 \begin{itemize}
-    \item Wir mussten Feststellen, dass immer wieder undefinierte Werte in unseren Registern aufgetaucht sind oder Programme falsche Ergebnisse lieferten. Dass lag daran, das falsche Werte propagiert wurden und oder gleichzeitige Zugriffe auf Signale stattfanden. Hier rächte sich ein wenig unsere Idee zunächst einen Lauffähiges Programm zu produzieren (ohne Pipelining) bevor wir uns an die Feinheiten machen wollten. Gedanklich sind wir aber schon von Pipellining ausggegangen und haben die parallelität der Komponenten außeracht gellassen. So wurden Signale auf denen Werten an lagen weiter propagiert und von den nachkommenden Stages verarbeitetet, änderte sich dann das Signal änderten sich auch die Werte in nachfolgenden Prozessen - auch wenn das nicht ggewünscht wurde. Wir haben daran gelernt die Signale wie elektrische Leitungen zu betrachten, eben so wie sie nacher auch syntthetisiert werden. Hier wird auch deutlich was damit ggemeint ist wenn wir: "zuu funktional ggedachttt haben". Die Lösung war die Signale zu takten indem die Inputs der Stages von der Clock abhängig gemacht gemacht wurden. Damit wurde dann auch endlich das Pipelining implementiert.
+    \item Wir mussten Feststellen, dass immer wieder undefinierte Werte in unseren Registern aufgetaucht sind oder Programme falsche Ergebnisse lieferten.
+    Dass lag daran, das falsche Werte propagiert wurden und/oder gleichzeitige Zugriffe auf Signale stattfanden.
+    Hier rächte sich ein wenig unsere Idee zunächst einen lauffähiges Programm zu produzieren (ohne Pipelining) bevor wir uns an die Feinheiten machen wollten.
+    Gedanklich sind wir aber schon von Pipelining ausgegangen und haben die Parallelität der Komponenten außer Acht gelassen.
+    So wurden Signale auf denen Werten an lagen weiter propagiert und von den nachkommenden Stages verarbeitetet, änderte sich dann das Signal änderten sich auch die Werte in nachfolgenden Prozessen - auch wenn das nicht gewünscht wurde.
+    Wir haben daran gelernt die Signale wie elektrische Leitungen zu betrachten, eben so wie sie nachher auch synthetisiert werden.
+    Hier wird auch deutlich was damit gemeint ist wenn wir: "zu funktional gedacht haben".
+    Die Lösung war die Signale zu takten indem die Inputs der Stages von der Clock abhängig gemacht gemacht wurden. Damit wurde dann auch endlich das Pipelining implementiert.
     \item 
 \end{itemize}
 
+% Was will dieses Kapitel genau?
+% Probleme konkret benennen?
+% Inwieweit findet sich das unten wieder
+%Eindampfen
+% später drüber reden (luca und max?)
 
 \section{Struktur oder Setup oder wie das aussieht}
 Struktur und Kommunikation -
@@ -324,8 +371,8 @@ Die CPU ist in fünf \textit{Stages} unterteilt.
 Befehle \enquote{fließen} durch diese Stages hindurch.
 Jede dieser Stages besitzt Input- und Outputsignale.
 Die Inputsignale einer jeden Stage werden \textit{clocked} beschrieben.
-Sie werden somit als Register syntetisiert.
-Der Prozess, der dies veranlasst besitzt das Suffix \texttt{\_pipeline}.
+Sie werden somit als Register synthetisiert.
+Der Prozess, der dies veranlasst, besitzt das Suffix \texttt{\_pipeline}.
 Die Outputs einer jeden Stage sind nicht geclocked und somit nur \enquote{einfache} Datenleitungen.
 
 \begin{description}
@@ -334,31 +381,33 @@ Die Outputs einer jeden Stage sind nicht geclocked und somit nur \enquote{einfac
   In ihr wird die Input Instruction clocked gelesen und auf den Output gelegt.
   % TODO really? it seems like, its outputs are never used.
   \item[Instruction Decode]
-  Im Instruction Decode wird die gelesene Instruction dem Decoder präsentiert und die Outputs des decoders genutzt um entsprechende Register und die Flags zu lesen.
+  Im Instruction Decode wird die gelesene Instruktion dem Decoder präsentiert und die Outputs des Decoders genutzt um entsprechende Register und Flags zu lesen.
   \item[Execute]
   Die Execute Stage legt entsprechende Signale an die ALU-Komponente an und gibt das Resultat aus.
   \item[Memory Access]
   Hier passieren zwei verschiedene Dinge.
-  Zum einen wird entschieden, ob gesprungen wird. Dies wird als Outputsignal der nächsten Stage präsentiert.
-  Sofern der Opcode ein STR oder LDR ist, wird das \texttt{data\_addr} Signal entsprechend geschalted und Daten entweder geschrieben oder gelesen.
+  Zum Einen wird entschieden, ob gesprungen wird oder nicht.
+  Dies wird als Outputsignal der nächsten Stage präsentiert.
+  Zum Anderen wird das \texttt{data\_addr} Signal entsprechend geschaltet, sofern der Opcode ein \texttt{STR} oder \texttt{LDR} ist, und Daten entweder geschrieben oder gelesen werden.
+  % Irgendwie komisch vllt zwei sätze
   \item[Write Back]
-  Im Write Back passieren wiederum zwei Dinge paralell.
-  Auf Basis des \texttt{will\_jump} Signals wird entweder der PC um eins erhöht oder auf das Resultat der Memory Access Stage gesetzt.
-  Sofern der bearbeitete Befehl in Register schreiben soll, wird dies ebenfalls getan.
+  Im Write Back passieren wiederum zwei Dinge parallel.
+  Auf Basis des \texttt{will\_jump} Signals wird entweder der Program Counter (PC) um eins erhöht oder auf das Resultat der Memory Access Stage gesetzt.
+  Sofern der bearbeitete Befehl in ein Register schreiben soll, wird dies ebenfalls getan.
 \end{description}
 
 \subsection{Setup}
 
 Die CPU ist in drei VHDL Entities unterteilt: Die \texttt{cpu} selbst, die \texttt{alu} und der \texttt{decoder}.
 Die gesamte Pipelinelogik ist in der \texttt{cpu} Entity untergebracht.
-Sie besitzt nach aussen nur einen \texttt{clk} Input sowie Address- und Datenleitung für Anbindung an die Speicher\footnotemark.
+Sie besitzt nach außen nur einen \texttt{clk} Input sowie Adress- und Datenleitungen für Anbindung an die Speicher\footnotemark.
 \footnotetext{Unser Design geht von zwei getrennten Speichern für Daten und Instruktionen aus.}
 Die dazugehörige Architektur \texttt{cpu\_arc} nutzt die \texttt{decoder} und \texttt{alu} Komponenten intern.
-Es wird ausserdem ein \texttt{cpu\_pkg} bereitgestellt, dass die \texttt{cpu} Komponente und oft verwendete Typen enthält.
+Es wird außerdem ein \texttt{cpu\_pkg} bereitgestellt, dass die \texttt{cpu} Komponente und oft verwendete Typen enthält.
 
 Die \texttt{alu} Entity ist recht simpel gehalten.
-Sie nimmt eine \enquote{Rechenaufgabe} mit zwei Operanten entgegen und gibt das Ergebnis sowie eventuelle Flags nach aussen.
-Da die ALU keinen internen Zustand besitzt/benötigt, besitzt sie auch kein \texttt{clk} Signal.
+Sie nimmt eine \enquote{Rechenaufgabe} mit zwei Operanden entgegen und gibt das Ergebnis sowie eventuelle Flags nach außen.
+Da die ALU keinen internen Zustand hat, besitzt sie auch kein \texttt{clk} Signal.
 Neben der \texttt{alu} Entity selbst beinhaltet das \texttt{alu\_pkg} die speziellen ALU Opcodes und die \texttt{alu} Component.
 
 Der Decoder ist ähnlich zur ALU gehalten.
@@ -367,18 +416,22 @@ Sie ist ebenso nicht \texttt{clk}-abhängig.
 Die Outputs des Decoders bestimmen, welche Operation die ALU ausführt und welche Register gelesen werden.
 Im \texttt{decoder\_pkg} sind die \texttt{decoder} Component und alle Opcodes definiert.
 
+% Component begriff erläutern? (Am besten vorher)
+
 \section{Input / Output}
 
 Die CPU benötigt natürlich noch Speicher für Daten und Instruktionen um ein Programm ausführen zu können.
+% Colloquial? "naturlich noch" weg?
 Dieser wird in der \texttt{processor} Entity mit der CPU verbunden.
-Es wurde die \texttt{sram2} Entity, welche uns von Andreas Mäder zur Verfügung gestellt worden ist, verwendet.
+Es wurde die \texttt{sram2} Entity, welche uns von Andreas Mäder\footnotemark zur Verfügung gestellt worden ist, verwendet.
+\footnotetext{Guter Mann. Kudos dafür! *bussy* und Herzchen}
 Im \texttt{processor} werden zwei Instanzen dieses Speichers erzeugt - eine für Daten, eine für Instruktionen.
-Der Address-Input dieser Speicher ist mit den jeweiligen Adress-Outputs der CPU verbunden.
-Da die Speicher nicht mit vollen 32 bit Adressen operieren, werden die Outputadressen der CPU \enquote{beschnitten}.
+Der Adress-Input dieser Speicher ist mit den jeweiligen Adress-Outputs der CPU verbunden.
+Da die Speicher nicht mit vollen 32 bit Adressen operieren, werden die Output-Adressen der CPU \enquote{beschnitten}.
 Es ist somit nicht möglich den vollen 32 bit Adressraum zu nutzen.
-So wird aber nicht der gesamte 32 bit Raum beim simulieren alloziiert.
+So wird aber nicht der gesamte 32 bit Raum beim simulieren alloziert.
 
-Desweiteren stellt der \texttt{processor} ein \texttt{clk} Signal für Speicher und CPU bereit.
+Des weiteren stellt der \texttt{processor} ein \texttt{clk} Signal für Speicher und CPU bereit.
 
 \section{Register}
 % write im writeback
@@ -395,9 +448,25 @@ Desweiteren stellt der \texttt{processor} ein \texttt{clk} Signal für Speicher 
 %pc ist nicht in der Register Bank sondern eine eigens register damit dieser auch in anderen Prozessen benutze werden kann
 
 
-%Unserem 32 Bit Ansatz folgend haben wir 32 Register. Zunächst stellte uns unser VHDL-Vertsändnis, wie an anderen Stellen, vor Probleme. Insbesondere Herausforderungen kamen beim Umgang mit dem Writeback und der (zunächst nicht vorhandenen Implementierung) der Clock auf.
-%Wir erhielten undefinierte Werte, da wir gleichzeitig einen Lese und einen Schreibzugriff durchführen wollten. Das resultierte aus einer fehlenden Taktung. Nachdem wir die Ursache festgestellt hatten, implementierten wir eine Taklung der Werte(-zuweisung) durch die Clock. “Geclockte” Werte werden als Pipeline Register zugewiesen. Alle Schreiboperationen finden ebenfalls in Form eines “geclockten” Prozesses statt. Der Umgang mit der PC war ebenfalls etwas umständlich. Die Problematik bezieht sich darauf, dass sie schwierig in anderen Prozessen benutzt werden kann, wenn sie in der Registerbank steht.
-%Die herausgearbeitete Lösung, die Schlussendlich in der Implementation manifestiert wurde, basiert darauf, dass die PC nicht in der Registerbank steht, sondern ein eigenes Register ist. Somit kann diese auch in anderen Prozessen benutzt werden.
+Zunächst stellte uns unser VHDL-Verständnis, wie an anderen Stellen, vor Probleme.
+Insbesondere Herausforderungen kamen beim Umgang mit dem Write Back und der (zunächst nicht vorhandenen Implementierung) der Clock auf.
+% 32 bit Werte --> 32 Register, da nur 5 bit code
+%formulierung der sätze bisschen abgehackt
+%missvertänlich formuliert
+%genauer erklären, dass wir gleichzeitig EINEN lese- und EINEN Schreibprozess 
+Wir erhielten undefinierte Werte, da wir gleichzeitig einen Lese- und einen Schreibzugriff durchführen wollten.
+% Wir wollten das gar nicht, die cpu tat es nur leider, Taktung ist etwas missverständlich 
+Das resultierte aus einer fehlenden Taktung.
+% Wat? Eine clock hatten wir die ganze Zeit
+% Wir haben nur zeitgleich einen lese und einen schreibzugriff unternommen
+% Die loesung war: nur ein prozess schreibt überhaupt
+Nachdem wir die Ursache festgestellt hatten, implementierten wir eine Taktung der Werte(-zuweisung) durch die Clock.
+\enquote{Geclockte} Werte werden als Pipeline Register zugewiesen.
+Alle Schreiboperationen finden ebenfalls in Form eines \enquote{geclockten} Prozesses statt. Der Umgang mit dem PC war ebenfalls etwas umständlich.
+%was genau war umständich
+Die Problematik bezieht sich darauf, dass sie schwierig in anderen Prozessen benutzt werden kann, wenn sie in der Registerbank steht.
+Die herausgearbeitete Lösung, die Schlussendlich in der Implementation manifestiert wurde, basiert darauf, dass die PC-Werte nicht in der Registerbank steht, sondern ein eigenes Register haben.
+Somit können diese auch in anderen Prozessen benutzt werden.
 
 \section{PC Handling}
 
@@ -414,32 +483,56 @@ Desweiteren stellt der \texttt{processor} ein \texttt{clk} Signal für Speicher 
 
 \section{Decoder}
 
-Der Decoder ist eine eigene Schnittstelle definiert, deren Aufgabe es ist den 32-Bit-Code von der Instrictionmemory zu interpretieren und deren Information zu filtern und diese den entsprechenden Outputs zuzuweisen.
+% needs work
 
-Wie im Kapitel des Befehlssatzes beschrieben werden die 32-Bit-Befehle im Decoder rekonstruiert. Dabei geht der Decoder zuerst die verschiedenen möglichen Befehlssätze der ersten 5 Bits durch, prüft ob das Immediate-Bit gesetzt wurde und gibt dann die entsprechenden Werte in den jeweiligen Outputs weiter.
-Weiterhin wird in Abhängigkeit des Befehles ein ,,write-enanble" gesetzt.
+Der Decoder ist als eine eigene Schnittstelle definiert, dessen Aufgabe es ist den 32-Bit-Code von dem Instructionmemory zu interpretieren, deren Information zu filtern und diese den entsprechenden Outputs zuzuweisen.
+% bissle lang (zwei und;s)
+
+Wie im Kapitel des Befehlssatzes beschrieben, werden die 32-Bit-Befehle im Decoder dekonstruiert.
+% dekonstruiert? besseres Wort?
+Dabei geht der Decoder zuerst die möglichen Befehlssätze der ersten 5 Bits durch, prüft ob das Immediate-Bit gesetzt wurde und gibt dann die entsprechenden Werte in die jeweiligen Outputs weiter.
+% Präsizer formulieren!
+Weiterhin wird in Abhängigkeit des Befehls ein \enquote{write-enable} gesetzt.
 Um diese Zuweisungen zu beschleunigen ist der Befehlssatz so angelegt, dass eine geringe Anzahl an Bits geprüft werden müssen, um herauszufinden, um welches Format es sich bei dem Befehlswort handelt.
+% Kann das nicht zum Instruction set hoch??
 
+\begin{figure}
+    \centering
+    \begin{lstlisting}
+op_layout <= ONEOP   when "00",
+             TWOOP   when "01",
+             THREEOP when others;
+    \end{lstlisting}
+    \caption{Caption}
+    \label{fig:my_label}
+\end{figure}
 
-Bild\footnotetext{BILD}
+Dadurch weiß der Decoder welche weiteren Bits gelesen werden müssen um so diese Informationen an die entsprechenden Outputs weiterzugeben.
+Aus diesem Grund können einige Outputs ignoriert werden, da diese nicht benötigt werden.
+Daher werden sie nicht neu \enquote{gesetzt}.
+% der decoder setzt nichts, der "outputtet" nur
+Hier wurde auch ein eigener Alu-Op-code eingeführt, da die Alu bei einige Befehlen die gleiche Funktionsweise hat.
+Durch den Alu-Op-code wird weiterer redundanter Code gespart und somit eine effizientere Zuweisung ermöglicht.
 
+% KV-Diagramm part relevant - don't care's
 
-  %      op_layout <= ONEOP   when "00",
-  %                   TWOOP   when "01",
-  %                  THREEOP when others;
+\begin{figure}
+    \centering
+    \begin{lstlisting}
+My gang,
+( ͡°( ͡° ͜ʖ( ͡° ͜ʖ ͡°)ʖ ͡°) ͡°)
 
-Dadurch weiß der Decoder welche weiteren Bits gelesen werden müssen um so diese Informationen an die entsprechenden Outputs weiterzugeben. Aus diesem Grund können einige Outputs ignoriert werden, da diese nicht benötigt werden und werden dadurch nicht neu gesetzt. 
-Hier wurde auch ein eigener Alu-Op-code eingeführt, da die Alu bei einige Befehlen die gleiche Funktionsweise hat. Durch den Alu-Op-code wird weiterer redundanter Code gespart und somit eine effizientere Zuweisung.
+my dollars
+[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]
 
+my Voldemort
+( ͡° ͜V ͡°)
+    \end{lstlisting}
+    \caption{Caption}
+    \label{fig:my_label}
+\end{figure}
 
-Bild\footnotetext{BILD}
-
-
-Durch diese ganzen Reduzierungen werden unnötige Zuweisungen vermieden und eine schnellere Verarbeitung geförtdet.
-
-
-
-
+Durch diese ganzen Reduzierungen werden unnötige Zuweisungen vermieden und eine schnellere Verarbeitung gefördert.
 
 % als eigene entity definiert
 % don't cares  instruction_set_real.txt
@@ -473,15 +566,31 @@ Durch diese ganzen Reduzierungen werden unnötige Zuweisungen vermieden und eine
 %ggf will man mehr ssignale in den prozess werfen, außer overflow, ansonsten müssen diese signnale später auch immer in siolikon gekleisttert werden. ggf ist der syntthetisierer dannn effizienter (Ist das so?)
 %
 
+%schreibweise klein groß, englsich deutsch , code
+Die Implementierung der ALU war sehr umfangreich.
+Die ALU bekommt ihren Opcode vom Decoder.
+Damit ergeben sich die Input-Felder des ALU-Opcodes, der beiden Operanden und des Carry Bits.
+Herzstück der Implementierung ist ein Switch-Konstrukt, welches - basierend auf dem ALU-Opcodes - die entsprechende logische/arithmetische Operation auswählt und mit den beiden Input Feldern \texttt{op\_1} und \texttt{op\_2} durchführt.
+%eingangs abbehandelt statt kontinuirlich
+% erst outputs beschreiben beschreiben, dann die flags und resultat(overflow, carry out, cmp) aus operanden, nicht in switch drinnen 
+%switch ergebnis abhängig vom alu opcode
+%signale statt verktorem 
+Compare Befehle \texttt{comp\_eq} und \texttt{comp\_gt} werden direkt Eingangs abgehandelt. Diese haben (weiter unten behandelte) eigene Rückgabe Vektoren.
+Die Werte werden bis zum Ende der Code Abarbeitung durchgereicht (natürlich mit entsprechenden Modifikationen durch die eventuellen Rechenoperationen).
+Das stellt uns vor die gleiche Problematik wie bei der Jump-Implementation (welche eigentlich ???). 
+%falsche verwendung der alu, in der cpu 
+Im write-back wird abschließend die Flag Wert gesetzt, nachdem dieser abhängig vom opcode ermittelt wurde.
+Die Berechnung der einzelnen Funktionen (14 insgesamt) ist unterschiedlich schwierig: Addition, Subtraktion und die entsprechenden Varianten mit und ohne Carry-Bit sind in VHDL relativ einfach zu implementieren. 
+%noch mal drüber gucken ob die formulierung gut ist 
+Gleiches gilt für die logische Operationen AND, OR, XOR. Alle Implementierungen sind relativ analog zu der Syntax diverser Softwarebeschreibungssprachen.
+Auch die shift Befehle lassen sich mit VHDL Operationen ausführen.
+%unverständlich
+Lediglich bei logischen shift, musste der Umweg über eine unsigned Variable aus einem right\_shift Aufruf aus einem signed Argument und dem \enquote{zu verschieben} Wert genommen werden.  Das Ergebnis wird vor der Ausgabe nicht in einen sl-Vektor überführt und mit der “range” Konstante normiert. Ausgabe ist dann das (normierte) result als SL-Vektor und ein entsprechendes Carry sowie Overflow bit. Die Ergebnisse der beiden Compare Methoden werden als eigene Ausgabe Bits behandelt und als std\_logic zurückgegeben (unabhängig vom ALU Opcode).
 
-%Die Implementierung der Arithmetik Logic Unit war sehr Umfangreich. Sie findet als Komponente in jedem Package einmal verwendung. Die ALU bekommt ihren Opcode vom Decoder. Damit ergeben sich die Input-Felder des alu_op_codes der beiden Opcode Felder und des Carry Bits. Herzstück der Implementierung ist ein Switch-Konstrukt, welches basierend auf dem Alu Op Code die entsprechende logische/arethmetsiche Operation auswählt und mit den beiden Input Feldern op_1 und op_2 durchführt. Compare Befehle comp_eq und comp_gt werden direkt Eingangs abgehandelt. Diese haben (weiter unten behandelte) eigene Rückgabe Vektoren. Die Werte werden bis zum Ende der Code Abarbeitung durchgereicht (natürlich mit entsprechenden Modifikationen durch die eventuellen Rechenoperationen). Das stellt uns vor die gleich eProblematik wie bei der Jump -Implementation (welche eigentlich ???). Die komplette Implementierung arbeitet fortlaufend und parallel. Im write-back wird abschließend die Flag Wert gesetzt, nachdem dieser abhängig vom opcode ermittelt wurde. Die Berechnung der einzelnen Funktionen (14 insgesamt) ist unterschiedlich schwierig: Addition, Subtraktion und die Entsprechungen mit dem Carry-Bit sind in VHDL relativ komfortabel zu implementieren gewesen. Gleiches gilt für die logische Operationen AND, OR, XOR. Alle Implementierungen sind relativ analog zu der Syntax diverser Softwarebeschreibungssprachen. Auch die shift Befehle lassen sich mit VHDL Operationen ausführen. Lediglich bei (logische) rechts shift, musste der Umweg über eine unsigned Variable besteht aus einem right_shift Aufruf aus einem signed Argument und dem “zu verschieben” Wert gegangen werden.  Das Ergebnis wird vor der Ausgabe nicht in einen sl-Vektor überführt und mit der “range” Konstante normiert. Ausgabe ist dann das (normierte) result als SL-Vektor und ein entsprechendes Carry sowie Overflow bit. Die Ergebnisse der beiden Compare Methoden werden als eigene Ausgabe Bits behandelt und als std_logic zurückgegeben (unabhängig vom ALU Opcode).
+Zuvor war die gesamte Implementation als gelockter Prozess aufgegriffen worden. In der jetzt vorliegenden Implementation sind die Logiken einzeln rausgezogen. Welche Variante effizienter ist haben wir (da, wie Eingangs erwähnt, Effizienz niedriger periodisiert war, nicht getestet).
 
-%Zuvor war die gesamte Implementation als gelockter Prozess aufgegriffen worden. In der jetzt vorliegenden Implementation sind die Logiken einzeln rausgezogen. Welche Variante effizienter ist haben wir (da, wie Eingangs erwähnt, Effizienz niedriger periodisiert war, nicht getestet).
-
-%Da in jedem Fall alle Bist angeguckt werden müssen , könnte die (ausgelagerten) comp_gt und comp_eq zu einer eigenen ALU synthetisiert werden. Ist dies in einem geclockten Prozess, sind auch andere Varianten für die synthetisieren zu ermöglichen.
-%Weiteres Optimierungspotential kommt in Betrachtung der Möglichkeit auf, dass man mehrere Signale in den Prozess werfen möchte. Diese synthetisierte Variante könnte womöglich schneller sein, da sie Signale später zusammengeführt werden müssen.
-
-
+Da in jedem Fall alle Bits angeguckt werden müssen , könnte die (ausgelagerten) comp\_gt und comp\_eq zu einer eigenen ALU synthetisiert werden. Ist dies in einem geclockten Prozess, sind auch andere Varianten für die synthetisieren zu ermöglichen.
+Weiteres Optimierungspotential kommt in Betrachtung der Möglichkeit auf, dass man mehrere Signale in den Prozess werfen möchte. Diese synthetisierte Variante könnte womöglich schneller sein, da sie Signale später zusammengeführt werden müssen.
 
 \subsection{,,Fun with Flags" ein Kapitel darüber das wir flags auf unterschiedliche weisen implementiert haben und dessen Probleme}
 
@@ -490,8 +599,178 @@ schwierigkeiten bei der implementation der flags
 -overflow immer noch nicht richtig implementiert
 
 
+\chapter{Software}
+\section{Anforderungsanalyse}
+Zu Beginn des Softwareentwicklungsprojektes bestand die erste Herausforderung darin, eine auf das Problem zugeschnittene Anforderungsbeschreibung zu erstellen.
+Die grundsätzlichen Anforderungen konnten dabei prinzipiell in zwei Kategorien eingeteilt werden.
+%sehr softwaretechnik basiert , haben wir überhaupt anforderunganalyse gemacht?
+% Sehr hochtrabend
 
+\subsection{Funktionale Anforderungen}
+% ganz viel Geschwafel hier
 
+% warum keine subsubsections?
+
+Die funktionalen Anforderungen beschreiben, über welche Funktionen die Software am Ende des Entwicklungsprozesses verfügen muss.
+Um eine realistisch zu bewältigende Menge an Funktionen auswählen zu können, war eine sehr kritische Selektion notwendig. 
+%zu undeutlich, was ist kritische selektion? absatz hat kein inhalt, einen absatz was muss die software leisten
+
+Beispielsweise stand zu Beginn die Möglichkeit einer diskreten Simulationsumgebung im Raum, welche dann aber schnell wieder verworfen wurde, da unklar war, wie hoch der konkrete Zeitaufwand dafür gewesen wäre mangels der Kenntnis über den Compiler selbst.
+%satz ist zu lang
+%geschwafelt
+Wir entschieden uns also zunächst dafür, uns ausschließlich auf den Compiler (Assemblercode zu Binärcode) zu fokussieren.
+Die dafür notwendigen funktionalen Anforderungen konnten relativ schnell ermittelt werden.
+Das Ziel bestand darin eine beliebige Textdatei mit Assemblercode automatisch einlesen zu können, aus dem eine neue Textdatei - bestehend aus Binärcode - generiert werden sollte.
+% das ist die essenz reicht für den gesamtem Kram davor
+Zusätzlich dazu musste es eine geeignete Möglichkeit geben syntaktische Fehler innerhalb des Assemblercodes zu erkennen und auszugeben.
+% wasserfall
+Zuzüglich dazu sollten zwei wichtige Dinge während der Übersetzung passieren.
+% wasserfall
+Zum einen musste es die Möglichkeit geben innerhalb der Software Makros zu erstellen, welche Operationen ermöglichen sollten, die nicht im Instruction Set explizit definiert waren.
+Beispielsweise besitzt unser Instruction Set keinen Multiplikationsbefehl (\texttt{MUL}).
+Dennoch kann der \texttt{MUL}-Befehl benutzt werden, da er intern durch die russische Bauernmultiplikation ersetzt wird.
+Zum anderen war zu diesem Zeitpunkt unklar, inwieweit das Hardwareentwicklungsteam auf mögliche Komplikationen im Rahmen des Pipelining reagieren konnte.
+%unklar
+%hazard thema als beispiel aufgreifen
+Daher musste eine softwaretechnische Lösung entwickelt werden.
+% was ist das genau? welche lösung wofür
+Zu Beginn wurde lediglich festgelegt, dass wir nach jedem Befehl eine notwendige Anzahl NOOP-Befehle einfügen.
+Da dieses Prinzip allerdings völlig ungeeignet ist - wofür eine Pipeline benutzen, wenn sie obsolet gemacht wird? - entschieden wir uns auf bestimmte Abhängigkeiten von Beginn an mit ein zu beziehen.
+Z.B. flushing der Pipeline vor einem Jump-Befehl oder das Erkennen der Abhängigkeiten von genutzten Registern.
+% Das beispiel nicht in klammern
+
+\subsection{Technische Anforderungen}
+Nach Fertigstellung der funktionalen Anforderungsanalyse gingen wir dazu über, eine Liste an technischen Anforderungen des Systems zu entwerfen.
+
+\subsubsection{Änderbarkeit}
+Aufgrund des (vorläufigen) Mangels an Fachkenntnis war es von sehr großer Bedeutung das System so zu gestalten, dass Änderungen an der Struktur des Assemblercodes oder an den funktionalen Anforderungen ohne großen Aufwand gemacht werden konnten.
+% wie wirkt sich diese änderbarkeit aus?
+
+\subsubsection{Erweiterbarkeit}
+Da zu Beginn des Entwicklungsprozesses nur schwer abzuschätzen war, wie lange wir für die Implementation von bestimmten Funktionen brauchen, war es notwendig das System so zu gestalten, dass eine einfache Erweiterbarkeit von Funktionalitäten gegeben ist.
+% was meint das konkret? Wodurch wird erweiterbarkeit erreicht?
+
+\subsubsection{Korrektheit}
+In Folge der Tatsache, dass Binärcode nur äußerst schwer zu Debuggen ist, war eine Hauptanforderung eine 100\% Korrektheit der Übersetzung.
+%100przent korrektheit schwierige formulierung
+Dieser Punkt stellte sich im Nachhinein als komplexer heraus als erwartet, da wir mangels eines Simulators auf die Fertigstellung des Hardwareentwicklungsteams warten mussten, um das Programm ausreichend testen zu können.
+%compiler test wären auch ohne hw team gegangen?
+% Konfiguration vs Compiler funktioniert
+
+\subsubsection{Vernachlässigte Qualitätsmerkmale}
+Standardmäßig gibt es im Laufe einer jeden Softwareentwicklung Entscheidungen zu signifikanten Qualitätsmerkmalen zu fällen.
+So entschieden wir uns bewusst dafür, dass die Effizienz des Programms eine sehr untergeordnete Rolle spielen sollte, da es praktisch ausgeschlossen war, dass wir große Mengen an Quellcode in sehr kurzer Zeit übersetzen müssen. 
+%ewtas kürzen
+Des Weiteren spielte aufgrund der Spezialisierung des Fachgebietes in dem wir uns bewegen, eine gute Benutzbarkeit des Programms eine geringe Rolle, da jeder der mit dem Programm arbeitet genug Expertise besitzen sollte, um eine Konsole zu nutzen.
+%umformulieren 
+
+\section{ANTLR}
+%https://www.antlr.org/
+In der Vorbereitung für die Entwicklung des Compilers haben wir verschiedene Möglichkeiten abgewogen, wie die von uns gesteckten Ziele am besten zu erreichen sind.
+Die simpelste Möglichkeit wäre es gewesen den Quellcode direkt mit einem großen Switch Statement zu parsen und die einzelnen Befehle dann zu übersetzen.
+Da dies jedoch schnell relativ unübersichtlich zu werden schien, haben wir Ausschau nach möglichen Tools gehalten, die uns Arbeitsaufwand ersparen könnten.
+Dabei sind wir auf ANTLR gestoßen.
+ANTLR (ANother Tool for Language Recognition) ist ein Parser Generator zum Lesen und Verarbeiten von strukturierten Textdateien auf der Basis von Grammatiken, der unter anderem verwendet werden kann, um eigene Programmiersprachen zu entwickeln.
+% cite ANTLR
+Um einen Compiler mit ANTLR zu erstellen, benötigt man zunächst eine Grammatik, in der die formalen Regeln der Sprache beschrieben werden.
+Die Grammatik besteht aus Parser- und Lexer-Regeln.
+Dabei stehen die Parserregeln für die Struktur der Sprache (Nonterminale) und die Lexerregeln für die tatsächlichen Zeichen/Wörter (Terminale), die die Nonterminale ersetzen können.
+Die Grammatik kann mit Hilfe von ANTLR zu Java Klassen compiliert werden.
+ANTLR liefert dabei einen Lexer, Parser und Tokenizer mit deren Hilfe ein Parsetree generiert werden kann.
+Dazu wird einfach eine Datei mit dem Quellcode eingelesen und durch die einzelnen Klassen geschleift.
+%geschleift umformulieren
+%zwei mal "dann" umformukieren
+Der resultierende Parsetree kann dann mit Hilfe von Visitors durchlaufen werden.
+Diese leisten die eigentliche Übersetzungsarbeit.
+
+\section{Compiler Implementation}
+
+\subsection{Grammatik}
+%redundant zjm Absatz davor kann eventuell weg 
+Innerhalb einer Grammatik müssen wir grundsätzlich zwischen zwei unterschiedlichen Prinzipien unterschieden.
+Zum einen gibt es die sogenannten Parser-Regeln und zum anderen die Lexer-Regeln (oder auch Tokenizer-Regeln).
+
+\subsubsection{Lexer}
+Der Lexer stellt die unterste Ebene einer Grammatik dar.
+Jede Lexer-Regel definiert dabei genau einen Token.
+Ziel des Lexers ist es nun für jede mögliche Eingabe zu erkennen, um welches Token es sich handelt.
+Hierbei gilt zu beachten, dass ein Token nicht zwangsläufig exakt definiert werden muss, da die Nutzung von regulären Ausdrücken möglich ist.
+%listng austauschen, kommaenatre weg, in eine fig. rein 
+\begin{lstlisting}
+MOV: 'MOV'; // Als MOV-Token wird jeder Ausdruck der Form "MOV" erkannt
+BINARY: '0b' ([0-1])+;  // „0b1001…“ wird erkannt
+\end{lstlisting}
+Zu Beginn des Prozesses werden zunächst sämtliche Eingaben in Tokens überführt, welche dann von den Parser-Regeln in einen Syntax-Baum überführt werden.
+%überführt weg?
+
+\subsubsection{Parser}
+Die Parser-Regeln definieren den Ableitungsbaum der formalen Grammatik.
+Dabei entspricht jede Verzweigung einer Parser-Regel, während jeder Blattknoten einem Token entspricht.
+
+\begin{figure}[h]
+\centering
+% \includegraphics{Figure 3.2.1}
+\caption{Syntaxbaum des Befehls: \texttt{MOV, r10, 10;}}
+\end{figure}
+
+Eine Parser-Regel hat immer die Form
+%listng austauschen, kommaenatre weg, in eine fig. rein 
+\begin{lstlisting}
+start: start command | command; //Startregel der Grammatik
+\end{lstlisting}
+wobei die Regel entweder direkt ein Token nutzt oder auf eine weitere Regel verweist.
+%eventuell redundant zu eingehender erklärung
+Anhand der Ableitungsregeln kann also eine Struktur erstellt werden, auf welche nun spezifisch reagiert werden kann.
+So ist es innerhalb des Programmes nun möglich auf jeden Knoten des Baumes, sowie seine Eltern- und Kindknoten zuzugreifen.
+% eventuell hochziehen zu dem einleitungstext
+%ein Teil von 3.2 zu 3.3 
+
+\subsection{Makros}
+Da unser Compiler mehrere Aufgaben erfüllen soll, die nur sequentiell erledigt werden können, wird dieser Ablauf insgesamt drei mal durchlaufen.
+Bei jedem Durchlauf wird ein anderer Arbeitsschritt erledigt.
+%eventuell die 3 punkte in anführungszeichne
+Die drei Schritte sind das Ersetzen von Makros durch ihre jeweilige Implementation, das Einfügen von NOOPS zur Vermeidung von Hazards und die eigentliche Übersetzung.
+Makros wurden von uns mit eigenen Lexer- und Parser-Rules innerhalb der Grammatik implementiert.
+Dies ermöglicht es uns die so definierten Makros wie normale Befehle im Quellcode zu verwenden.
+Der Compiler kümmert sich dann darum die Mnemoniks durch entsprechende Funktionen zu ersetzen.
+% erläutern: mnemoniks (vllt in ner fussnote)
+Zum aktuellen Zeitpunkt haben wir die russische Bauernmultiplikation für positive Zahlen (MUL) und ein simples binäres Invertieren (NOT) durch Makros verwirklicht.
+Es lassen sich leicht zusätzliche Makros hinzufügen, indem diese in der Grammatik definiert  und entsprechende Implementation im Compiler verwirklicht werden.
+Bei der Verwendung von Makros muss beachtet werden, dass diese nicht immer \enquote{in place} implementiert werden können.
+% was meint in place? erläútern.
+Es ist daher empfehlenswert, zu dokumentieren, welche Register von den jeweiligen Makros verwendet werden, um Inkonsistenzen zu vermeiden.
+Das Vorgehen des Makro-Visitors besteht also darin den übergebenen Quellcode größtenteils unverändert zurück zu geben und nur die Stellen, an denen ein Makro entdeckt wird, zu ersetzen.
+
+\subsection{Jumplabels und NOOPS}
+Im zweiten Übersetzungsschritt werden die jump-Labels zu absoluten Zeilenangaben übersetzt und NOOPS eingefügt.
+Die Sprungadressen werden ermittelt, indem der Compiler mitzählt, wie viele Befehle bereits gesehen wurden.
+%"gesehen werden" gut formuliert
+Da Sprünge im Instruktionsspeicher über einen Befehlsindex implementiert sind, reicht dieser aus um Sprünge mit Immediate zu realisieren.
+Die Indizes werden zusammen mit den Labels gespeichert, sodass die Labels im Übersetzungsschritt durch die Immediate Werte ersetzt werden können.
+Eine weitere Aufgabe innerhalb dieses Schrittes ist das Einfügen von NOOPS, um Hazards zu vermeiden.
+Um dies zu bewerkstelligen, merkt sich der Compiler für jedes Register die Anzahl der notwendigen NOOPS, die eingefügt werde müssten, falls das Register im aktuellen Befehl vorkommt.
+Ist der Wert 0 wird für das jeweilige Register der Wert auf 4 gesetzt, was der Anzahl der Pipelinestufen entspricht.
+Falls der Wert nicht 0 ist, werden entsprechend viele NOOPS eingefügt.
+%was heißt entsprechend viele ? 
+%anmerken dass nach jedem Schritt dekrementiert wird
+Außerdem werden generell nach jedem Sprung (\texttt{JMP}, \texttt{B}) 3 NOOPS eingefügt, da wir für den Prozessor keinen Flush implementiert haben.
+% Warum nur 3 nicht 4??
+Auf diese Weise wird vermieden, dass ungewollte Befehle in die Pipeline geladen werden.
+
+\subsection{Übersetzung}
+Im letzten Schritt wird der auf diese Weise modifizierte Quellcode in den Maschinencode übersetzt.
+Die einzelnen Befehle werden je nach Befehlstyp (NOOP, TWOOP, THREEOP, Jump) unterschiedlich behandelt.
+Die Opcodes stehen in einer Hashmap zusammen mit den Mnemoniks für die einzelnen Befehle.
+Ist der letzte Operand ein Immediate Wert wird das Immediate-Bit wird entsprechend gesetzt.
+Die Immediates werden aus dem angegebenen Zahlensystem (binär, hexadezimal, dezimal) zu einer Binärzahl übersetzt.
+Alle Operanden werden je nach Befehlsstruktur mit einem entsprechendem Padding versehen.
+%erklären was ein padding ist, mehr ausführen, bild bei befehlswörtern?
+Anschließend wird das Befehlswort zusammengesetzt und zusammen mit einem führenden Befehlsindex zurückgegeben.
+%was ist ein führender Befehlsindex
+
+%\subsection{Probleme}
+%Die Implementation des Compilers verlief relativ Problemlos und das Ergebnis ermöglicht uns alle von uns gesetzten Ziele zu erreichen. Eine Schwäche unseres Vorgehens war jedoch die schlechte Testbarkeit des Programms, da diese von der Implementation der Hardware abhängig war. Das führte dazu, dass Fehler erst spät sichtbar wurden, da wir den compilierten Quellcode erst an dem fertigen Prozessor testen konnten (siehe Kapitel Test).
+%Simulator hätte das lösen können
 
 \chapter{Test}
 \begin{itemize}
