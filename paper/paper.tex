@@ -307,6 +307,54 @@ Struktur und Kommunikation -
 %Packages und Components - Subtypen
 
 %mpure muss in architectture kann aber auf werte außerhalb der funkttion zugreifen solnag sie in der architectue ssind
+
+Die CPU ist in fünf \textit{Stages} unterteilt.
+Befehle \enquote{fließen} durch diese Stages hindurch.
+Jede dieser Stages besitzt Input- und Outputsignale.
+Die Inputsignale einer jeden Stage werden \textit{clocked} beschrieben.
+Sie werden somit als Register syntetisiert.
+Der Prozess, der dies veranlasst besitzt das Suffix \texttt{\_pipeline}.
+Die Outputs einer jeden Stage sind nicht geclocked und somit nur \enquote{einfache} Datenleitungen.
+
+\begin{description}
+  \item[Fetch]
+  Die Fetch Stage ist recht simpel.
+  In ihr wird die Input Instruction clocked gelesen und auf den Output gelegt.
+  % TODO really? it seems like, its outputs are never used.
+  \item[Instruction Decode]
+  Im Instruction Decode wird die gelesene Instruction dem Decoder präsentiert und die Outputs des decoders genutzt um entsprechende Register und die Flags zu lesen.
+  \item[Execute]
+  Die Execute Stage legt entsprechende Signale an die ALU-Komponente an und gibt das Resultat aus.
+  \item[Memory Access]
+  Hier passieren zwei verschiedene Dinge.
+  Zum einen wird entschieden, ob gesprungen wird. Dies wird als Outputsignal der nächsten Stage präsentiert.
+  Sofern der Opcode ein STR oder LDR ist, wird das \texttt{data\_addr} Signal entsprechend geschalted und Daten entweder geschrieben oder gelesen.
+  \item[Write Back]
+  Im Write Back passieren wiederum zwei Dinge paralell.
+  Auf Basis des \texttt{will\_jump} Signals wird entweder der PC um eins erhöht oder auf das Resultat der Memory Access Stage gesetzt.
+  Sofern der bearbeitete Befehl in Register schreiben soll, wird dies ebenfalls getan.
+\end{description}
+
+\subsection{Setup}
+
+Die CPU ist in drei VHDL Entities unterteilt: Die \texttt{cpu} selbst, die \texttt{alu} und der \texttt{decoder}.
+Die gesamte Pipelinelogik ist in der \texttt{cpu} Entity untergebracht.
+Sie besitzt nach aussen nur einen \texttt{clk} Input sowie Address- und Datenleitung für Anbindung an die Speicher\footnotemark.
+\footnotetext{Unser Design geht von zwei getrennten Speichern für Daten und Instruktionen aus.}
+Die dazugehörige Architektur \texttt{cpu\_arc} nutzt die \texttt{decoder} und \texttt{alu} Komponenten intern.
+Es wird ausserdem ein \texttt{cpu\_pkg} bereitgestellt, dass die \texttt{cpu} Komponente und oft verwendete Typen enthält.
+
+Die \texttt{alu} Entity ist recht simpel gehalten.
+Sie nimmt eine \enquote{Rechenaufgabe} mit zwei Operanten entgegen und gibt das Ergebnis sowie eventuelle Flags nach aussen.
+Da die ALU keinen internen Zustand besitzt/benötigt, besitzt sie auch kein \texttt{clk} Signal.
+Neben der \texttt{alu} Entity selbst beinhaltet das \texttt{alu\_pkg} die speziellen ALU Opcodes und die \texttt{alu} Component.
+
+Der Decoder ist ähnlich zur ALU gehalten.
+Die \texttt{decoder} Entity erhält nur eine Instruktion als Input.
+Sie ist ebenso nicht \texttt{clk}-abhängig.
+Die Outputs des Decoders bestimmen, welche Operation die ALU ausführt und welche Register gelesen werden.
+Im \texttt{decoder\_pkg} sind die \texttt{decoder} Component und alle Opcodes definiert.
+
 \section{Input / Output}
 % RAM/ROM anbindung
 
