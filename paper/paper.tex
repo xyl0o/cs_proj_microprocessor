@@ -62,6 +62,9 @@
 
 \chapter{Planungsphase}
 
+Um die vorgegebenen Ziele zu erfüllen, sind wir systematisch an das Projekt herangegangen.
+Zuerst haben wir in einem Python Sketch die Struktur des Prozessors definiert. Danach wurde gemeinsam über den möglichen Befehlssatz diskutiert. Nachdem diese Dinge geklärt sind, haben sich die Gruppen in den jeweiligen Bereich Software und Hardware aufgeteilt um so das besprochenen zu realisieren. Im Anschluss sollen die programmierte Hardware und Software zusammen verbunden und getestet werden und eventuelle Fehler behoben werden, bis keine Fehler vorhanden sind. Falls noch Zeit übrig sein sollte, sind Erweiterungen des Befehlssatzes, sowie weitere Datentypen mögliche Punkte um den Prozessor qualitativ zu verbessern.
+
 \section{Aufbau des Prozessors}
 
 \begin{itemize}
@@ -69,28 +72,31 @@
     \item Pipelining (?)
 \end{itemize}
 
-\section{IS}
 
-\begin{itemize}
-    \item 32 Bit Befehlswortlänge (x)
-    \item 3 Addressmaschine (x)
-    \item reduzierter ARM Befehlssatz (x)
-    \item Opcode-Länge (x)
-    \item Immediate Bit (x)
-    \item Relative Jumps (x)
-    \item Relative Speicheraddresssierung (x)
-    \item Struktur des Befehlwortes (x)
-    \item immediate verwenden (letzten 16 Bit)(x)
-    \item 2er-Komplement
-    \item Int als einziger Datentyp
-    \item 32 Register (x)
-    \item 0 Register (?)
 
-\end{itemize}
+%\section{IS}
+
+%\begin{itemize}
+%    \item 32 Bit Befehlswortlänge (x)
+%   \item 3 Addressmaschine (x)
+%    \item reduzierter ARM Befehlssatz (x)
+%    \item Opcode-Länge (x)
+%    \item Immediate Bit (x)
+%    \item Relative Jumps (x)
+%    \item Relative Speicheraddresssierung (x)
+%    \item Struktur des Befehlwortes (x)
+%    \item immediate verwenden (letzten 16 Bit)(x)
+%    \item 2er-Komplement (x)
+%    \item Int als einziger Datentyp (x)
+%    \item 32 Register (x)
+%    \item 0 Register (x)
+
+%\end{itemize}
 
 // appendix full instruction set
 
-\section{Patrizio \& Frederic}
+
+\section{Instructionset}
 
 Während der Bearbeitung des Projekts sind einige Fragestellungen und Diskussionspunkte aufgekommen, die im Nachfolgenden genauer besprochen werden sollen. Darunter finden sich auch Punkte oder Konzepte, die im Diskussionsprozess ausgeschlossen und nicht im finalen Projekt manifestiert wurden. Diese wollen wir dennoch beleuchten.
 
@@ -109,6 +115,8 @@ Zunächst tendierte die Gruppe eher zu einer 2-Adresse Maschine. Diese sahen wir
 Die 32 Bit bieten genug Platz für eine 3-Adresse Maschine und die Wortlänge würde - auch hier- in keinem Fall ausgeschöpft werden.
 Die höhere Programmierkomplexität, die durch eine zusätzliche Adresse natürlich gegebenen ist, bringt den Vorteil mit sich, dass der Komfort deutlich erhöht würde.
 
+\subsection{Befehlssatz}
+
 Nachdem die Länge und die Adressierung des Befehlswortes entschieden war, mussten die einzelnen Befehle festgelegt werden. Dabei haben wir uns an den ARM Befehlssatz orientiert\footnotemark.
 \footnotetext{//(*link zum ARM Befehlssatz)//}
 Dieser wurde von uns noch reduziert, sodass wir eine gute Basis hatten. Bei der Reduzierung haben wir die Befehle in 3 Kategorien unterteilt: \enquote{must-have}, \enquote{nice-to-have} und \enquote{irrelevant}. Diese Verteilung wurde unter Beachtung der Machbarkeit in der gegebenen Zeit und der Relevanz zu unserem Projekt getätigt.
@@ -125,47 +133,40 @@ Abschließend musste noch die Struktur des Befehlswortes festgelegt werden. Dabe
 
 (Von links nach rechts) Die ersten 5 Bits sind der Opcode, das 6. Bit, ist das Immediate-Bit, und falls ein Immediate-Wert vorhanden ist, befindet er sich immer an den letzten 16 Stellen.
 
-\enquote{Opcode/ \enquote{0}/ Zuweisungen}  // BILD
+\enquote{Opcode/ \enquote{0}/ Zuweisungen}  // BILD \footnotetext{BILD}
 
-\enquote{Opcode / \enquote{1} / Zuweisungen / Immediate} // BILD
+\enquote{Opcode / \enquote{1} / Zuweisungen / Immediate} // BILD\footnotetext{BILD}
 
 Die 16 Bits wurden deswegen ausgewählt, da die Register einen Speicher von 32 Bit haben und somit 16 Bits einfacher zu behandeln sind, da Zahlen größer 16 Bits durch 2 Zuweisungen und ein \enquote{Shift 16} einfach dargestellt werden können.
 
 Je nach Eingabeparameter sieht die Struktur des Eingabewortes aus :
 
-// BILD
+// BILD\footnotetext{BILD}
 
 Durch die Begrenzung der Eingabeparameter auf 5 Bits können somit nur 32 Register benutzt werden.
 
-\section{Diskussionen}
-
-FEHLEN???
-Clock (patrizio \& Frederic)
-Pipeline (patrizio \& Frederic)
-Entity – Architecture Ansatz (patrizio \& Frederic)
+Aus Einfachheit, für die Berechnungen der Alu, wurde weiterhin beschlossen, dass das "Register-0" ein 0-Register bleibt und alle Berechnungen im 2er-Komplement getätigt werden. Weiterhin wurde entschieden den Integer als einzigen Datentyp zu erlauben.
 
 
+%\subsection{16 bit vs. 32 bit vs. 64 bit (x)}
+%Wir haben uns für 32 bit entschieden, warum?
+%\begin{itemize}
+%    \item genug platz für große immediates und 3 op layout
+%    \item nicht "unnötig groß" z.B. beim debuggen einfacher 32 bit zu nutzen als 64
+%\end{itemize}
 
+%\subsection{5bit opcode vs 6bit opcode(x)}
+%Wir haben 5opcode mit nem zusätzlichen immediate bit, warum?
+%\begin{itemize}
+%    \item sinnvolle Ordnung der Opcodes
+%    \item Nur ein Mnemonic im assembler für add sub etc. (kein addi etc.)
+%\end{itemize}
 
-\subsection{16 bit vs. 32 bit vs. 64 bit (x)}
-Wir haben uns für 32 bit entschieden, warum?
-\begin{itemize}
-    \item genug platz für große immediates und 3 op layout
-    \item nicht "unnötig groß" z.B. beim debuggen einfacher 32 bit zu nutzen als 64
-\end{itemize}
+%\subsection{3 Addressmaschine? abhängig von der bit-Zahl(x)}
+%32 bit erlauben uns 3 address op codes
 
-\subsection{5bit opcode vs 6bit opcode(x)}
-Wir haben 5opcode mit nem zusätzlichen immediate bit, warum?
-\begin{itemize}
-    \item sinnvolle Ordnung der Opcodes
-    \item Nur ein Mnemonic im assembler für add sub etc. (kein addi etc.)
-\end{itemize}
-
-\subsection{3 Addressmaschine? abhängig von der bit-Zahl(x)}
-32 bit erlauben uns 3 address op codes
-
-\subsection{Relative Jumps (nur immediate jumps?)(x)}
-Wir haben uns für relative und absolute jumps entschieden (JMP ist ein TWOOP).
+%\subsection{Relative Jumps (nur immediate jumps?)(x)}
+%Wir haben uns für relative und absolute jumps entschieden (JMP ist ein TWOOP).
 
 \chapter{Software}
 \section{Anforderungsanalyse}
@@ -296,10 +297,20 @@ In der Retrospektive könnte man sagen: "Wir haben zu funktional gedacht."
 
 %Weil wir einfach die Signale durch pusten von Stage zu ssttaaggee durchpusten wollten und die Nebenläufigkeit der Komponenten total außer acht gelassen haben bzw. uns darüber nicht im klaren waren,
 
-Bis dato existierte noch kein RAM Speicher und Pipelining war auch noch nicht implementiert.
+Bis dato existierte noch kein RAM Speicher und Pipelining war auch noch nicht implementiert. Wir musssten also unseren Ansatz noch einmal Neudenken, genauer neu darüber nachdenken wie sich unser Ansatz in VHDL sinnvoll umsetzten ließe.
+Im folgenden Kapitel sollen die Probleme und die anschließend daraus gezogenen Schlüsse kurz Diskutiert werden um im Anschluss in [Kapitel BLANK] den letzendlichen Entwurf vorzustelllen. 
+
+\subsection{Vorläufige Problemanalyse}
+
+Hier werden einige Probleme unserer ersten besprochen und lösunngssanssätze kurz besprochen werden. Dabei soll davon abgesehen werden jede kleine Änderung im Code abzuarbeiten welche die letzttednliche Lösunng zum Resulatt hatten. Viel mehr soll ein Eindruck davon vermittelt werden welche entscheidenden Impulse diese Auseinandersetzung geliefert um im nächsten Kapitel unsere Lösung detailliert vorzusttellen.
+
+\begin{itemize}
+    \item Wir mussten Feststellen, dass immer wieder undefinierte Werte in unseren Registern aufgetaucht sind oder Programme falsche Ergebnisse lieferten. Dass lag daran, das falsche Werte propagiert wurden und oder gleichzeitige Zugriffe auf Signale stattfanden. Hier rächte sich ein wenig unsere Idee zunächst einen Lauffähiges Programm zu produzieren (ohne Pipelining) bevor wir uns an die Feinheiten machen wollten. Gedanklich sind wir aber schon von Pipellining ausggegangen und haben die parallelität der Komponenten außeracht gellassen. So wurden Signale auf denen Werten an lagen weiter propagiert und von den nachkommenden Stages verarbeitetet, änderte sich dann das Signal änderten sich auch die Werte in nachfolgenden Prozessen - auch wenn das nicht ggewünscht wurde. Wir haben daran gelernt die Signale wie elektrische Leitungen zu betrachten, eben so wie sie nacher auch syntthetisiert werden. Hier wird auch deutlich was damit ggemeint ist wenn wir: "zuu funktional ggedachttt haben". Die Lösung war die Signale zu takten indem die Inputs der Stages von der Clock abhängig gemacht gemacht wurden. Damit wurde dann auch endlich das Pipelining implementiert.
+    \item 
+\end{itemize}
 
 
-\section{Struktur oder ssetup oder wie das ausssieht}
+\section{Struktur oder Setup oder wie das aussieht}
 Struktur und Kommunikation -
 % Zusammenhänge von componenten
 % Wie fließen daten durch den prozessor
@@ -403,6 +414,33 @@ Desweiteren stellt der \texttt{processor} ein \texttt{clk} Signal für Speicher 
 
 \section{Decoder}
 
+Der Decoder ist eine eigene Schnittstelle definiert, deren Aufgabe es ist den 32-Bit-Code von der Instrictionmemory zu interpretieren und deren Information zu filtern und diese den entsprechenden Outputs zuzuweisen.
+
+Wie im Kapitel des Befehlssatzes beschrieben werden die 32-Bit-Befehle im Decoder rekonstruiert. Dabei geht der Decoder zuerst die verschiedenen möglichen Befehlssätze der ersten 5 Bits durch, prüft ob das Immediate-Bit gesetzt wurde und gibt dann die entsprechenden Werte in den jeweiligen Outputs weiter.
+Weiterhin wird in Abhängigkeit des Befehles ein ,,write-enanble" gesetzt.
+Um diese Zuweisungen zu beschleunigen ist der Befehlssatz so angelegt, dass eine geringe Anzahl an Bits geprüft werden müssen, um herauszufinden, um welches Format es sich bei dem Befehlswort handelt.
+
+
+Bild\footnotetext{BILD}
+
+
+  %      op_layout <= ONEOP   when "00",
+  %                   TWOOP   when "01",
+  %                  THREEOP when others;
+
+Dadurch weiß der Decoder welche weiteren Bits gelesen werden müssen um so diese Informationen an die entsprechenden Outputs weiterzugeben. Aus diesem Grund können einige Outputs ignoriert werden, da diese nicht benötigt werden und werden dadurch nicht neu gesetzt. 
+Hier wurde auch ein eigener Alu-Op-code eingeführt, da die Alu bei einige Befehlen die gleiche Funktionsweise hat. Durch den Alu-Op-code wird weiterer redundanter Code gespart und somit eine effizientere Zuweisung.
+
+
+Bild\footnotetext{BILD}
+
+
+Durch diese ganzen Reduzierungen werden unnötige Zuweisungen vermieden und eine schnellere Verarbeitung geförtdet.
+
+
+
+
+
 % als eigene entity definiert
 % don't cares  instruction_set_real.txt
 % wie in instruction_set_real.txt ist uns in vielen fällen der output gewisser signale egal.
@@ -445,7 +483,7 @@ Desweiteren stellt der \texttt{processor} ein \texttt{clk} Signal für Speicher 
 
 
 
-\subsection{Fun with Flags ein kapittel darüber das wir fllags auf untterschiedliche aweiden implementiert haben und dessen probleme}
+\subsection{,,Fun with Flags" ein Kapitel darüber das wir flags auf unterschiedliche weisen implementiert haben und dessen Probleme}
 
 schwierigkeiten bei der implementation der flags
 -compare
