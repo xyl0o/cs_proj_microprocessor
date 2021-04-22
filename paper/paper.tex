@@ -838,6 +838,24 @@ Die ALU kennt nun die Operation SUB.
     \item Pipeline flushing
 \end{itemize}
 
+Es sind noch viele Möglichkeiten offen geblieben den Prozessor und den Assembler-Compiler auszubauen.
+Zum Einen fehlen noch Implementationen für eine Opcodes.
+Zum Anderen sind der Overflow der ALU und das Link Register nicht korrekt implementiert.
+
+Um den Prozessor synthetisieren zu können müssen mindestens Signale richtig initialisiert werden.
+Zur Zeit wird in VHDL ein Anfangswert gesetzt.
+Hier wäre es nötig ein Reset-Signal einzuführen, dass den PC auf 0 und die Pipeline Register Opcodes auf NOOP setzt.
+Auch Befehle wie COMPG nicht gut umgesetzt.
+In VHDL lässt sich die dafür notwenidige Operation mit einem simplen \enquote{>} umsetzten.
+Dies wird aber in der Synthese eine komplexe Schaltung erzeugen.
+
+Der Prozessor im Zusammenspiel mit dem Assembler-Compiler kann aus seiner Pipelinestruktur noch nicht allzu viel herausholen.
+Alle Abhängigkeite, die zu Hazards führen können, müssen eine entsprechende Anzahl von NOOPS nach sich ziehen.
+Würde die CPU Pipeline Flushing implementieren ließe sich hier einiges an NOOPS sparen.
+Man könnte noch einen Schritt weiter gehen und Instruction Reodering oder auch \enquote{Backpropagation} von Ergebnissen betreiben.
+
+Eine HLT op wäre noch schön.
+
 \kant[10-14]
 
 \end{document}
