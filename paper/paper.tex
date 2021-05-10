@@ -62,6 +62,8 @@
 \end{itemize}
 \kant[2-3]
 
+(Max)
+
 \chapter{Planungsphase}
 Zuerst haben wir in einem Python Sketch die Struktur des Prozessors definiert.
 Danach wird gemeinsam über den möglichen Befehlssatz diskutiert.
@@ -74,6 +76,8 @@ Diese wollen wir dennoch beleuchten.
 
 \kant[5]
 
+(Wer?)
+
 
 %%TODO Eingführung ins Chapter Instruction Set sschreiben, was wird in welcher tiefe vorgetsellt was passiert in welchen kapitel später mit deiesen infromationen, wozu ist das wichtig?
 
@@ -82,13 +86,25 @@ Diese wollen wir dennoch beleuchten.
 Für die Adressmaschine wurde sich für eine 3 Adressmaschien entshieden. Die 0 oder 1 Adressmaschine wurde direkt ausgeschlossen. 
 Die 3-Adress Maschine hat zwar keine funktionalen Vorteile, gegenüber der 2-Adressmaschine, aber der Aufwand, komplexere Befehle zu realisieren ist geringer.
 Ein „add“-Befehl kann sein Ergebnis beispielsweise direkt in eine dritte Adresse schreiben und ist in einem Befehl realisierbar. So werden umständliche Umkopiervorgänge gespart.
-Da Performance nicht relevant für die Entwicklung war, wurde auch die Bitzahl als irrelavent eingestuft. Dadurch ist auch das Einsparen von Bits, im Befehlswort, durch eine 2-Adressmaschine, kein relevanter Faktor gewesen.
+Da Performance nicht relevant für die Entwicklung war, wurde auch die Bitzahl als irrelevant eingestuft. Dadurch ist auch das Einsparen von Bits, im Befehlswort, durch eine 2-Adressmaschine, kein relevanter Faktor gewesen.
 
 Ein weiteres Argument für die 3-Adressmaschine ist die Reduzierung von Abhängigkeiten. Die Zahl an NOOPs, die für eine korrekte Ausführung benötigt werden, wird minimiert. Das ist sowohl schneller, als auch einfacher in der Handhabung. 
 
-Bei der Bitzahl wurde sich für 32 entschieden. 32 Bit Wortlänge reicht für alle Befehle und werden nieganz ausgeschöpft. Darum wäre auch eine längere Bitzahl überflüssig gewesen. 
+Bei der Bitzahl wurde sich für 32 entschieden. 32 Bit Wortlänge reicht für alle Befehle und werden nie ganz ausgeschöpft. Darum wäre auch eine längere Bitzahl überflüssig gewesen.
 
-\section{Befehlssatz}
+(freddy)
+
+\section{32-Bit-Code}
+
+\subsection{Struktur ( Opcode- / Register- / Immediate- Bit-Länge )}
+
+\subsection{Befehlssatz}
+
+\subsection{Zuweisung Opcode}
+
+\subsection{Immediate-Bit}
+
+\subsection{Jump/Store/Load}
 
 % Einleitung abhängig vom vorherigem Teil 
 
@@ -184,6 +200,9 @@ Durch die Begrenzung der Eingabeparameter auf 5 Bits können somit 32 Register b
 
 {\color{green}END WORK IN PROGRES}
 
+
+(paddy)
+
 \chapter{Hardware}
 
 % TODO Missing: Aufstellung von Problemen
@@ -225,6 +244,8 @@ Andererseits soll die von uns erarbeitete Lösung vorgestellt und diskutiert wer
 % Der folgende Ttext gibt einen einblick in den Prozess und stelltt die Inhaltichen schrittte vor.
 
 %%Im Fokus stehen dabei einerseits der .
+
+(luca)
 
 \section{Vorgehen}
 
@@ -316,6 +337,9 @@ Hier rächte sich ein wenig unsere Idee zunächst einen lauffähiges Programm zu
 %Eindampfen
 % später drüber reden (luca und max?)
 
+
+(luca)
+
 \section{Struktur oder Setup oder wie das aussieht}
 Struktur und Kommunikation -
 % Zusammenhänge von componenten
@@ -378,6 +402,8 @@ Im \texttt{decoder\_pkg} sind die \texttt{decoder} Component und alle Opcodes de
 
 % Component begriff erläutern? (Am besten vorher)
 
+(max)
+
 \section{Input / Output}
 
 Die CPU benötigt natürlich noch Speicher für Daten und Instruktionen um ein Programm ausführen zu können.
@@ -392,6 +418,8 @@ Es ist somit nicht möglich den vollen 32 bit Adressraum zu nutzen.
 So wird aber nicht der gesamte 32 bit Raum beim simulieren alloziert.
 
 Des weiteren stellt der \texttt{processor} ein \texttt{clk} Signal für Speicher und CPU bereit.
+
+(max)
 
 \section{Register}
 % write im writeback
@@ -418,13 +446,14 @@ Die Problematik bezieht sich darauf, dass sie schwierig in anderen Prozessen ben
 Die herausgearbeitete Lösung, die schlussendlich in der Implementation manifestiert wurde, basiert darauf, dass die PC-Werte nicht in der Registerbank steht, sondern ein eigenes Register haben.
 Somit können diese auch in anderen Prozessen benutzt werden.
 
+(max)
 
 \section{PC Handling und Sprünge}
 
 Die fetch-stage soll mittel Programm Counter die befehle aus dem Speicher laden können. Dazu muss der Programm Counter in jedem Clock Zyklus um Eins inkrementiert werden. Die finale Implementationm hat keine next sequence PC Werte mehr, sondern nur noch einen PC außerhalb der Pipeline. Im write back wird dieser immer um 1 erhöht. Sprünge haben ein eigenes Signal, die den writeback wert entsprechend verändern. Die gesamte PC-Logik ist somit im write back.
 
 Schwierigkeiten, die zur Aufgabe der next-sequence PC geführt haben, waren, unter anderem, dass Jeder Befehl seinen next sequence Befehl in den PC hätte schreiben müssen, nach dem die Pipeline durchlaufen wurde. 
-Der erste fehler der Implementation bestand im Inkrementieren um Eins. Das Durchlaufen eines Befehls durch die Pipeline dauert aber 4 Schritte. Ist ein Befehl durchgelaufen, sind 4 weitere Befehle eingegangen. Der next sequence PC hätte also entsprechend 4 weiter sein müssen.
+Der erste Fehler der Implementation bestand im Inkrementieren um Eins. Das Durchlaufen eines Befehls durch die Pipeline dauert aber 4 Schritte. Ist ein Befehl durchgelaufen, sind 4 weitere Befehle eingegangen. Der next sequence PC hätte also entsprechend 4 weiter sein müssen.
 
 Weitere Schwierigkeiten ergeben sich aus den fehlenden Initial-Zuständen. Jede Komponente, inklusive der next sequence PC ist mit (undefiniert) Werten beschreiben. Es müsste dafür gesorgt werden, dass der next sequence PC, auf write back Ebene, auf 1 steht, wenn der Prozessor startet. Der memory access müsste auf Zwei stehen und die anderen Komponenten analog dazu. Aufgrund der 4er Schritt Zählung wurde nur jeder vierte Befehl ausgeführt.
 %Bild reinpacken
@@ -436,16 +465,19 @@ Das funktionierte leider nicht, da in der fetch-stage der pc Wert des durchgelau
 %schreiben dass fetch stage irrelavant geworden ist, a pc direkt zum speicher durchgereicht wird
 Der PC Wert hatte auch noch zu Problemen geführt, da er vorher ein normales Register war. Das beschreiben von Registern gleichzeit ( Pc Register und Ziel des Befehls) führte zu Fehlern. Der PC ist jetzt aus der Registerbank ausgelagert. Das löst die Zugriffsprobleme auf zwei Register(Banken) gleichzeitig.
 
+(freddy)
 
 \section{Decoder}
 
 Der Decoder ist als eine eigene VHDL-Entity definiert. Seine Aufgabe es ist den 32-Bit-Code von dem Instructionmemory zu interpretieren, dessen Information zu filtern und diese den entsprechenden Outputs zuzuweisen.
 Wie im Kapitel des Befehlssatzes beschrieben, werden die 32-Bit-Befehle im Decoder in die einzelnen Informationsbausteine zerlegt.
 
-Bild der \enquote{dekonstruktion}
-\\
- 00000  0  00000  00000   0 00000 00000 00000
-\\
+\begin{figure}[h]
+\centering
+% \includegraphics{Figure 3.2.1}
+\caption{Bild}
+\end{figure}
+
 In der ersten Version des Decoders verglich der Decoder den ermittelten \enquote{Opcode} mit dem des Befehlssatzes.
 Dies wurde durch eine \enquote{Fallunterscheidung}(cases) realisiert. Nachdem eine Übereinstimmung gefunden wurde, wurde das Immediate-Bit geprüft.
 In Abhängigkeit des \enquote{Opcodes} und des Immediate-bits wurden dann die weiteren Informationen des 32Bit-Codes vom Decoder an die entsprechenden Outputs weitergeleitet. 
@@ -485,27 +517,32 @@ Je nach Layout sind somit andere Bits des 32-Bit-Codes relevant bzw. andere irre
 Ein weiterer Vorteil dieser Entscheidung ist, dass weitere Befehle so einfacher zu ergänzen sind, da sie nur der Grammatik des dazugehörigem Layout entsprechen müssen um deren Inhalt zu dekodieren.  
 
 
-
+(paddy)
 
 \section{ALU}
 
 Alu
 
-Die ALU ist für die logischen und arethmetsichen Operationen verantwortlich.
+Die ALU ist für die logischen und arithmetischen Operationen verantwortlich.
 Sie kriegt ihren Opcode vom Decoder, zuzüglich gibt es zwei weitere Operanden als Input und ein Input Flag, das Carry Bit.
 Herzstück der ALU ist eine große Switch Anweisung, die abhängig vom Opcode die zwei Operanden mit einander verrechnet.
 Dazu gibt es insgesamt 14 Funktionen. 
 Die Overflow, CarryOut und Compare Flags, werden jedes Mal berechnet. Geschrieben werden sie nur, wenn das der geparste Opcode hergibt.
 Das overflow Flag ist noch nicht implementiert, da dies bisher nicht der Fokus war. Die Zielberechnung von Fibonacci funktioniert auch ohne.
 
-\subsection{,,Fun with Flags" ein Kapitel darüber das wir flags auf unterschiedliche weisen implementiert haben und dessen Probleme}
 
+\subsection{,,Fun with Flags" ein Kapitel darüber das wir flags auf unterschiedliche weisen implementiert haben und dessen Probleme}
+%pc handling teil ist damit gemeint
 schwierigkeiten bei der implementation der flags
 -compare
 -overflow immer noch nicht richtig implementiert
 
+(freddy)
+
 \chapter{Software}
 % chapter introduction missing - brauchen wir die hier wirklich? -> siehe Chapter 4.1
+
+(lennart)
 
 \section{Anforderungsanalyse}
 Zu Beginn des Softwareentwicklungsprojektes bestand die erste Herausforderung darin, eine auf das Problem zugeschnittene Anforderungsbeschreibung zu erstellen.
@@ -550,6 +587,8 @@ Aufgrund der anfänglich ungünstigen Designentscheidung keinen diskreten Simula
 Standardmäßig gibt es im Laufe einer jeden Softwareentwicklung Entscheidungen zu signifikanten Qualitätsmerkmalen zu fällen.
 So entschieden wir uns bewusst dafür, dass die Effizienz des Programms eine sehr untergeordnete Rolle spielen sollte, da es praktisch ausgeschlossen war, dass wir große Mengen an Quellcode in sehr kurzer Zeit übersetzen müssen.
 
+(leonard)
+
 \section{ANTLR}
 %https://www.antlr.org/
 In der Vorbereitung für die Entwicklung des Compilers haben wir verschiedene Möglichkeiten abgewogen, wie die von uns gesteckten Ziele am besten zu erreichen sind.
@@ -567,10 +606,14 @@ Dazu wird einfach eine Datei mit dem Quellcode eingelesen und mithilfe von Lexer
 Der resultierende Parsetree kann mit Hilfe von Visitors durchlaufen werden.
 Diese leisten die eigentliche Übersetzungsarbeit.
 
+(lennart & leonard)
+
 \section{Compiler Implementation}
 
 \subsection{Grammatik}
-ANTLR nutzt zum Parsen eine reguläre Grammatik der Form: G = (V, T, P, S). Hierbei entspricht V der endlichen Menge der Variablen (Menge der Ableitungsregeln, bzw. Parser-Regeln), T der Menge der Terminalen (Tokens, bzw. Lexer-Regeln), P den Produktionsregeln (Parser-Regeln bzw. Ableitungsregeln) und S der Startregel. Basierend auf der Grammatik existiert also eine Sprache L(G). Für jeden von uns vorgesehenen Assemblerbefehl A gilt also: A \in L(G). 
+ANTLR nutzt zum Parsen eine kontextfreie Grammatik der Form: G = (V, T, P, S). Hierbei entspricht V der endlichen Menge der Variablen (Menge der Ableitungsregeln, bzw. Parser-Regeln), T der Menge der Terminalen (Tokens, bzw. Lexer-Regeln), P den Produktionsregeln (Parser-Regeln bzw. Ableitungsregeln) und S der Startregel. Basierend auf der Grammatik existiert also eine Sprache L(G). Für jeden von uns vorgesehenen Assemblerbefehl A gilt also: A \in L(G). 
+
+(leonard)
 
 \subsubsection{Lexer - Lexikalischer Scanner}
 Der Lexer stellt die unterste Ebene einer Grammatik dar.
@@ -583,6 +626,8 @@ MOV: 'MOV'; // Als MOV-Token wird jeder Ausdruck der Form "MOV" erkannt
 BINARY: '0b' ([0-1])+;  // „0b1001…“ wird erkannt
 \end{lstlisting}
 Zu Beginn des Prozesses werden so zunächst sämtliche Eingaben in Tokens umgewandelt, welche dann von den Parser-Regeln in einen Syntax-Baum überführt werden.
+
+(leonard)
 
 \subsubsection{Parser}
 Die Parser-Regeln definieren den Ableitungsbaum der formalen Grammatik.
@@ -603,6 +648,8 @@ wobei die Regel entweder direkt ein Token nutzt oder auf eine weitere Regel verw
 Anhand der Ableitungsregeln kann also eine Struktur erstellt werden, auf welche nun spezifisch reagiert werden kann.
 So ist es innerhalb des Programmes nun möglich auf jeden Knoten des Baumes, sowie seine Eltern- und Kindknoten zuzugreifen.
 
+(leonard)
+
 \subsection{Makros}
 Da unser Compiler mehrere Aufgaben erfüllen soll, die nur sequentiell erledigt werden können, wird dieser Ablauf insgesamt drei mal durchlaufen.
 Bei jedem Durchlauf wird ein anderer Arbeitsschritt erledigt.
@@ -618,6 +665,8 @@ Bei der Verwendung von Makros muss beachtet werden, dass diese nicht immer \enqu
 % was meint in place? erläútern.
 Es ist daher empfehlenswert, zu dokumentieren, welche Register von den jeweiligen Makros verwendet werden, um Inkonsistenzen zu vermeiden.
 Das Vorgehen des Makro-Visitors besteht also darin den übergebenen Quellcode größtenteils unverändert zurück zu geben und nur die Stellen, an denen ein Makro entdeckt wird, zu ersetzen.
+
+(lennart)
 
 \subsection{Jumplabels und NOOPS}
 Im zweiten Übersetzungsschritt werden die jump-Labels zu absoluten Zeilenangaben übersetzt und NOOPS eingefügt.
@@ -635,6 +684,8 @@ Außerdem werden generell nach jedem Sprung (\texttt{JMP}, \texttt{B}) 3 NOOPS e
 % Warum nur 3 nicht 4??
 Auf diese Weise wird vermieden, dass ungewollte Befehle in die Pipeline geladen werden.
 
+(lennart)
+
 \subsection{Übersetzung}
 Im letzten Schritt wird der auf diese Weise modifizierte Quellcode in den Maschinencode übersetzt.
 Die einzelnen Befehle werden je nach Befehlstyp (NOOP, TWOOP, THREEOP, Jump) unterschiedlich behandelt.
@@ -650,6 +701,8 @@ Anschließend wird das Befehlswort zusammengesetzt und zusammen mit einem führe
 %Die Implementation des Compilers verlief relativ Problemlos und das Ergebnis ermöglicht uns alle von uns gesetzten Ziele zu erreichen. Eine Schwäche unseres Vorgehens war jedoch die schlechte Testbarkeit des Programms, da diese von der Implementation der Hardware abhängig war. Das führte dazu, dass Fehler erst spät sichtbar wurden, da wir den compilierten Quellcode erst an dem fertigen Prozessor testen konnten (siehe Kapitel Test).
 %Simulator hätte das lösen können
 
+(lennart)
+
 \chapter{Ergebnis}
 
 % Gleicher ablauf wie bei Vortrag
@@ -657,12 +710,15 @@ Anschließend wird das Befehlswort zusammengesetzt und zusammen mit einem führe
 % Anwedung des beschrieben codes (hardware wie software) zeigen.
 % -> Verweis auf assembler / machinencode
 
+% zu software padding paste nicht
+% zu software anzahl noops zu ändern
+
 
 \begin{itemize}
     \item Wie lief das beim Fibonacci Test
     \item Padding passte nicht
     \item Nicht passende NOOPS
-    \item manuelles Fixen des Mashinencodes
+    \item manuelles Fixen des Maschinencodes
     \item Problem mit Carry-flags (Durchschleifproblem)
     \item Problem mit Jumpaddressen (Durchschleifproblem)
 \end{itemize}
@@ -671,7 +727,7 @@ Unser next\_seq\_pc ansatz war nicht ganz durchdacht.
 Die Idee war den nächsten PC in der Fetch stage schon zu bestimmen und \enquote{durchzuschleifen} bis zur Verwendung in memory access.
 Dort wird dieser verwendet um die Instruction im fetch zu bestimmen.
 Wenn nun in allen Pipelineregistern dieser next\_seq\_pc mit 0 initialisiert wird, fetchd der prozessor auch 4 mal die instruction an der Stelle 0.
-Da die fetch stage auch auf basis dieses Wertes den nächsten next\_seq\_pc berechnet hat (in diesem fall 1) ist die instruction für die nächsten 4 instruction die an Adresse 1.
+Da die fetch stage auch auf basis dieses Wertes den nächsten next\_seq\_pc berechnet hat (in diesem Fall 1) ist die instruction für die nächsten 4 instruction die an Adresse 1.
 
 Dieses Problem zeigte sich auch bei den Flags und bei den Jumpaddressen.
 Wenn ein Flag gesetzt werden sollte, setze die ALU dieses flag, wenn nicht wurde der vorherige Flagwert gesetzt.
@@ -700,6 +756,8 @@ Wir vergaßen dabei einen Operanden zu invertieren.
 Dies lies sich recht leicht korrigieren.
 Die ALU kennt nun die Operation SUB.
 
+(max)
+
 \chapter{Konklusion und Ausblick}
 \begin{itemize}
     \item HLT op
@@ -724,7 +782,7 @@ Um den Prozessor synthetisieren zu können müssen mindestens Signale richtig in
 Zur Zeit wird in VHDL ein Anfangswert gesetzt.
 Hier wäre es nötig ein Reset-Signal einzuführen, dass den PC auf 0 und die Pipeline Register Opcodes auf NOOP setzt.
 Auch Befehle wie COMPG nicht gut umgesetzt.
-In VHDL lässt sich die dafür notwenidige Operation mit einem simplen \enquote{>} umsetzten.
+In VHDL lässt sich die dafür notwendige Operation mit einem simplen \enquote{>} umsetzten.
 Dies wird aber in der Synthese eine komplexe Schaltung erzeugen.
 
 Der Prozessor im Zusammenspiel mit dem Assembler-Compiler kann aus seiner Pipelinestruktur noch nicht allzu viel herausholen.
@@ -734,12 +792,15 @@ Man könnte noch einen Schritt weiter gehen und Instruction Reodering oder auch 
 
 Eine HLT op wäre noch schön.
 
+(max & leonard (und lennart))
+
 \kant[10-14]
 
 \end{document}
 
-% software: konklusion befühllen
+% software: konklusion befüllen
 % software: stuff zur konklusion bewegen
+% software: erlernen von antlr war komplex - Grammatik + Klassenhierarchie
 % hardware: input/output - probleme und lösung skizzieren
 % hardware: register - probleme und lösung skizzieren
 % hardware: pc handling - probleme und lösung skizzieren
