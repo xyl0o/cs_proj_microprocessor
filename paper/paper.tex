@@ -115,22 +115,18 @@ Während der Bearbeitung des Projekts sind einige Fragestellungen und Diskussion
 
 \kant[6]
 
-%118 -128
-
 \subsection{Wortlänge} 
 
-Als erster großer Diskussionspunkt gab es die Entscheidung der Wortlänge.
-Zur Auswahl standen 32 oder 64 Bit. Alle kleineren Längen haben wir ausgeschlossen, da wir 16-Bit immidate-Werte haben wollten. Zudem waren uns kleinere Längen als 32 Bit zu kompliziert in der Ausarbeitung gewesen.
-Die 32 bzw. 64 Bit Wortlänge bietet den Vorteil, dass große Intermediates genutzt werden können und bei der Wahl des OP-layouts die volle Entscheidungsfreiheit bleibt.
-Gegen die 64 Bit-Länge haben wir uns unter dem Gesichtspunkt entschieden, dass in unserem Zugrunde liegenden Instruction-set, die Wortlänge kaum ausgeschöpft werden würde. 
-%Todo warum genau 64 bit besser
+Zuerst stand die Frage der Wortlänge zur Diskussion. 
+Zur Auswahl standen 32 oder 64 Bit. Alle kürzeren Längen wurden ausgeschlossen, da wir große (16 Bit) immediate-Werte ermöglichen wollten. Zudem waren  kürzere Längen als 32 Bit zu kompliziert in der Ausarbeitung gewesen.
+Die 32 bzw. 64 Bit Wortlänge bietet den Vorteil, dass große Immediates genutzt werden können und bei der Wahl des OP-layouts die volle Entscheidungsfreiheit bleibt. 
+Gegen die 64 Bit-Länge haben wir uns unter dem Gesichtspunkt entschieden, dass in dem anvisierten Instruction-set, die Wortlänge kaum ausgeschöpft werden würde. Ein berwiegender Teil der Befehlsworte wäre mit Nullen besetzt worden, da die Länge kaum ausgeschöpft worden wäre. Das hätte das Debugging erschwert und die Simulation unnötig aufgebläht. 
 
-%132 - 148
-
+%brauchen wir 3 adress maschine für pipeline auf jedenfall
 \subsection{Adressmaschine}
-Auf Basis der Wortlänge haben wir uns nun der Frage der Adressmaschine zugewandt. Wir hatten die Alternativen 3 oder 2 Adress Machine. Eine 1-Adress Maschien wurde als nicht-zielführend ausgeschlossen. Die Implementierung einer Pipeline war von vornherein angedacht. In einer 1-Adress Maschine hätte für viele Operationn (die in einer 3-Adress Maschien einen Befehl brauchen) mehrere Befehle gebraucht. Das hätte zu einer hohen Zahl an Abhängigkeiten innerhalb der Implementation und ständigen flushes geführt. Gleiches Problem ergibt sich bei einer 2-Adress Maschine, wenn auch nicht so stark. 
+Auf Basis der Wortlänge haben wir uns der Frage der Anzahl der Adressen unserer Befehle zugewandt. Wir hatten die Alternativen 3 oder 2 Adress Maschine. Eine 1-Adress Maschien wurde als nicht-zielführend ausgeschlossen. In einer 1-Adress Maschine hätte für viele Operation (die in einer 3-Adress Maschien einen Befehl brauchen) mehrere Befehle gebraucht. Das ist problematisch, da die Implementierung einer Pipeline von vornherein angedacht war. Das hätte zu einer hohen Zahl an Abhängigkeiten innerhalb der Implementation und zu ständigen flushes geführt. Gleiches Problem ergibt sich bei einer 2-Adress Maschine, wenn auch nicht so stark. 
 
-Darum wurde sich schlussendlich auch für eine 3-Adressmaschine entschieden. Unter der Wortlänge wurde eine 3-Adressmaschine als implementierbar erachtet. Im Bezug auf das angestrebte Pipelining wurde so die Menge an benötigten Befeheln reduziert. Das ist auch für die spätere Software-Implementierung einfacher. 
+Darum wurde sich schlussendlich auch für eine 3-Adressmaschine entschieden. Unter der gegebenen Wortlänge wurde eine 3-Adressmaschine als implementierbar erachtet. Im Bezug auf das angestrebte Pipelining wurde so die Menge an benötigten Befehlen reduziert. Das ist auch für die spätere Software-Implementierung einfacher. Da sowohl Inputregister als auch das Zielregister unabhängig voneinader adressiert werden können.
 
 \subsection{Befehlssatz}
 {\color{red}
@@ -281,9 +277,7 @@ Durch die Begrenzung der Eingabeparameter auf 5 Bits können somit 32 Register b
     \item Nice additions
 \end{itemize}
 
-\section{Vorwort}
-
-Dieses Kapitel behandelt die Umsetzung unseres Mikroprozessors in Hardware Komponenten in VHDL.
+Dieses Kapitel behandelt die Umsetzung unseres Mikroprozessors in Hardwarekomponenten in VHDL.
 Zeitlich betrachtet schließt dieses Kapitel also an die Arbeitet des Hardware Teams nach der gemeinsamen Planungsphase des gesamten Teams an.
 %eventeull als zeitliche einleitung für software übernehmen 
 In dieser vorangegangenen Planungsphase einigte sich die Gruppe auf zentrale Orientierungspunkte, welche die Arbeit des gesamten Teams strukturieren.
@@ -291,29 +285,32 @@ Diese wurde bereits in Kapitel (?!) vorgestellt.
 Dazu zählen fundamentale Konzepte, wie die Wortbreite und der entlehnte ARM-Befehlssatz (siehe Anhang).
 % Referenzen schönmachen
 Die durch das Team geleistete Vorbereitung stellt uns einen detaillierten Leitfaden zur Umsetzung bereit.
-Auf dem Papier ist bereits an diesem Punkt ein Prozessor in Python Pseudocode entstanden, der zur Orientierung dienen sollte (siehe Anhang), allerdings ohne Pipelining.
-%pseudo code ist in pipeline allerdings funktional ohne zeitverhalten
-Praktisch musste dann nur der Python Code in funktionierenden VHDL Code umgewandelt werden. Das stellte die erste Herausforderung da, denn von uns hatte niemand Erfahrung auf dem Gebiet von Hardware-Beschreibungssprachen.
+Auf dem Papier ist bereits an diesem Punkt ein Prozessor in Python Pseudocode entstanden, der zur Orientierung dienen sollte (siehe Anhang).
+Praktisch musste dann nur der Python Code in funktionierenden VHDL Code umgewandelt werden.
+Das stellte die erste Herausforderung da, denn von uns hatte niemand Erfahrung auf dem Gebiet von Hardware-Beschreibungssprachen.
+%Nicht alles ist eine große AUfgeb oder Herausfoderung. Sagen worum es geht!
 Intern hat sich das Hardware-Team darauf geeinigt sich mindestens einmal pro Woche zu Treffen um erarbeitete Lösungen zu besprechen, das weitere Vorgehen zu Planen und die Arbeit aufzuteilen.
 %so etwas auch für software Einleitung vorgehen dies das 
 
 Im Folgenden soll einerseits der Prozess aus Sicht des Hardware Teams, der schlussendlich zu einer funktionierenden Lösung geführt hat, beschrieben werden.
 Andererseits soll die von uns erarbeitete Lösung vorgestellt und diskutiert werden.
 % Der folgende Ttext gibt einen einblick in den Prozess und stelltt die Inhaltichen schrittte vor.
-Im Fokus stehen dabei einerseits der .
+
+%%Im Fokus stehen dabei einerseits der .
 
 \section{Vorgehen}
 
 Als Hardware-Team haben wir uns intern darauf geeinigt uns einmal pro Woche zu treffen.
-%steht genau so in der Einleitung
 Hier wurden selbstständig erarbeitete Lösungen, Probleme und die Arbeitsteilung besprochen.
+%steht genau so in der Einleitung
 Da für alle beteiligten Programmieren in VHDL neu war, haben wir uns in der frühen Phase des Projekts bzw. unmittelbar am Anfang auf ein Drei-Phasen-Programm geeinigt.
 In der ersten Phase haben alle Teammitglieder sich allgemein mit VHDL vertraut gemacht.
 Wie blieb den einzelnen Gruppenmitgliedern überlassen.
-Vielversprechendes Material wurde im GitHub gesammelt.
+Vielversprechendes Material wurde im GitLab gesammelt.
 Darüber hinaus wurden Schwerpunkte vergeben zu denen unter anderem Entities, Architectures, Prozesse und mögliche Umsetzungen von Pipelining gehörten.
 Als Ergebnis dieser ersten Recherchen haben wir uns für einen strengen Entity Architecture Ansatz entschieden.
 % was ist ein "strenger entity architecture" ansatz genau?
+%Außerdem haben wir uns nicht dafür entschieden sondern wir dachten das wäre vlt nne gute Idee. Wir haben halt versucht VHDL zu verstehen. Was kapslett man was kommt in eigene DAteien Die sachen mit den Imports und scooping und namespaces- So was vlt ncohmal stärken. Der kerngfehler: Jede reale Harware komponente braucht eine entsprehung als Entity Arc
 Es erschien uns zu diesem Zeitpunkt logisch jeder Stage im Prozessor seine eigene Entity und Architecture zu geben.
 Die in den Entities definierten Schnittstellen sollten die Kommunikation der einzelnden Stages untereinander gewährleisten, während die jeweilige Architectures die gewünschte Datenverarbeitung übernähme.
 In der zweiten Phase wurden die Stages aufgeteilt, sodass jeder mindestens eine Komponente in VHDL programmiert hat.
@@ -489,48 +486,49 @@ Des weiteren stellt der \texttt{processor} ein \texttt{clk} Signal für Speicher
 %alle schreiboperationen in einen geclockten prozess
 
 %pc ist nicht in der Register Bank sondern eine eigens register damit dieser auch in anderen Prozessen benutze werden kann
-
+%Aufbau der Register noch mal aufschreiben, 32 register, im 32. ist der pc, im 0. immer 0 
+%TODO noch mal max fragen 
 Zunächst stellte uns unser VHDL-Verständnis, wie an anderen Stellen, vor Probleme.
-Insbesondere Herausforderungen kamen beim Umgang mit dem Write Back auf. Die CPU war fehlerhaft implementiert. Es wurde gleichzeitig ein Lese und ein Schreibprozess durchgeführt, was in einem Absturtz des Programmes resultierte. Diese Lese und Schreibzugriffe auf die Register waren nicht geclockt. Unsere Lösung bestand darin, nur einen Prozess überhaupt schreiben zu lassen. Der Umgang mit dem PC war ebenfalls etwas umständlich.
+Insbesondere Herausforderungen kamen beim Umgang mit dem Write Back auf.
+Da die CPU fehlerhaft implementiert war, wurde gleichzeitig ein Lese- und ein Schreibzugriff durchgeführt, was in fehlerhaften und undefined Werten resultierte. 
+%KOnstante Werte angelegt, dadurch ständiges schreiben und lesen, da nicht geclocked
+%zwei mal geschrieben wurde auch 
+Unsere Lösung bestand darin, nur einen Prozess überhaupt schreiben zu lassen. Der Umgang mit dem PC war ebenfalls etwas umständlich.
 Die Problematik bezieht sich darauf, dass sie schwierig in anderen Prozessen benutzt werden kann, wenn sie in der Registerbank steht.
-Die herausgearbeitete Lösung, die Schlussendlich in der Implementation manifestiert wurde, basiert darauf, dass die PC-Werte nicht in der Registerbank steht, sondern ein eigenes Register haben.
+Die herausgearbeitete Lösung, die schlussendlich in der Implementation manifestiert wurde, basiert darauf, dass die PC-Werte nicht in der Registerbank steht, sondern ein eigenes Register haben.
 Somit können diese auch in anderen Prozessen benutzt werden.
 
 
 \section{PC Handling}
 
+%Max noch mal drüber gucken lassen 
+%kurz erklären was pc ist 
 %undefined wegen Wert durchschleifen 
-Der Programm Counter war zunächst fehlerhaft, da auf jeder Pipeline Ebene der Wert der vorangegangenen Ebene übernommen wurde. Das hat zur Rückgabe 
-%Rückgabe richtiges Wort
-von undefined Werten geführt. Als erste Lösung wurden die Pipeline-Ebenen iterativ abgearbeitet. 
+Der Programm Counter war zunächst fehlerhaft, da er mit falschen Werten initialisiert wurde. Diese Werte wurden von der jeweils nächsten Ebene übergeben. Das hat am Ende zu falschen Werten geführt. 
 
-Das hat wiederrum zu fehlern in den Sprüngen geführt, da keine Werte mehr zurückgeschrieben wurden. Der Fehler beim Flush sah folgendermaßen aus: 
+%Das hat wiederum zu Fehlern in den Sprüngen geführt, da keine Werte mehr zurückgeschrieben wurden. Der Fehler beim Flush sah folgendermaßen aus: 
 %Kann ich nicht gut erklären eventuell zusammen 
 % ungefähr so: allle werte sind initialisiert stage 1: 4 stage 2 : 3 usw, jede stage verringert den wert um 1 damit so die idee, wenn die line durchgelaufen ist der pc wert am ende den richtiogen wert hat um die nächste sequence von fetch, decode usw hat. Bei einem Sprung wurde nicht die richtige andresse zurück gegeben da die werte in der pipeline noch weiter fdurchllaufen ( etwa so: pc werte: 4, 3, 2 ,1 - die laufen halt durch, dann sprung neue adresse ist 124 oder so aber die werte aus der sequence laufen noch durch.
-Schlussendlich gelößt wurde das Problem in dem wir den PC von der Pipeline getrennt haben. Es gibt nun ein zentrales PC - Register mit dem das write-back beschrieben wird. Der Prozess ist getaktet, hängt also von der Clock ab. Gibt es keinen JUMP- Befehl aus dem memeorry access (ist die entsprechende Flag nicht auf 1 gesetzt), beschreibt das PC Register das PC Signal um 1. Ansonsten wird das Ergebnis aus dem memory access benutzt. 
+Letztendlich wurde das Problem gelöst indem wir den PC von der Pipeline getrennt haben. Es gibt nun ein zentrales PC-Register mit dem das write-back beschrieben wird. Der Prozess ist getaktet, hängt also von der Clock ab. Gibt es keinen JUMP- Befehl aus dem memeory access (ist die entsprechende Flag nicht auf 1 gesetzt), beschreibt das PC Register das PC Signal um 1. Ansonsten wird das Ergebnis aus dem memory access benutzt. 
 %eventuell besser formulieren 
 %wir haben das jettzt ungefähr so gemacht. wir haben den pc von der pipeline "sequennce" getrennt. Esss gibt ein zentrales pc register wir di geclockt im writeback beschriben , das ist ein clock ssensitiver porzess der von der clock abhängt. pc register beschreibt das pc signal und erhöhht um 1 außer es gibt nen jump aus memory access (flaggg set to 1) dann wird das resultata aus mem acces stage benutzt.
 
 
 
 \subsection{Sprünge}
-Setzt die ALU das cmp-flagg auf 1 wird das als Start für die Berechnung eines Jump-befehls interpretiert. Das wird im memory access gesehen. 
 
-Zunächst wird der JUMP-befehl gefetcht. Der Decoder ließt das zugehörige Register und die ALU rechnet dann mit den entsprechenden Werten. Das Ergebnis wird in den memory access geschrieben. Dort wird dann das (???welches Signal eig) - Signal bestimmt. Der richtige PC Wert wird anschleßend ins write-back geschreiben. 
-%fühlt sich irgenwie auch nicht richtig eingängig an der text
+%was macht der jump befehl eigentlich, übergang zu abschnitt unten
 
+Nachdem der JMP Befehel in die Pipeline geladen wurde folgen 3/4? Noops, die automatisch vom Compiler eingefügt wurden, da der Prozessor nicht über eine Flush Operation verfügt. Diese sorgen dafür, dass sich keine restlichen Befehle in der Pipeline befinden nachdem gesprungen wurde.
+Zunächst wird der JUMP-befehl gefetcht. Der Decoder ließt das zugehörige Register und die ALU rechnet dann mit den entsprechenden Werten. Das Ergebnis wird in den memory access geschrieben. Dort wird dann das (???welches Signal eig) - Signal bestimmt. Der richtige PC Wert wird anschleßend ins write-back geschreiben.
 
-%will jump berechnen : wir gucken in memm acc obs nen jump bzw branch uindem wir checkenn ob die alu das cmp flagg setz, falls ja dann wiukll jumpo signal 1 else 0
-
-% 4 NOOPS; JMP Befehl fetchen, Decode stage ließt entsprechende Register, ALU rechnet mit ensprechenden werten, Das resultat kommt in die memory access stage. dort wird das will_jump signla bestimmt wie oben beschrieben. Dementsprechend wird der PC wert im write back gesetzt.
-% das pc handling
+%branch befehl, nachgucken was im cmp register steht 
 
 \section{Decoder}
 
 % needs work
 
-Der Decoder ist als eine eigene Schnittstelle definiert. Seine Aufgabe es ist den 32-Bit-Code von dem Instructionmemory zu interpretieren, deren Information zu filtern und diese den entsprechenden Outputs zuzuweisen.
-% bissle lang (zwei und;s)
+Der Decoder ist als eine eigene VHDL-Entity definiert. Seine Aufgabe es ist den 32-Bit-Code von dem Instructionmemory zu interpretieren, deren Information zu filtern und diese den entsprechenden Outputs zuzuweisen.
  {\color{red}
 Wie im Kapitel des Befehlssatzes beschrieben, werden die 32-Bit-Befehle im Decoder in die einzelnen Informationsbausteine zerlegt.
 
@@ -541,7 +539,7 @@ Bild der \enquote{dekonstruktion}
 
 % dekonstruiert? besseres Wort?
 %Dabei geht der Decoder zuerst die möglichen Befehlssätze der ersten 5 Bits durch, prüft ob das Immediate-Bit gesetzt wurde und gibt dann die entsprechenden Werte in die jeweiligen Outputs weiter.
-Dabei gleicht der Decoder den ermittelten "Opcode" mit denen des Befehlssatzes. Nachdem eine übereinstimmung gefunden wurde, wird das Immediate-Bit geprüft. In Abhängigkeit des "Opcodes" und des Immediate-bits werden dann die weiteren Informationen vom Decoder weitergeleitet. 
+Dabei gleicht der Decoder den ermittelten "Opcode" mit denen des Befehlssatzes ab. Nachdem eine übereinstimmung gefunden wurde, wird das Immediate-Bit geprüft. In Abhängigkeit des "Opcodes" und des Immediate-bits werden dann die weiteren Informationen vom Decoder weitergeleitet. 
 Dies sind:
 
 \begin{itemize}
@@ -609,21 +607,20 @@ Durch diese ganzen Reduzierungen werden unnötige Zuweisungen vermieden und eine
 % reg\_select\_3
 % write\_en
 
-%592-642
-
 \section{ALU}
 
 
+Die Alu ist für die logischen und arethmetischen Operation zuständig. Sie kriegt Operanden als Inputs und führt die Operationen auf diesen aus. 
 
-Die ALU bekommt ihren Opcode vom Decoder.
-Damit ergeben sich die Input-Felder des ALU-Opcodes, der beiden Operanden und des Carry Bits.
+Die ALU bekommt ihren Opcode vom Decoder. Damit ergeben sich die Input-Felder des ALU-Opcodes, der beiden Operanden und des Carry Bits.
 Herzstück der Implementierung ist ein Switch-Konstrukt, welches - basierend auf dem ALU-Opcodes - die entsprechende logische/arithmetische Operation auswählt und mit den beiden Input Feldern \texttt{op\_1} und \texttt{op\_2} durchführt.
-Compare Befehle \texttt{comp\_eq} und \texttt{comp\_gt} werden kontinuirlich abgehandelt. Diese haben (weiter unten behandelte) eigene Rückgabe Vektoren.
+%Hier war ein Fehler der am letzten Abend gefixed wurde (Max?)
+Compare Befehle \texttt{comp\_eq} und \texttt{comp\_gt} werden kontinuierlich abgehandelt. Wenn der Opcode CMPEQ oder CMPGT ist, wird ein write-enable an das Flagsregister angelegt, und das Ergebnis der Vergleichs geschrieben. Diese haben (weiter unten behandelte) eigene Rückgabe Vektoren.
 Die Werte werden bis zum Ende der Code Abarbeitung durchgereicht und gegebenenfalls modifiziert.
-Das stellt uns vor die gleiche Problematik wie bei der Jum
+Das stellt uns vor die gleiche Problematik wie bei der Jump
 p-Implementation. Die ALU wird in der CPU falsch verwendet.
 %falsche verwendung der alu, in der cpu aber wie genau?
-Die berechnung der insgesamt 14 Funktione Lediglich bei logischen shift, musste der Umweg über eine unsigned Variable aus einem right\_shift Aufruf genommen werden. 
+Die Berechnung der insgesamt 14 Funktione lediglich bei logischen shift, musste der Umweg über eine unsigned Variable aus einem right\_shift Aufruf genommen werden. 
 
 %outputs
 Die Ergebnisse der beiden Compare Methoden werden als eigene Ausgabe Bits behandelt und als std\_logic zurückgegeben (unabhängig vom ALU Opcode).
@@ -659,7 +656,7 @@ schwierigkeiten bei der implementation der flags
 
 \section{Anforderungsanalyse}
 Zu Beginn des Softwareentwicklungsprojektes bestand die erste Herausforderung darin, eine auf das Problem zugeschnittene Anforderungsbeschreibung zu erstellen.
-Die grundsätzlichen Anforderungen konnten dabei prinzipiell in zwei Kategorien eingeteilt werden.
+Die grundsätzlichen Anforderungen konnten dabei prinzipiell in zwei Kategorien eingeteilt werden. %Kapitel nennen
 %sehr softwaretechnik basiert , haben wir überhaupt anforderunganalyse gemacht?
 % Sehr hochtrabend
 
@@ -669,9 +666,9 @@ Die grundsätzlichen Anforderungen konnten dabei prinzipiell in zwei Kategorien 
 % warum keine subsubsections?
 
 Die funktionalen Anforderungen beschreiben, über welche Funktionen die Software am Ende des Entwicklungsprozesses verfügen muss.
-Um eine realistisch zu bewältigende Menge an Funktionen auswählen zu können, war eine sehr kritische Selektion notwendig. 
+Um eine realistisch zu bewältigende Menge an Funktionen auswählen zu können, war eine  kritische Selektion notwendig. 
 %zu undeutlich, was ist kritische selektion? absatz hat kein inhalt, einen absatz was muss die software leisten
-So gab es z.B. zu Beginn die Idee eine diskrete Simulationsumgebung zu erstellen. Allerdings wurde diese Möglichkeit wieder verworfen, da unklar war, wie lange die Implementation dieses Features gedauert hätte und wie lange die Entwicklung des Compilers selbst dauert. 
+So gab es z.B. zu Beginn die Idee eine diskrete Simulationsumgebung zu erstellen. Allerdings wurde diese Möglichkeit wieder verworfen, da unklar war, wie lange die Implementation dieses Features gedauert hätte und wie lange die Entwicklung des Compilers selbst dauert.
 %% Beispielsweise stand zu Beginn die Möglichkeit einer diskreten Simulationsumgebung im  Raum, welche dann aber schnell wieder verworfen wurde, da unklar war, wie hoch der konkrete Zeitaufwand dafür gewesen wäre mangels der Kenntnis über den Compiler selbst.
 %satz ist zu lang
 %geschwafelt
@@ -683,11 +680,11 @@ Zum einen bestand das primäre Ziel darin, eine beliebige Textdatei mit Assemble
 
 \subsubsection{Sekundäre Funktionen}
 Neben den primären Funktionen sollte es die Möglichkeit geben innerhalb der Software Makros zu erstellen, welche Operationen ermöglichen, die nicht im Instruction Set explizit definiert sind. Beispielsweise besitzt unser Instruction Set keinen Multiplikationsbefehl (\texttt{MUL}).
-Dennoch kann der \texttt{MUL}-Befehl benutzt werden, da er intern durch die russische Bauernmultiplikation ersetzt wird.
-Zusätzlich dazu war unklar, inwieweit das Hardwareentwicklungsteam auf Hazards im Rahmen des Pipelining reagieren könnte. Aus diesem Grund musste ein softwaretechnischer work-around gefunden werden. 
+Dennoch kann der \texttt{MUL}-Befehl im Assemblercode benutzt werden, da er intern durch die russische Bauernmultiplikation ersetzt wird.
+Zusätzlich dazu war unklar, inwieweit das Hardwareentwicklungsteam auf Hazards im Rahmen des Pipelining reagieren könnte. Aus diesem Grund musste ein softwaretechnischer work-around gefunden werden.%formulierung
 Zu Beginn wurde lediglich festgelegt, dass wir nach jedem Befehl eine notwendige Anzahl NOOP-Befehle einfügen.
-Da dieses Prinzip allerdings völlig ungeeignet ist - wofür eine Pipeline benutzen, wenn sie obsolet gemacht wird? - entschieden wir uns auf bestimmte Abhängigkeiten von Beginn an mit ein zu beziehen.
-Z.B. flushing der Pipeline vor einem Jump-Befehl oder das Erkennen der Abhängigkeiten von genutzten Registern.
+Da dieses Prinzip allerdings völlig ungeeignet ist - wofür eine Pipeline benutzen, wenn sie obsolet gemacht wird? - entschieden wir uns dazu bestimmte Abhängigkeiten von Beginn an mit ein zu beziehen.
+Z.B. flushing der Pipeline vor einem Jump-Befehl oder das Erkennen der Abhängigkeiten von genutzten Registern. %flushing falscher Begriff
 
 %%Das Ziel bestand darin eine beliebige Textdatei mit Assemblercode automatisch einlesen zu können, aus dem eine neue Textdatei - bestehend aus Binärcode - generiert werden sollte.
 % das ist die essenz reicht für den gesamtem Kram davor
@@ -722,17 +719,13 @@ Da zu Beginn des Entwicklungsprozesses nur schwer abzuschätzen war, wie lange w
 \subsubsection{Korrektheit}
 In Folge der Tatsache, dass Binärcode nur äußerst schwer zu Debuggen ist, war eine Hauptanforderung ein hohes Maß an Korrektheit der Übersetzung.
 %100przent korrektheit schwierige formulierung
-Dieser Punkt stellte sich im Nachhinein als komplexer heraus als erwartet, da wir mangels eines Simulators auf die Fertigstellung des Hardwareentwicklungsteams warten mussten, um das Programm ausreichend testen zu können.
+Dieser Punkt stellte sich im Nachhinein als komplexer heraus als erwartet, da wir mangels eines Simulators auf die Fertigstellung des Hardwareentwicklungsteams warten mussten, um das Programm ausreichend testen zu können. %komplexer ist falsche Formulierung
 %compiler test wären auch ohne hw team gegangen?
 % Konfiguration vs Compiler funktioniert
 
 \subsubsection{Vernachlässigte Qualitätsmerkmale}
 Standardmäßig gibt es im Laufe einer jeden Softwareentwicklung Entscheidungen zu signifikanten Qualitätsmerkmalen zu fällen.
-So entschieden wir uns bewusst dafür, dass die Effizienz des Programms eine sehr untergeordnete Rolle spielen sollte, da es praktisch ausgeschlossen war, dass wir große Mengen an Quellcode in sehr kurzer Zeit übersetzen müssen. 
-%ewtas kürzen
-Des Weiteren spielte eine gute Benutzbarkeit/Bedienbarkeit eine geringe Rolle, da die potenzielle Nutzergruppe hochgradig spezialisiert ist. 
-%%Des Weiteren spielte aufgrund der Spezialisierung des Fachgebietes in dem wir uns bewegen, eine gute Benutzbarkeit des Programms eine geringe Rolle, da jeder der mit dem Programm arbeitet genug Expertise besitzen sollte, um eine Konsole zu nutzen.
-%umformulieren 
+So entschieden wir uns bewusst dafür, dass die Effizienz des Programms eine sehr untergeordnete Rolle spielen sollte, da es praktisch ausgeschlossen war, dass wir große Mengen an Quellcode in sehr kurzer Zeit übersetzen müssen.
 
 \section{ANTLR}
 %https://www.antlr.org/
@@ -839,7 +832,7 @@ Anschließend wird das Befehlswort zusammengesetzt und zusammen mit einem führe
 %Die Implementation des Compilers verlief relativ Problemlos und das Ergebnis ermöglicht uns alle von uns gesetzten Ziele zu erreichen. Eine Schwäche unseres Vorgehens war jedoch die schlechte Testbarkeit des Programms, da diese von der Implementation der Hardware abhängig war. Das führte dazu, dass Fehler erst spät sichtbar wurden, da wir den compilierten Quellcode erst an dem fertigen Prozessor testen konnten (siehe Kapitel Test).
 %Simulator hätte das lösen können
 
-\chapter{Ergebniss}
+\chapter{Ergebnis}
 
 % Gleicher ablauf wie bei Vortrag
 % Prozess von assembler zu maschinencode zu cpu, mit "fertigem" fibonnaci im ram
@@ -926,3 +919,12 @@ Eine HLT op wäre noch schön.
 \kant[10-14]
 
 \end{document}
+
+% software: konklusion befühllen
+% software: stuff zur konklusion bewegen
+% hardware: input/output - probleme und lösung skizzieren
+% hardware: register - probleme und lösung skizzieren
+% hardware: pc handling - probleme und lösung skizzieren
+% hardware: decoder - probleme und lösung skizzieren
+% hardware: alu - probleme und lösung skizzieren
+% hardware: vorwort/vorgehen und struktur "zusammenschreiben"
