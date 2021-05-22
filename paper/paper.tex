@@ -83,12 +83,17 @@ Diese wollen wir dennoch beleuchten.
 
 \section{Wortlänge und Adressmaschine}
 
-Für die Adressmaschine wurde sich für eine 3 Adressmaschien entshieden. Die 0 oder 1 Adressmaschine wurde direkt ausgeschlossen. 
-Die 3-Adress Maschine hat zwar keine funktionalen Vorteile, gegenüber der 2-Adressmaschine, aber der Aufwand, komplexere Befehle zu realisieren ist geringer.
-Ein „add“-Befehl kann sein Ergebnis beispielsweise direkt in eine dritte Adresse schreiben und ist in einem Befehl realisierbar. So werden umständliche Umkopiervorgänge gespart.
-Da Performance nicht relevant für die Entwicklung war, wurde auch die Bitzahl als irrelevant eingestuft. Dadurch ist auch das Einsparen von Bits, im Befehlswort, durch eine 2-Adressmaschine, kein relevanter Faktor gewesen.
+Bei der Adressmaschine wurde sich für eine 3 Adressmaschine entscheiden.
+Die 0 oder 1 Adressmaschine wurdem direkt ausgeschlossen, da diese zu umständlich und nicht zielführend gewesen wären.
+Die 3-Adress Maschine hat zwar keine funktionalen Vorteile, gegenüber der 2-Adressmaschine, aber der Aufwand, komplexere Abläufe zu realisieren ist geringer.
+Ein „add“-Befehl kann sein Ergebnis beispielsweise direkt an eine dritte Adresse schreiben und ist in einem Befehl realisierbar.
+So werden umständliche Kopiervorgänge gespart.
+Ein weiteres Argument für die 3-Adressmaschine war die Reduzierung von Abhängigkeiten.
+Die Zahl an NOOPs, die für eine korrekte Ausführung benötigt werden, wird minimiert.
+Das ist sowohl schneller, als auch einfacher in der Handhabung.
 
-Ein weiteres Argument für die 3-Adressmaschine ist die Reduzierung von Abhängigkeiten. Die Zahl an NOOPs, die für eine korrekte Ausführung benötigt werden, wird minimiert. Das ist sowohl schneller, als auch einfacher in der Handhabung. 
+Da hier Performance nicht relevant für die Entwicklung war, wurde - konsequenterweise - auch die Bitzahl als irrelevant eingestuft.
+Dadurch ist auch das Einsparen von Bits, im Befehlswort durch eine 2-Adressmaschine nicht nötig.
 
 Bei der Bitzahl wurde sich für 32 entschieden. 32 Bit Wortlänge reicht für alle Befehle und werden nie ganz ausgeschöpft. Darum wäre auch eine längere Bitzahl überflüssig gewesen.
 
@@ -450,20 +455,44 @@ Somit können diese auch in anderen Prozessen benutzt werden.
 
 \section{PC Handling und Sprünge}
 
-Die fetch-stage soll mittel Programm Counter die befehle aus dem Speicher laden können. Dazu muss der Programm Counter in jedem Clock Zyklus um Eins inkrementiert werden. Die finale Implementationm hat keine next sequence PC Werte mehr, sondern nur noch einen PC außerhalb der Pipeline. Im write back wird dieser immer um 1 erhöht. Sprünge haben ein eigenes Signal, die den writeback wert entsprechend verändern. Die gesamte PC-Logik ist somit im write back.
+%was ist next sequence pc
+Die fetch-stage soll mittels Programm Counter (PC) die Befehle aus dem Speicher laden können.
+Dazu muss der PC in jedem Clock Zyklus um Eins inkrementiert werden.
+%define next_seq_pc
 
-Schwierigkeiten, die zur Aufgabe der next-sequence PC geführt haben, waren, unter anderem, dass Jeder Befehl seinen next sequence Befehl in den PC hätte schreiben müssen, nach dem die Pipeline durchlaufen wurde. 
-Der erste Fehler der Implementation bestand im Inkrementieren um Eins. Das Durchlaufen eines Befehls durch die Pipeline dauert aber 4 Schritte. Ist ein Befehl durchgelaufen, sind 4 weitere Befehle eingegangen. Der next sequence PC hätte also entsprechend 4 weiter sein müssen.
+Schwierigkeiten, die zur Aufgabe des next-sequence PC geführt haben, waren, unter anderem, dass Jeder Befehl seinen next sequence Befehl in den PC hätte schreiben müssen, nach dem die Pipeline durchlaufen wurde. 
+Das Durchlaufen eines Befehls durch die Pipeline dauert aber 4 Schritte.
+Der erste Fehler der Implementation bestand im Inkrementieren um Eins.
+Ist ein Befehl durchgelaufen, sind 4 weitere Befehle eingegangen.
+Der next sequence PC hätte also entsprechend 4 weiter sein müssen.
 
-Weitere Schwierigkeiten ergeben sich aus den fehlenden Initial-Zuständen. Jede Komponente, inklusive der next sequence PC ist mit (undefiniert) Werten beschreiben. Es müsste dafür gesorgt werden, dass der next sequence PC, auf write back Ebene, auf 1 steht, wenn der Prozessor startet. Der memory access müsste auf Zwei stehen und die anderen Komponenten analog dazu. Aufgrund der 4er Schritt Zählung wurde nur jeder vierte Befehl ausgeführt.
+Weitere Schwierigkeiten ergeben sich aus den fehlenden Initial-Zuständen.
+Jede Komponente, inklusive der next sequence PC ist mit (undefiniert) Werten beschreiben.
+Es müsste dafür gesorgt werden, dass der next sequence PC, auf write back Ebene, auf 1 steht, wenn der Prozessor startet.
+Der memory access müsste auf Zwei stehen und die anderen Komponenten analog dazu.
+Aufgrund der 4er Schritt Zählung wurde nur jeder vierte Befehl ausgeführt.
 %Bild reinpacken
 
-Die Jumps haben zu weiteren Problem geführt. Zum Springen kann der nex sequence PC druch den Ziel Wert ausgetauscht werden. Diese Vereinfachung von Sprüngen war die Hauptmotivation für die Nutzung des next sequence Pcs.
-Das funktionierte leider nicht, da in der fetch-stage der pc Wert des durchgelaufenen Befehls steht. Der Nachfolger des durchgelaufenen Befehls hat aber noch seinen next sequence PC, welcher genutzt wird um hochnzuzählen. Der nachfolger ist ,in der regel, ein NOOP (nach einem Jump), der eigentlich nichts machen sollte. Nachdem die NOOPs durchgelaufen sind, werden aber wieder die Nachfolger des JUMP Ziels ausgeführt. Das Ganze ist offensichtlich fehlerhaft.
+Die Jumps haben zu weiteren Problem geführt.
+Zum Springen kann der next sequence PC druch den Ziel Wert ausgetauscht werden.
+Diese Vereinfachung von Sprüngen war die Hauptmotivation für die Nutzung des next sequence Pcs.
+Das funktionierte leider nicht, da in der fetch-stage der pc Wert des durchgelaufenen Befehls steht.
+Der Nachfolger des durchgelaufenen Befehls hat aber noch seinen ursprünglichen next sequence PC.
+Der nachfolger ist ,in der regel, ein NOOP (nach einem Jump), der eigentlich nichts machen sollte.
+Nachdem die NOOPs durchgelaufen sind, werden aber wieder die Nachfolger des JUMP Ziels ausgeführt.
+Das Ganze ist offensichtlich fehlerhaft und wurde schlussendlich auch verworfen.
 %reihenfolge 4, 100, 5, 6, 104
 
-%schreiben dass fetch stage irrelavant geworden ist, a pc direkt zum speicher durchgereicht wird
-Der PC Wert hatte auch noch zu Problemen geführt, da er vorher ein normales Register war. Das beschreiben von Registern gleichzeit ( Pc Register und Ziel des Befehls) führte zu Fehlern. Der PC ist jetzt aus der Registerbank ausgelagert. Das löst die Zugriffsprobleme auf zwei Register(Banken) gleichzeitig.
+Der PC Wert hatte auch noch zu Problemen geführt, da er vorher ein normales Register war. Das beschreiben von Registern gleichzeitig ( Pc Register und Ziel des Befehls) führte zu Fehlern.
+Der PC ist jetzt aus der Registerbank ausgelagert.
+Das löst die Zugriffsprobleme auf zwei Register(Banken) gleichzeitig.
+
+Die finale Implementationm hat keine next sequence PC Werte mehr, sondern nur noch einen PC Register außerhalb der Pipeline.
+Dies ist auch getrennt von der Registerbank.
+Im write back wird dieser immer um 1 erhöht, sofern nicht gesprungen wird.
+Sprünge haben ein eigenes Signal, die den writeback wert entsprechend verändern.
+Die gesamte PC-Logik ist somit im write back.
+Durch die Anpassungen ist die gesamte fetch stage obsolet geworden und erfüllt keine Funktion mehr. 
 
 (freddy)
 
@@ -524,18 +553,22 @@ Ein weiterer Vorteil dieser Entscheidung ist, dass weitere Befehle so einfacher 
 Alu
 
 Die ALU ist für die logischen und arithmetischen Operationen verantwortlich.
-Sie kriegt ihren Opcode vom Decoder, zuzüglich gibt es zwei weitere Operanden als Input und ein Input Flag, das Carry Bit.
+Sie erhält ihren Opcode vom Decoder.
+Es gibt zwei Operanden als Input und ein Input Flag - das Carry Bit.
 Herzstück der ALU ist eine große Switch Anweisung, die abhängig vom Opcode die zwei Operanden mit einander verrechnet.
-Dazu gibt es insgesamt 14 Funktionen. 
-Die Overflow, CarryOut und Compare Flags, werden jedes Mal berechnet. Geschrieben werden sie nur, wenn das der geparste Opcode hergibt.
-Das overflow Flag ist noch nicht implementiert, da dies bisher nicht der Fokus war. Die Zielberechnung von Fibonacci funktioniert auch ohne.
-
-
-\subsection{,,Fun with Flags" ein Kapitel darüber das wir flags auf unterschiedliche weisen implementiert haben und dessen Probleme}
-%pc handling teil ist damit gemeint
-schwierigkeiten bei der implementation der flags
--compare
--overflow immer noch nicht richtig implementiert
+Die ALU unterstützt insgesamt 14 Operationen.
+Die Overflow, CarryOut und Compare Flags, werden konstant berechnet.
+Geschrieben werden sie nur, wenn das der Opcode hergibt.
+Ursprünglich wurde das Flag-Register jeden Taktzyklus geschrieben.
+Die ALU \enquote{änderte} Flags nur, sofern es nötig war.
+Dies führte zum gleichen Problem, wie auch beim PC Handling.
+Nachfolgende Befehle erhielten noch die alten Flagwerte.
+Da bei jedem Takt ins Flagregister geschrieben wurde, überschrieb der nachfolgende Befehl die gesetzten Flags des vorherigen.
+Die Lösung bestand darin, die Carry- und Overflowflags nur bei Addition und Subtraktion zu schreiben.
+Das Compare-flag wurde nur entsprechend gesetzt, sofern ein Compare-befehl in write-back war.
+Das Overflow-Flag ist nicht implementiert.
+Es lag bisher nicht im Fokus.
+Die Zielberechnung von Fibonacci funktioniert auch ohne.
 
 (freddy)
 
@@ -574,14 +607,10 @@ Aufgrund des (vorläufigen) Mangels an Fachkenntnis war es von sehr großer Bede
 
 \subsubsection{Erweiterbarkeit}
 Da zu Beginn des Entwicklungsprozesses nur schwer abzuschätzen war, wie lange wir für die Implementation von bestimmten Funktionen brauchen, war es notwendig das System so zu gestalten, dass eine einfache Erweiterbarkeit von Funktionalitäten gegeben ist. Wir entschieden uns daher ein geeignetes Framework zu suchen, welches dieses Qualitätsmerkmal ausreichend erfüllt. 
-% was meint das konkret? Wodurch wird erweiterbarkeit erreicht?
 
 \subsubsection{Korrektheit}
 In Folge der Tatsache, dass Binärcode nur äußerst schwer zu Debuggen ist, war eine Hauptanforderung ein hohes Maß an Korrektheit der Übersetzung.
 Aufgrund der anfänglich ungünstigen Designentscheidung keinen diskreten Simulator zum Testen zu entwickeln, mussten wir warten, bis das Hardwareentwicklungsteam einen ausreichend funktionierenden Simulator fertiggestellt hatte. Aus diesem Grund dauerte das Debugging wesentlich länger als notwendig.
-%%Dieser Punkt stellte sich im Nachhinein als komplexer heraus als erwartet, da wir mangels eines Simulators auf die Fertigstellung des Hardwareentwicklungsteams warten mussten, um das Programm ausreichend testen zu können. %komplexer ist falsche Formulierung
-%compiler test wären auch ohne hw team gegangen?
-% Konfiguration vs Compiler funktioniert
 
 \subsubsection{Vernachlässigte Qualitätsmerkmale}
 Standardmäßig gibt es im Laufe einer jeden Softwareentwicklung Entscheidungen zu signifikanten Qualitätsmerkmalen zu fällen.
@@ -603,15 +632,15 @@ Dabei stehen die Parserregeln für die Struktur der Sprache (Nonterminale) und d
 Die Grammatik kann mit Hilfe von ANTLR zu Java Klassen compiliert werden.
 ANTLR liefert dabei einen Lexer und einen Parser mit deren Hilfe ein Parsetree generiert werden kann.
 Dazu wird einfach eine Datei mit dem Quellcode eingelesen und mithilfe von Lexer und Parser verarbeitet.
-Der resultierende Parsetree kann mit Hilfe von Visitors durchlaufen werden.
-Diese leisten die eigentliche Übersetzungsarbeit.
+Der resultierende Parsetree kann mit Hilfe von Visitors durchlaufen werden,
+welche dann die eigentliche Übersetzungsarbeit leisten.
 
 (lennart & leonard)
 
 \section{Compiler Implementation}
 
 \subsection{Grammatik}
-ANTLR nutzt zum Parsen eine kontextfreie Grammatik der Form: G = (V, T, P, S). Hierbei entspricht V der endlichen Menge der Variablen (Menge der Ableitungsregeln, bzw. Parser-Regeln), T der Menge der Terminalen (Tokens, bzw. Lexer-Regeln), P den Produktionsregeln (Parser-Regeln bzw. Ableitungsregeln) und S der Startregel. Basierend auf der Grammatik existiert also eine Sprache L(G). Für jeden von uns vorgesehenen Assemblerbefehl A gilt also: A \in L(G). 
+ANTLR nutzt zum Parsen eine kontextfreie Grammatik der Form: $G = (V, T, P, S)$. Hierbei entspricht V der endlichen Menge der Variablen (Menge der Ableitungsregeln, bzw. Parser-Regeln), T der Menge der Terminalen (Tokens, bzw. Lexer-Regeln), P den Produktionsregeln (Parser-Regeln bzw. Ableitungsregeln) und S der Startregel. Basierend auf der Grammatik existiert also eine Sprache L(G). Für jeden von uns vorgesehenen Assemblerbefehl A gilt also: $A \in L(G)$. 
 
 (leonard)
 
@@ -622,8 +651,8 @@ Ziel des Lexers ist es nun für jede mögliche Eingabe zu erkennen, um welches T
 Hierbei gilt zu beachten, dass ein Token nicht zwangsläufig exakt definiert werden muss, da die Nutzung von regulären Ausdrücken möglich ist.
 %listng austauschen, kommaenatre weg, in eine fig. rein 
 \begin{lstlisting}
-MOV: 'MOV'; // Als MOV-Token wird jeder Ausdruck der Form "MOV" erkannt
-BINARY: '0b' ([0-1])+;  // „0b1001…“ wird erkannt
+MOV: 'MOV';
+BINARY: '0b' ([0-1])+;
 \end{lstlisting}
 Zu Beginn des Prozesses werden so zunächst sämtliche Eingaben in Tokens umgewandelt, welche dann von den Parser-Regeln in einen Syntax-Baum überführt werden.
 
@@ -642,7 +671,7 @@ Dabei entspricht jede Verzweigung einer Parser-Regel, während jeder Blattknoten
 Eine Parser-Regel hat die Form
 %listng austauschen, kommaenatre weg, in eine fig. rein 
 \begin{lstlisting}
-start: start command | command; //Startregel der Grammatik
+start: start command | command;
 \end{lstlisting}
 wobei die Regel entweder direkt ein Token nutzt oder auf eine weitere Regel verweist.
 Anhand der Ableitungsregeln kann also eine Struktur erstellt werden, auf welche nun spezifisch reagiert werden kann.
@@ -748,7 +777,7 @@ Wenn nicht gesprungen wird, erhöht die write back stack den PC um 1.
 Ein weiteres Issue, dass während der ersten Tests auftrat, war die Anzahl der NOOPS.
 Es brauchte einiges herumprobieren um heraus zu finden, wie viele NOOPS wir bei jedem Befehl benötigen.
 
-In unserem finalen Versuch war es uns möglich, ein Fibonacci-programm ablaufen zu lassen.
+In unserem finalen Versuch war es uns möglich, ein Fibonacci-Programm ablaufen zu lassen.
 
 In früheren Überlegungen fiel uns auf, dass ein SUB nichts anderes ist als ein ADD mit einem Operant bitweise invertiert.
 Deshalb war SUB als ADD aluop implementiert.
@@ -757,6 +786,15 @@ Dies lies sich recht leicht korrigieren.
 Die ALU kennt nun die Operation SUB.
 
 (max)
+
+\subsubsection{Ergebnis - Softwareentwicklung}
+Einer der schwierigsten und gleichzeitig weitreichendsten Entscheidungen war die Wahl des genutzten Frameworks. Zu Beginn des Softwareentwicklungsprozesses mussten wir zunächst viel Zeit in diese Entscheidung investieren, da es (neben ANTLR) viele verschiedene Parser-Generatoren mit sehr unterschiedlichen Ansätzen und damit verbundenen Vor- und Nachteilen gibt. Es kostete uns relativ viel Zeit hierbei den für uns richtigen Auszuwählen. %Das ist ein bisschen gelogen...
+Als weiterer aufwändiger Schritt während der Entwicklung stellte sich das Erlernen und die korrekte Anwendung von ANTLR heraus. ANTLR bietet ein äußerst vielfaltiges Spektrum an nutzbaren Funktionen und Möglichkeiten, was sowohl die Grammatik als auch die Implementation angeht. Ein schwierige Teil hierbei war nun herauszufinden, welche Funktionen tatsächlich gebraucht würden und welche vernachlässigbar waren. %absatz
+Abschließend lässt sich sagen, dass die release Version der Software alle in Kapitel 4.1 %verlinkung zu Chapter 4.1
+genannten funktionalen und technischen Anforderungen besitzt. Dies betrifft sowohl die Bedienung  der Software als auch eine potenzieller Weiterentwicklung bzw. das Hinzufügen von neuen Features. 
+
+(leonard)
+
 
 \chapter{Konklusion und Ausblick}
 \begin{itemize}
@@ -775,7 +813,7 @@ Die ALU kennt nun die Operation SUB.
 % Vergleich zu vorher / planungsphase
 
 Es sind noch viele Möglichkeiten offen geblieben den Prozessor und den Assembler-Compiler auszubauen.
-Zum Einen fehlen noch Implementationen für eine Opcodes.
+Zum Einen fehlen noch Implementationen für eine Opcodes. %bezieht sich das auf den Assembler-Compiler oder den Prozesser?
 Zum Anderen sind der Overflow der ALU und das Link Register nicht korrekt implementiert.
 
 Um den Prozessor synthetisieren zu können müssen mindestens Signale richtig initialisiert werden.
@@ -787,14 +825,24 @@ Dies wird aber in der Synthese eine komplexe Schaltung erzeugen.
 
 Der Prozessor im Zusammenspiel mit dem Assembler-Compiler kann aus seiner Pipelinestruktur noch nicht allzu viel herausholen.
 Alle Abhängigkeite, die zu Hazards führen können, müssen eine entsprechende Anzahl von NOOPS nach sich ziehen.
-Würde die CPU Pipeline Flushing implementieren ließe sich hier einiges an NOOPS sbparen.
-Man könnte noch einen Schritt weiter gehen und Instruction Reodering oder auch \enquote{Backpropagation} von Ergebnissen betreiben.
+Würde die CPU Pipeline Flushing implementieren ließe sich hier einiges an NOOPS sparen.
+Man könnte noch einen Schritt weiter gehen und Instruction Reordering oder auch \enquote{Backpropagation} von Ergebnissen betreiben.
 
 Eine HLT op wäre noch schön.
 
-(max & leonard (und lennart))
+(max)
 
-\kant[10-14]
+\subsubsection{Konklusion \& Ausblick - Softwareentwicklung}
+Basierend auf unseren Ergebnissen lässt sich sagen, dass unser Vorgehen und die Wahl des Frameworks die richtige war. 
+So stellte sich unsere anfänglichen Entscheidung eine vollständige Anforderungsanalyse zu entwickeln und insbesondere ANTLR zu nutzen im Nachhinein als sehr gut heraus, denn es führte dazu, dass im Verlauf der Entwicklung des Parsers keine nennenswerten Komplikationen auftraten. Dies wurde zusätzlich dadurch begünstigt, dass sich die grundsätzlichen funktionalen und technischen Anforderungen an die Software während des Entwicklungsprozesses nicht änderten.
+
+Allerdings gibt es noch eine Menge an zusätzlichen Features, welche für eine professionelle Entwicklung unter Anwendung unseres Tools notwendig wären. Z.B. müsste es entweder eine diskrete Simulationsumgebung geben, mit der man seinen Quellcode direkt testen kann oder es müsste eine direkte Schnittstelle zu VHDL %Hier nochmal mit der Hardware-Gruppe reden! 
+entwickelt werden. Zusätzlich dazu müsste es im Rahmen der Simulationsumgebung einen Debugger geben um Probleme während der Laufzeit vernünftig behandeln zu können.
+Da Assemblercode nicht mehr zeitgemäß ist, müsste man für komplexere Programme einen Schritt weiter gehen und einen Compiler für eine existierende Hochsprache (z.B. C) implementieren oder eine eigene Hochsprache Entwickeln. Um mit einer selbst entwickelten Hochsprache vernünftig arbeiten zu können, wäre hierfür allerdings ein GUI notwendig. %Warum braucht man eine GUI?
+
+(leonard)
+
+%\kant[10-14]
 
 \end{document}
 
