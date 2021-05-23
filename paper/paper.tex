@@ -396,29 +396,41 @@ Des weiteren stellt der \texttt{processor} ein \texttt{clk} Signal für Speicher
 (max)
 
 \section{Register}
-% write im writeback
-% wie macht man das in vhdl richtig
-% clocked access
 
+Neben vielen internen Registern, wie zB. den Pipelineregistern bestitzt die CPU 32 \enquote{Datenregister}.
+Diese können von laufenden Programmen ausgelesen und meist auch beschrieben werden, um zB. Rechenergebnisse zwischenzuspeichern, ohne in den Speicher schreiben zu müssen. 
+Diese sind mit fünfbittigen ($2^5 = 32$) Adressen zugreifbar.
+Einige dieser Register dienen einen speziellen Zweck - sogenannte \enquote{Special purpose} Register - und unterliegen gewissen Restriktionen.
+\begin{description}
+    \item[Zero]
+        Das Zero Register R0 hat immer den Wert $0$.
+        Es ist in dem Sinne kein Register sondern 32 dauerhaft auf 0 gezogene Bits und daher auch nicht beschreibbar.
+    \item[Flags]
+        Um Flags wie compare, overflow und carry zu speichern, wird das erste Register R1 verwendet.
+        Berechnet die ALU eine Operation, welche eine Änderung der Flags zur Folge haben könnte (COMPEQ, COMPGT, ADD, ADC, SUB, SBC), wird das entsprechende Bit in der Write Back stage im Flags register gesetzt.
+        Das Register ist frei beschreibbar.
+    \item[Link]
+        Im Falle eines Sprunges, wird der aktuelle PC wert in das link Register geschrieben.
+        Dies ermöglicht es, wenn zu einer Subroutine gesprungen wurde, wieder zum ursprünglichen Programm zurückzukehren.
+        Das Register verhält sich sonst wie ein generisches Datenregister.
+        Es ist vor allem Aufgabe des Programmes, sofern zu einer weiteren Subroutine gesprungen werden soll, sicherzustellen, dass der Zustand des ursprünglichen Link-Registers nicht verloren geht. 
+    \item[PC]
+        Das PC Register gehört - ähnlich zum Zero-Register - in dem Sinne nicht zu den anderen dem Programm zugänglichen Registern.
+        Es ist nicht in der Registerbank verortet sondern steht für sich.
+        Der \texttt{instr\_addr} Ausgang der CPU ist fest mit dem PC Register verbunden.
+        Um Programmen das Auslesen des PC Registers zu ermöglichen, ist es als R31 addressierbar. Schreiboperation werden jedoch ignoriert.
+        Hierfür muss dediziert der \texttt{JMP} Befehl verwendet werden.
+\end{description}
 
-%Undefinierte Werte gleichzeitig lese Schreibzugriff auf Register, weil nicht geclockt
-
-%geclockte werte zuweisen sind unsere pipeline register,
-
-%alle schreiboperationen in einen geclockten prozess
-
-%pc ist nicht in der Register Bank sondern eine eigens register damit dieser auch in anderen Prozessen benutze werden kann
-%Aufbau der Register noch mal aufschreiben, 32 register, im 32. ist der pc, im 0. immer 0 
-%TODO noch mal max fragen 
-Zunächst stellte uns unser VHDL-Verständnis, wie an anderen Stellen, vor Probleme.
-Insbesondere Herausforderungen kamen beim Umgang mit dem Write Back auf.
-Da die CPU fehlerhaft implementiert war, wurde gleichzeitig ein Lese- und ein Schreibzugriff durchgeführt, was in fehlerhaften und undefined Werten resultierte. 
-%KOnstante Werte angelegt, dadurch ständiges schreiben und lesen, da nicht geclocked
-%zwei mal geschrieben wurde auch 
-Unsere Lösung bestand darin, nur einen Prozess überhaupt schreiben zu lassen. Der Umgang mit dem PC war ebenfalls etwas umständlich.
-Die Problematik bezieht sich darauf, dass sie schwierig in anderen Prozessen benutzt werden kann, wenn sie in der Registerbank steht.
-Die herausgearbeitete Lösung, die schlussendlich in der Implementation manifestiert wurde, basiert darauf, dass die PC-Werte nicht in der Registerbank steht, sondern ein eigenes Register haben.
-Somit können diese auch in anderen Prozessen benutzt werden.
+Die Implementation der Datenregister stellte uns vor einige Schwierigkeiten.
+Uns war nicht bewusst wie genau ein Register in VDHL zu formulieren war.
+Der erste Ansatz eine eigene Entity pro Register zu schaffen wurde schnell verworfen.
+Als uns klar wurde, dass Register letztlich nur \enquote{geclockt} beschriebene Signale sind, schufen wir die Registerbank - letztlich nur ein Array mit 32 Feldern vom  Typ \texttt{std_logic_vector} mit einer Länge von 32 bit.
+Zugriffe auf diese Datenstruktur führten immer wieder zu undefinierten Werten.
+Wie uns später klar wurde ist es keine gute Idee konstante Werte an Register anzulegen oder zeitgleich zum gleichen Zeitpunkt zweifach in das Register zu schreiben.
+Die Lösung lag darin, alle Schreibzugriffe in einem Prozess im Writeback - \texttt{wback_pipeline} - abzuhandeln.
+Das PC Register wurde in dem Zuge auch aus der Registerbank ausgelößt.
+Es wird nun durch den - und nur den - \texttt{wback_pc_set} Prozess im Writeback beschrieben.
 
 (max)
 
