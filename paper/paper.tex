@@ -813,14 +813,6 @@ genannten funktionalen und technischen Anforderungen besitzt. Dies betrifft sowo
 
 
 \chapter{Konklusion und Ausblick}
-\begin{itemize}
-    \item HLT op
-    \item Refactoring (unused signals)
-    \item Overflow out
-    \item link register is wrong
-    \item Reset Signal / Initialization
-    \item Pipeline flushing
-\end{itemize}
 
 % bewertung eigener Prozess
 % Software: messen an gesetzten masstäben
@@ -828,23 +820,43 @@ genannten funktionalen und technischen Anforderungen besitzt. Dies betrifft sowo
 % Bewertung des ergebniss
 % Vergleich zu vorher / planungsphase
 
-Es sind noch viele Möglichkeiten offen geblieben den Prozessor und den Assembler-Compiler auszubauen.
-Zum Einen fehlen noch Implementationen für eine Opcodes. %bezieht sich das auf den Assembler-Compiler oder den Prozesser?
-Zum Anderen sind der Overflow der ALU und das Link Register nicht korrekt implementiert.
+Der Prozessor befindet sich in einem annähernd fertigen Zustand.
+Es fehlen noch ein OP-Code und die (richtige) Implementation des Overflow-Flags sowie des Link-Registers.
+All dies ist aber für die Erfüllung unseres selbstgestecken Ziels nicht erforderlich: Fibonacci-Zahlen zu berechnen.
+Zugegebenermaßen nicht das höchste aller Ziele aber es involviert alle Kern-Komponenten, die wir einer CPU zuschrieben.
 
-Um den Prozessor synthetisieren zu können müssen mindestens Signale richtig initialisiert werden.
-Zur Zeit wird in VHDL ein Anfangswert gesetzt.
-Hier wäre es nötig ein Reset-Signal einzuführen, dass den PC auf 0 und die Pipeline Register Opcodes auf NOOP setzt.
-Auch Befehle wie COMPG nicht gut umgesetzt.
-In VHDL lässt sich die dafür notwendige Operation mit einem simplen \enquote{>} umsetzten.
-Dies wird aber in der Synthese eine komplexe Schaltung erzeugen.
+In den Entwurf des Prozessors sind weder Überlegungen der Effizienz noch Sparsamkeit eingeflossen.
+So ist die Implementation des \texttt{COMPGT} zB. sehr simpel in VHDL zu formulieren.
+In der Synthese wird sich daraus wohl eine \enquote{ALU}-artige Struktur ergeben.
+Aktuell setzen wir auch Initialwerte innerhalb von VHDL für einige Register um \enquote{undefined} aus dem Weg zu gehen.
+Dies lässt sich nicht synthetisieren.
+Hier wäre es notwendig eine Alternative zu finden.
 
-Der Prozessor im Zusammenspiel mit dem Assembler-Compiler kann aus seiner Pipelinestruktur noch nicht allzu viel herausholen.
-Alle Abhängigkeite, die zu Hazards führen können, müssen eine entsprechende Anzahl von NOOPS nach sich ziehen.
-Würde die CPU Pipeline Flushing implementieren ließe sich hier einiges an NOOPS sparen.
-Man könnte noch einen Schritt weiter gehen und Instruction Reordering oder auch \enquote{Backpropagation} von Ergebnissen betreiben.
+Abseits dieser Short-comings haben wir noch einige Ideen wie der Prozessor noch weiter zu entwickeln wäre:
+Hier wäre zuerst ein dedizierter \texttt{HLT} Befehl zu nennen.
+Zur Zeit lassen wir die Simulation nur bis zu einem Punkt laufen und brechen dann ab.
+Würden wir die CPU synthetisieren wäre es wünschenswert den Prozessor halten zu lassen.
 
-Eine HLT op wäre noch schön.
+\enquote{Pipeline Flushing} wäre ein weiteres Feature über das wir uns einige Gedanken gemacht haben.
+Springt der Prozessor von einer Instruktion zu einer anderen müssen alle schon in der Pipeline geladenen Befehle als \enquote{invalid} markiert werden.
+Zur Zeit wird dies in Software durch den Compiler gelößt, welcher erkennt, dass ein Sprung möglich wäre und entsprechend viele NOOPS einführt.
+Zumindest bei Branch-Befehlen ist dies nicht gerade effizient, da egal ob gesprungen wird, NOOPS in die Pipeline geladen werden.
+Hier wäre es denkbar einfach eine Datenleitung aus der Writeback stage, wo der PC wert gesetzt wird, zu jeder anderen zu führen.
+Diese würde, falls auf 1 gezogen, dafür sorgen, dass jede Stage ein \enquote{NOOP} bit setzt.
+Jenes wiederum veranlasst alle nachfolgenden stages dazu keine Schreiboperationen mehr zuzulassen.
+Dies würde zum einen die Anzahl der Noops, die vom Compiler eingefügt werden m
+
+Ein globales Reset Signal wäre auch noch wünschenswert.
+Dieses läge an allen relevanten Registern an - hauptsächlich alles was mit PC Handling zu tun hat - und würde im Falle der Aktivierung eben diese auf einen Initialwert setzen.
+Dies wäre auch eine Lösung für die oben genannte Synthetisierungsproblematik.
+Sofern Pipeline-Flushing schon implementiert wäre, sollte es nicht allzu kompliziert sein, dies für einen Reset mit einzubeziehen.
+
+Pipeline-Flushing hilft aber erst einmal nur um NOOPS nach \texttt{JMP} Befehlen zu eliminieren.
+Die NOOPS, welche vom Compiler eingefügt werden, um Hazards zu vermeiden, die durch inter-befehl-abhängigkeiten ausgelößt werden, sind davon nicht berührt.
+Hier könnte eine Form von Forwarding Abhilfe schaffen.
+Spätere Stages, wie Execute, Memory Access oder Write Back könnten berechnete Werte dem instruction decode bereitstellen.
+Somit stünden Ergebnisse früher bereit und könnten früher verwendet werden.
+Es müssten nicht mehr entsprechend viele NOOPS eingefügt werden, als das diese in Register geschrieben werden, um Hazards zu vermeiden.
 
 (max)
 
