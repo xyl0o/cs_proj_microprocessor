@@ -54,13 +54,55 @@
 
 
 \chapter{Einführung}
+Dies ist der Projektbericht zum Projekt Mikroprozessor von Andreas Mäder an der Universität Hamburg.
+Das Projekt ist dazu angelegt mit einem Team von fünf bis sechs Studierenden einen Mikroprozessor in einer Pipelinearchitektur zu planen, entwerfen, einen Assembler zu schreiben und den Prozessor  auf einem FPGA zu synthetisieren.
+Unser Team bestand aus sechs Studierenden - zwei für den Softwareteil, vier für die Hardware.
+Idee war es eine CPU mit dazugehörigem Assembler und Compiler zu entwerfen um einfache Programme zu schreiben und auszuführen.
+Wir orientierten uns hierbei an zeitgenössischen ARM-Prozessoren und deren Befehlssatz (Armv7 ??).
+Wir setzten uns als Ziel Fibonacci Zahlen bis zu einer gewissen Iterationsstufe zu berechnen.
+
+In der anfänglichen Planungsphase besprachen wir die Grundlagen unseres Befehlssatzes und Prozessors.
+Es musste geklärt werden wie lang unsere Befehlsworte sein werden, was für eine Adressmaschine wir verwenden und wie wir Pipelining umsetzen wollen.
+Im großen Kreis diskutierten wir die Unterschiede einer Bus-getrieben CPU und einem Pipelineansatz.
+Um ein Gefühl für das grobe Konzept Pipelining zu bekommen, schrieben wir einen funktionalen Sketch in Python.
+Dieser ist im Appendix zu sehen.
+Mit diesem ersten Konzept - wobei jede CPU-Stufe durch eine Pythonfunktion umgesetzt wurde - war es uns möglich Abhängigkeiten zwischen verschiedenen Komponenten und den Datenfluss selbst besser zu verstehen.
+Auf dieses werden wir im Kapitel \enquote{Planungsphase} genauer eingehen.
+
+Der Hardwareteil unserer Gruppe nahm die besprochenen Ansätze und versuchte sich an einer ersten Implementation.
+Eine große Hürde stellte VHDL selbst dar.
+Keiner aus unserer Gruppe hat bisher mit VHDL gearbeitet.
+Wir teilten uns auf um jeder für sich einen kleinen Teil aus dem Python Sketch im VHDL umzusetzen.
+Wir entdeckten etliche Testframeworks für VHDL-Komponenten und beschlossen einen Test-Driven-Development Ansatz zu verfolgen und für alle Komponenten zuerst Tests zu schreiben bevor diese implementierte werden.
+Herais stieß \texttt{cocotb} - ein in Python geschriebenes Testframework.
+Mit diesem war es relativ einfach möglich den gewünschten Output einer VHDL-Komponente - bei gegebenem Input - zu formulieren.
+Es wurde \texttt{ghdl} als VHDL Compiler und zur Simulation verwendet.
+Dieser komponentengetriebene Ansatz stellte sich letztlich aber als zu komplex und um die Ecke gedacht heraus.
+So war das Hardwareteam mitten im Projekt gezwungen die Herangehensweise noch einmal vollständig zu überdenken.
+Nach einigen Überlegungen gelangten wir zur Struktur die sich auch in unserem fertigen Produkt abzeichnet.
+Hierzu später mehr im Hardwarekapitel.
+
+Auch die Softwareseite durchlief einige Iterationen an Entwicklungsphase.
+Am Ende stand ein mit ANTLR / Java geschriebener Assembler-Compiler, welcher in der Lage ist unseren Assembler in Machinencode zu übersetzen.
+
+In der anschließenden Testphase trafen die beiden Teams wieder auf einander.
+Es galt das ursprünglich formulierte Ziel der Fibonacci-Zahlenberechnung zu erreichen.
+Wärend der Testphase vielen uns noch einige Missverständnisse zwischen Hardware und Software auf.
+Zu nennen ist hier zB. die Anzahl der NOOPS, die zwischen abhängigen Befehlen eingefügt werden müssen.
+Am Ende steht ein Prozessor welcher zwar über einen kleinen aber doch vollständigen Befehlssatz verfügt.
+
+Moderne Konzepte rund um Sicherheit oder auch generelle Betriebssytemeigenschaften blieben out of scope.
+Wir haben uns in erster Linie auf eine simple ein-programm-Situation fokussiert.
+Es ist uns gelungen einen funktionsfähigen Prozessor zu formulieren und einen Compiler für unseren selbsterdachten Assembler zu schreiben.
+
+In der Konklusion werden wir noch Bezug darauf nehmen, welche Erweiterungsmöglichkeiten uns in den Kopf gekommen sind.
+
 \begin{itemize}
     \item Hier wird das Projekt kurz vorgestellt
     \item Was haben wir gemacht? Was haben wir vor? Welche Tools wurden benutzt?
     \item Welche Schwierigkeiten haben sich abgezeichnet?
     \item welche Struktur hat der Vortrag - Welche Informationen können die Leser\_Innen in welchen Kapiteln erwarten.
 \end{itemize}
-\kant[2-3]
 
 (Max)
 
