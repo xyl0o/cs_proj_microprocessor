@@ -84,7 +84,7 @@ Diese wollen wir dennoch beleuchten.
 \section{Wortlänge und Adressmaschine}
 
 Bei der Adressmaschine wurde sich für eine 3 Adressmaschine entscheiden.
-Die 0 oder 1 Adressmaschine wurdem direkt ausgeschlossen, da diese zu umständlich und nicht zielführend gewesen wären.
+Die 0- oder 1- Adressmaschine wurde direkt ausgeschlossen, da diese zu umständlich und nicht zielführend gewesen wären.
 Die 3-Adress Maschine hat zwar keine funktionalen Vorteile, gegenüber der 2-Adressmaschine, aber der Aufwand, komplexere Abläufe zu realisieren ist geringer.
 Ein „add“-Befehl kann sein Ergebnis beispielsweise direkt an eine dritte Adresse schreiben und ist in einem Befehl realisierbar.
 So werden umständliche Kopiervorgänge gespart.
@@ -95,26 +95,36 @@ Das ist sowohl schneller, als auch einfacher in der Handhabung.
 Da hier Performance nicht relevant für die Entwicklung war, wurde - konsequenterweise - auch die Bitzahl als irrelevant eingestuft.
 Dadurch ist auch das Einsparen von Bits, im Befehlswort durch eine 2-Adressmaschine nicht nötig.
 
-Bei der Bitzahl wurde sich für 32 entschieden. 32 Bit Wortlänge reicht für alle Befehle und werden nie ganz ausgeschöpft. Darum wäre auch eine längere Bitzahl überflüssig gewesen.
+Bei der Bit-Zahl wurde sich für 32 entschieden. 32 Bit Wortlänge reicht für alle Befehle und werden nie ganz ausgeschöpft. Darum wäre auch eine längere Bitzahl überflüssig gewesen.
 
 (freddy)
 
+
+
 \section{32-Bit-Code}
+
+In den folgenden Kapitel wird die Struktur der 32-Bit-Codes behandelt. Es wird beschrieben wie der Code Unterteilt wurde und welche Denkprozesse dabei durchlaufen worden sind. Angefangen von der Unterteilung der Bits, über die Auswahl des Befehlssatzes und des daraus resultierenden Opcodes bis hin zu den Spezialfällen die aus den vorherige Entscheidungen heraus entstanden sind. 
 
 \subsection{Struktur ( Opcode- / Register- / Immediate- Bit-Länge )}
 
+Bei den Überlegungen wie die Struktur des Codes aussehen soll kamen die folgenden Ergebnisse: 
+\begin{itemize}
+    \item Die ersten Bits stehen für den Opcode. Die Länge wurde in Abhängigkeit an der Anzahl der Befehle auf 5 Bits gewählt. Diese ermöglichen das ergänzen weiterer Befehle da nicht alle Opcodes zugewiesen sind. 
+    \item Das darauf folgende Bit signalisiert ob es sich beim letzten Operanden um ein Immediate-Wert handelt. Näheres wird im Kapitel Immediate-Bit erläutert.
+    \item Die restlichen Bits sind für die Operanden reserviert. Dabei wurde sich auf 16-Bit langen Immediate-Wert geeinigt. Dieser erleichtert für die Softwareprogrammierung das darstellen größerer Zahlen (bis zu 32Bit) mit insgesamt 3 Befehlen (Zuweisung in ein Register der ersten 16 Bits, 16 Shift des Registers, Zuweisung der letzten 16 Bits in das Register). 
+    Durch die 5 Bits des Opcodes, 1 Bit des Immediete-Bits und 16-Bits des möglichen Immediatewertes, können aus Platzgründen nur noch 5 Bits für die Register zugewiesen werden. Dies ergibt eine Gesamtzahl von 32-Registern. 
+    
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+% \includegraphics{Figure 3.2.1}
+\caption{Bild der Struktur}
+\end{figure}
+
 \subsection{Befehlssatz}
 
-\subsection{Zuweisung Opcode}
-
-\subsection{Immediate-Bit}
-
-\subsection{Jump/Store/Load}
-
-% Einleitung abhängig vom vorherigem Teil 
-
-Nachdem die Länge und die Adressierung des Befehlswortes beschlossen wurde, mussten die einzelnen Befehle festgelegt werden.
-Dabei wurde sich an den ARM Befehlssatz orientiert\footnotemark.
+Um einen Überblick über mögliche Befehlssätze zu bekommen, wurde sich an den ARM Befehlssatz orientiert\footnotemark.
 \footnotetext{//(*link zum ARM Befehlssatz)//}
 Dieser wurde noch reduziert, da nicht alle Befehle für das Projekt relevant sind.
 Bei der Reduzierung wurden die Befehle in 3 Kategorien unterteilt:
@@ -126,84 +136,43 @@ Bei der Reduzierung wurden die Befehle in 3 Kategorien unterteilt:
     \item \enquote{irrelevant}:
     Zu komplexe oder für das Projekt irrelevante Funktionen.
 \end{itemize}
-
 Für den vorläufigen Befehlssatzes wurde sich zunächst auf die \enquote{must-have} Befehle fokusiert. 
-Der somit entstandene Befehlssatz musste nun einem Opcode zugewiesen werden. Hierbei musste entschieden werden, ob bei direkten Eingaben mit einem Immediate-Wert ein neuer Befehlscode hinzugefügt werden soll. Dies hätte zur Folge, dass bei Befehlen, die einen Immediete-Wert zulassen, ein eigener Befehl erstellt werden müsste. Wie z.B bei einer Addition; das \texttt{ADD} müsste mit einem \texttt{ADDI} ergänzt werden.
-Eine andere Möglichkeit ist die Unterscheidung nicht im Opcode stattfinden zu lassen, sondern diese auszulagern. In diesem speziellen Fall wäre das ein Bit das dich nach dem Opcode befindet.
-Beide Ansätze führen beim 32-Bit-Code schlussendlich zum selben Ergebnis. 
+Der somit entstandene Befehlssatz musste nun einem Opcode zugewiesen werden. Hierbei musste entschieden werden, ob ein Opcode bei unterschiedlichen Typen von Parametern(Immediate-Wert bzw. Register) nicht gleich ist. Dies hätte zur Folge, dass bei Befehlen, die einen Immediete-Wert zulassen, ein eigener Befehl erstellt werden müsste. Wie z.B bei einer Addition; das \texttt{ADD} müsste mit einem \texttt{ADDI} ergänzt werden. Eine andere Möglichkeit ist die Unterscheidung nicht im Opcode stattfinden zu lassen, sondern diese auszulagern.
+
+
+\subsection{Immediate-Bit}
+
+Das Immediate-Bit ist eine Mögliche Lösung um diese Auslagerung zu realisieren. In diesem speziellen Fall wäre das ein Bit das sich nach dem Opcode befindet. Es ist \enquote{0}, wenn es sich in de Zuweisungen nur um Register handelt und \enquote{1}, wenn eine Zuweisung ein Immediate-Wert ist. Somit wird auch schon im 32-Bit-Code ersichtlich, welche Typen von Parameter zugewiesen werden.
+Eine Auslagerung und das hinzufügen eines zusätzlichen Befehles im Befehlssatzes würden bei diesem Projekt schlussendlich zum selben 32-Bit-Code führen.
 Vorteile einer Auslagerung ist die geringere Anzahl an Befehle die benötigt wird.
 Dadurch wird die Softwareprogrammierung vereinfacht, da sie zwischen einer direkten und indirekten Zuweisung nicht unterscheiden muss.
-Aus diesen Gründen wurde beschlossen, die Unterscheidung nicht im Opcode zu behandel, sondern ein Bit in der 32-Bit-Anweisung als \enquote{Immediate-Bit} zu deklariert. Dieses Bit soll \enquote{0} sein, falls der Befehl nur Registerzuweisungen enthält und \enquote{1}, falls sich in dem 32-Bit-Code ein Immediate-Wert vorhanden ist. Somit wird auch schon im 32-Bit-Code ersichtlich, was zugewiesen wird.
+Aus diesen Gründen wurde beschlossen, die Unterscheidung nicht im Opcode zu behandel, sondern ein Bit in der 32-Bit-Anweisung als \enquote{Immediate-Bit} zu deklariert.
 
 
-%So waren wir in der Lage in unserer finalen Implementation, jeden der Befehle durch ein einziges %Befehlswort auszudrücken und brauchten keine weitere Implementation für die immediate Version.
-%Beispielsweise gibt es nur den Befehl \texttt{ADD}, statt \texttt{ADDI} für Immediate.
+\subsection{Zuweisung des Opcodes}
 
-{\color{green} WORK IN PROGRES}
+Die ausgewählten Befehle wurden in 3 Kategorien unterteilt, die sich in der Anzahl der angegebenen Parameter unterscheiden. Um diese Unterscheidung auch im Opcode erkenntlich zu zeigen, haben alle 3 Kategorien (ONEOP, TWOOP,THREEOP) unterschiedliche erste 2 Bits in ihrem Opcode. Sodass eine konsistente Regel ihrer Layout erstellt werden kann.
 
-Anhand dieser Entscheidung wurden den 18 Befehlen Opcodes zugewiesen. 
-Die 18 Befehle wurden in 3 Kategorien unterteilt, die sich in der Anzahl der angegebenen Parameter unterscheiden. Um diese Unterscheidung auch im Opcode erkenntlich zu zeigen, haben alle 3 Kategorien (ONEOP, TWOOP,THREEOP) unterschiedliche erste 2 Bits in ihrem Opcode.
-Sodass eine konsistente Regel ihrer Layout hergestellt werden kann.
+\begin{figure}[h]
+\centering
+% \includegraphics{Figure 3.2.1}
+\caption{Bild der mögliche Layouts}
+\end{figure}
 
-BILD/TABELLE DER MÖGLICHEN LAYOUTS
-
-%Durch diese Unterteilung, kann es später im Dekodierungsprozess zu Zeitersparungen kommen, da in %Abhängigkeit der ersten 2 Bits der Decoder weiß in welchen folgenden Bits die mitgeführte Information %enthalten ist.
-
+Dies dient vor allem der Übersicht sowie einer einfacheren Decodierung, wie im Kapitel Decoder beschriebe ist. 
 
 
-Bei diesen Unterteilungen kam die Frage auf, welche Befehle wie viele Parameter haben sollen.
-Betroffen waren vor allem 3 Befehle: der \enquote{Jump}-Befehl und der \enquote{Store}- bzw. \enquote{Load}-Befehl.
+\subsection{Diskussion bei Befehlen}
 
-Bei diesen Befehlen ging es vor allem darum, dass ein Betriebssystem den Speicher reserviert und somit nur Anfangs- und Endadresse der Reservierung kennt.
-% Das war nicht die debatte hier, sondern wieviele Operanten haben die Befehle. Also ist Jump ein oneop oder threeop.
-Ein Threeop Jump Befehl hat den Vorteil, dass mehrere Programme gleichzeitig laufen und man die \enquote{echte} Speicheradresse nicht kennen muss.
+Bei den Unterteilungen der Befehle in die Anzahl der Parameter kam es bei 3 Befehlen zu Diskussionen.
+Betroffen waren folgede Befehle: der \enquote{Jump}-Befehl, der \enquote{Store}-Befehl und der \enquote{Load}-Befehl. 
+Bei der Diskussion ging es primär um die Frage, ob relative Zuweisungen möglich sein sollen. Das heißt in diesen speziellen Fällen, ob z.B. relative Sprünge möglich sein sollen. 
+
+
+%  wieviele Operanten haben die Befehle. Also ist Jump ein oneop oder threeop.
 % "Das relative Sprünge möglich sind"
-%..man weiß umformulieren
-Dies ist zB. relevant um Arrays einfach adressieren zu können.
-Da wir aber in diesem Projekt ohne Betriebssystem arbeiten, war es fraglich, ob diese Ergänzung zum Befehl einen Nutzen haben würde.
-Der ausgeführte Code ist selbst geschrieben und damit ist jede Zuweisung der einzelnen Speicheradressen bekannt.
-%Absatz darunter neu 
-So entfällt der Vorteil des indirekten Ansprechens der Speicheradressen, da diese immer direkt angesprochen werden können.
-Zusätzlich laufen keine weiteren Programme parallel, sodass auch dieser Vorteil hinfällig ist.
 
-Da es aber unser Ziel ist einen möglich guten Prozessor zu erstellen, wurden die direkten Sprünge und Speicheradressierungen mit implementiert, da diese die Qualität des Prozessors steigern und eventuelle weitere Arbeiten mit dem Prozessor vereinfachen.
 
-Abschließend musste noch die Struktur des Befehlswortes festgelegt werden. Dabei unterscheiden wir zwischen Befehlen die einen, zwei oder drei Eingabeparameter haben.
-Alle haben gleichartige Strukturelemente.
-
-(Von links nach rechts) Die ersten 5 Bits sind der Opcode, das 6. Bit, ist das Immediate-Bit, und falls ein Immediate-Wert vorhanden ist, befindet er sich immer an den letzten 16 Stellen.
-
-\enquote{Opcode/ \enquote{0}/ Zuweisungen}  // BILD \footnote{BILD}
-
-\enquote{Opcode / \enquote{1} / Zuweisungen / Immediate} // BILD\footnote{BILD}
-
-{\color{green}END WORK IN PROGRES}
-
-{\color{red}
-Die 16 Bits wurden ausgewählt, da die Register einen Speicher von 32 Bit haben und somit 16 Bits einfacher zu behandeln sind. Zahlen größer 16 Bits in 3 Schritten dargestellt werden. 
-\begin{itemize}
-    \item 1. Direktzuweisung der ersten 16 Bits in ein Register
-    \item 2. Das zugewiesene Register wird um 16 Stellen nach links geschoben (\enquote{Shift 16})
-    \item 3. Direktzuweisung der letzten 16 Bits in das Register
-\end{itemize}
-    \texttt{(Dies ist ein Beispiel für eine 32Bit große Zahl)}
-}
-
-{\color{green} WORK IN PROGRES}
-
-Je nach Eingabeparameter sieht die Struktur der Instruktionen folgendermaßen aus :
-
-// BILD\footnote{BILD}
-
-Aus diesen Überlegungen ergab sich folgende Befehlsstruktru: Die ersten fünf bit stehen für den Opcode.
-Das darauf folgende Bit signalisiert ob es sich beim letzten Operanden um ein Immediate Wert handelt.
-Die restlichen Bits sind für die Operanden reserviert.
-Instruktionen haben felder für register / immediate werd
-Sind 5bit lang (immediate 16)
-%ganze Befehlsstruktur einmal schriftlich niederlgen, vor diesem Teil
-Durch die Begrenzung der Eingabeparameter auf 5 Bits können somit 32 Register benutzt werden.
-
-{\color{green}END WORK IN PROGRES}
 
 
 (paddy)
@@ -456,43 +425,35 @@ Somit können diese auch in anderen Prozessen benutzt werden.
 \section{PC Handling und Sprünge}
 
 %was ist next sequence pc
-Die fetch-stage soll mittels Programm Counter (PC) die Befehle aus dem Speicher laden können.
-Dazu muss der PC in jedem Clock Zyklus um Eins inkrementiert werden.
-%define next_seq_pc
+Um den richtigen Befehl aus dem Instruction-Speicher zu laden wird ein Register namens Programm Counter (PC) verwendet, indem die aktuelle Adresse steht. Der PC wird in der fetch-stage verwendet um Befehle aus dem Speicher laden zu können. Der PC muss in jedem Clock Zyklus um Eins inkrementiert werden, um bei der nächsten fetch-stage Ausführung den nächsten Befehl anzuvisieren. 
 
-Schwierigkeiten, die zur Aufgabe des next-sequence PC geführt haben, waren, unter anderem, dass Jeder Befehl seinen next sequence Befehl in den PC hätte schreiben müssen, nach dem die Pipeline durchlaufen wurde. 
-Das Durchlaufen eines Befehls durch die Pipeline dauert aber 4 Schritte.
-Der erste Fehler der Implementation bestand im Inkrementieren um Eins.
-Ist ein Befehl durchgelaufen, sind 4 weitere Befehle eingegangen.
-Der next sequence PC hätte also entsprechend 4 weiter sein müssen.
+Die ursprüngliche Implementation hatte in jeder Pipelinestage einen next-sequence PC Wert gespeichert, der den PC Wert enthielt der gesetzt sein soll, sobald der indizierte Befehl abgearbeitet werden soll. Dieser wurde in der fetch-stage berechnet und in der write-back stage genutzt,um die Speicheradressen zu setzten. 
+Der next-sequence PC wurde aufgegeben, da es einige Schwierigkeiten gab:
 
-Weitere Schwierigkeiten ergeben sich aus den fehlenden Initial-Zuständen.
-Jede Komponente, inklusive der next sequence PC ist mit (undefiniert) Werten beschreiben.
-Es müsste dafür gesorgt werden, dass der next sequence PC, auf write back Ebene, auf 1 steht, wenn der Prozessor startet.
-Der memory access müsste auf Zwei stehen und die anderen Komponenten analog dazu.
-Aufgrund der 4er Schritt Zählung wurde nur jeder vierte Befehl ausgeführt.
+Die erste Implementation war fehlerhaft. Das Durchlaufen eines Befehls durch die Pipeline dauert vier schritte.Der next-sequence PC wurde aber nur um eins erhöht. Wenn dieser befehl im memory access landet und genutzt wird um die Instruktionsspeicheradresse zu setzten, sind schon vier Zyklen vergangen, seitdem in der fetch-stage der next-sequence Pc gesetzt ist. 
+
+Eine weitere Schwierigkeit ergibt sich aus den fehlenden Initial-Zuständen.
+Jede Komponente, inklusive des next sequence PC. ist undefiniert, bei Simulationsstart.Auch in der Realität kann nicht angenommen werden, dass alle Werte auf 0 gesetzt sind. Dies führt insbeossndere beim next-sequence PC Handling zu schwierigkeiten, da in jedem Clock zyklus der Wert im next-sequence PC im memory access als Adresse genutzt wird. Ist dieser undefiniert, erhält das Instructions-memory einen undefinierten Wert. Weiterhin muss daraufgeachtet werden, wie die richtigen Initialwerte gesetzt sind: Wäre alles mit 0 initialisiert, würde vier mal der nullte Befehl geladen werden. Der erste Befehl wird auf 1 gesetzt und die anderen drei werden wieder mit 0 geladen. Die fetch-stage nimmt sich weierthin den nächsten Befehl.
+
 %Bild reinpacken
 
 Die Jumps haben zu weiteren Problem geführt.
-Zum Springen kann der next sequence PC druch den Ziel Wert ausgetauscht werden.
-Diese Vereinfachung von Sprüngen war die Hauptmotivation für die Nutzung des next sequence Pcs.
-Das funktionierte leider nicht, da in der fetch-stage der pc Wert des durchgelaufenen Befehls steht.
-Der Nachfolger des durchgelaufenen Befehls hat aber noch seinen ursprünglichen next sequence PC.
-Der nachfolger ist ,in der regel, ein NOOP (nach einem Jump), der eigentlich nichts machen sollte.
-Nachdem die NOOPs durchgelaufen sind, werden aber wieder die Nachfolger des JUMP Ziels ausgeführt.
+Die Motivation zur Implementation des next-sequence Pcs war die vermutung, dass Sprünge damit einfach realisierbar gewesen wären. Ein befehl trägt, beim Durchlauf durch die Pipelinestages, den Wert des PCs mit sich. Diesen Wert umschreiben, wenn er ein Sprung ist, schien zunächst einfach. So mit wäre eine externe Sprung Logik nicht nötig. 
+
+Angenommen ein Jump-befehl läuft durch die  Pipeline. Der next-sequence PC liegt bei dem aktuellen Pc Wert plus 4, sobald dieser Befehl in der fetch-stage ist. Läuft dieser Jump-befehl jetzt weiter und kommt in der memory-access stage an, ändert diese den next-sequence PC Wert auf die Sprungadresse. Das sorgt dafür, dass der nächste Befehl, den die fetch-stage laden wird, der ist, auf den gesprungen wird. Die problematik gibt sich nun aber daraus, dass der Befehl direkt nach dem Jump (der eine Stufe weietr oben liegt) von dem Sprung verhalten nicht geändert wird. Einen Prozessortakt weiter und der nachfolgende Befehl im memory-acess landet, ist der next-sequence Pc von diesem Befehl nicht vom Sprung berührt und wird direkt wieder für den Instrction-Speicher verwendet. In der fetch-stage wird der nächste Befehl mit diesem PC Wert geladen. 
 Das Ganze ist offensichtlich fehlerhaft und wurde schlussendlich auch verworfen.
 %reihenfolge 4, 100, 5, 6, 104
 
-Der PC Wert hatte auch noch zu Problemen geführt, da er vorher ein normales Register war. Das beschreiben von Registern gleichzeitig ( Pc Register und Ziel des Befehls) führte zu Fehlern.
+Der PC Wert hatte auch noch zu Problemen geführt, da er ursprünglich ein normales Register war. Das beschreiben von Registern gleichzeitig ( Pc Register und Ziel-Register des Befehls) führte zu Fehlern.
 Der PC ist jetzt aus der Registerbank ausgelagert.
-Das löst die Zugriffsprobleme auf zwei Register(Banken) gleichzeitig.
+Das verhinderte die undefinierten Werte in den zwei Register(Banken).
 
 Die finale Implementationm hat keine next sequence PC Werte mehr, sondern nur noch einen PC Register außerhalb der Pipeline.
 Dies ist auch getrennt von der Registerbank.
 Im write back wird dieser immer um 1 erhöht, sofern nicht gesprungen wird.
-Sprünge haben ein eigenes Signal, die den writeback wert entsprechend verändern.
+Wird im memory-access ein Sprung festgestellt, wird ein Will-Jump Signal vom memory access zum wirte back auf 1 gestellt. Dies veranlasst die writeback stage nicht den PC-Wert um 1 zu erhöhen, sondern den Target Wert als neuen PC-Wert zu setzen. 
 Die gesamte PC-Logik ist somit im write back.
-Durch die Anpassungen ist die gesamte fetch stage obsolet geworden und erfüllt keine Funktion mehr. 
+Durch die Anpassungen ist die gesamte fetch stage obsolet geworden. Die  Instruction Decode stage ließt direkt den Input vom instruction memory. 
 
 (freddy)
 
@@ -556,9 +517,8 @@ Die ALU ist für die logischen und arithmetischen Operationen verantwortlich.
 Sie erhält ihren Opcode vom Decoder.
 Es gibt zwei Operanden als Input und ein Input Flag - das Carry Bit.
 Herzstück der ALU ist eine große Switch Anweisung, die abhängig vom Opcode die zwei Operanden mit einander verrechnet.
-Die ALU unterstützt insgesamt 14 Operationen.
+Die ALU unterstützt insgesamt 14 Operationen. 
 Die Overflow, CarryOut und Compare Flags, werden konstant berechnet.
-Geschrieben werden sie nur, wenn das der Opcode hergibt.
 Ursprünglich wurde das Flag-Register jeden Taktzyklus geschrieben.
 Die ALU \enquote{änderte} Flags nur, sofern es nötig war.
 Dies führte zum gleichen Problem, wie auch beim PC Handling.
@@ -569,6 +529,8 @@ Das Compare-flag wurde nur entsprechend gesetzt, sofern ein Compare-befehl in wr
 Das Overflow-Flag ist nicht implementiert.
 Es lag bisher nicht im Fokus.
 Die Zielberechnung von Fibonacci funktioniert auch ohne.
+
+
 
 (freddy)
 
