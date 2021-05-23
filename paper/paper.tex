@@ -208,13 +208,10 @@ Dies dient vor allem der Übersicht sowie einer einfacheren Decodierung, wie im 
 
 Bei den Unterteilungen der Befehle in die Anzahl der Parameter kam es bei 3 Befehlen zu Diskussionen.
 Betroffen waren folgede Befehle: der \enquote{Jump}-Befehl, der \enquote{Store}-Befehl und der \enquote{Load}-Befehl. 
-Bei der Diskussion ging es primär um die Frage, ob relative Zuweisungen möglich sein sollen. Das heißt in diesen speziellen Fällen, ob z.B. relative Sprünge möglich sein sollen. 
-
-
-%  wieviele Operanten haben die Befehle. Also ist Jump ein oneop oder threeop.
-% "Das relative Sprünge möglich sind"
-
-
+Bei der Diskussion ging es primär um die Frage, ob relative Zuweisungen möglich sein sollen. Das heißt in diesen speziellen Fällen, ob z.B. relative Sprünge möglich sein sollen. Diese relativen Zuweisungen ermöglichen das erstellen gewisser Konstrukte, wie Arrays. Hier müsste nur in einem Register hinterlegt werden, an welcher Speicheradresse das Array anfängt. Mit dieser Information kann auf einer beliebige Stelle des Arrays zugegriffen werden, obwohl die genau Speicheradresse nicht bekannt sein muss, da die Anfangsadresse des Arrays vorhanden ist. 
+Ein Grund gegen eine relative Adressierung ist, dass alle Adressen dem Projektteam bekannt sind. Der Vorteil einer indirekten Adressierung ist, dass nicht bekannt sein muss, welche genaue Adresse angesprochen werden muss, solange man weiß, wo sich die Adresse relativ zu einer bekannten Adresse befindet. Dieser Vorteil ist aber hinfällig, da bei kleineren Programmen, der Entwickler die Adressen \enquote{hardcoden} kann, da ihm alle Adressen bekannt sind. 
+Da aber bei größeren Programmen, bzw. auch bei mehreren Programmen die gleichzeitig laufen, eine  \enquote{hardcodierung} durch die erhöhte Komplexität der Programme fasst unmöglich ist, wurde sich für eine indirekte Zuweisung entschieden.
+Die 3 Befehle \enquote{Jump}, \enquote{Store} und \enquote{Load} wurden somit als Befehle mit 3 Operanten angelegt.
 
 
 (paddy)
@@ -589,9 +586,15 @@ Die Zielberechnung von Fibonacci funktioniert auch ohne.
 (freddy)
 
 \chapter{Software}
+\section{Einleitung}
+Im folgenden stellen wir die Arbeit des Softwareteams vor. Wir beginnen mit einem kurzen Einblick in unseren Arbeitsablauf, danach stellen wir die verschiedenen Schritte der Softwarentwicklung vor um abschließend einen Überblick über die Funktionalität des Compilers am ende des Projekts zu liefern.
 % chapter introduction missing - brauchen wir die hier wirklich? -> siehe Chapter 4.1
 
 (lennart)
+\section{Entwicklungsprozess}
+Das Vorgehen des Softwareteams bestand aus mehreren Schritten. Generell haben wir uns einmal in der Woche getroffen um den aktuellen Stand unserer Arbeit zu besprechen. Je nachdem was zu tun war haben wir entweder zusammen an einer Aufgabe gearbeitet, oder aber die anstehenden Aufgaben verteilt, so dass jeder in ruhe und zu einem ihm passenden Zeitpunkt daran arbeiten konnte.
+Zunächst mussten wir uns entscheiden mit welcher Sprache und welchen weiteren Tools unseren Compiler implementieren wollten. Bei der Recherche nach guten Tools zur Spracherstellung stießen wir auf ANTLR. Da uns die Syntax der Grammatiken (ähnlich zu Backhus-Naur Form) gefiel und wir beide mit Java vertraut sind haben wir uns für das Tool entschieden.
+Der zweite Schritt unserer Arbeit bestand darin sich mit ANTLR vertraut zu machen. Dieser Schritt nahm etwas mehr Zeit in Anspruch als erwartet, da zunächst einige technische Probleme aus der Welt geräumt werden mussten, die bei der Einrichtung des neuen Frameworks auftraten. Nachdem die Technik schließlich stand und wir die Schnittstelle von ANTLR verstanden hatten war die Implementation des Compilers relativ unproblematisch, dieser widmen wir uns im folgenden.
 
 \section{Anforderungsanalyse}
 Zu Beginn des Softwareentwicklungsprojektes bestand die erste Herausforderung darin, eine auf das Problem zugeschnittene Anforderungsbeschreibung zu erstellen.
@@ -804,8 +807,8 @@ Die ALU kennt nun die Operation SUB.
 (max)
 
 \subsubsection{Ergebnis - Softwareentwicklung}
-Einer der schwierigsten und gleichzeitig weitreichendsten Entscheidungen war die Wahl des genutzten Frameworks. Zu Beginn des Softwareentwicklungsprozesses mussten wir zunächst viel Zeit in diese Entscheidung investieren, da es (neben ANTLR) viele verschiedene Parser-Generatoren mit sehr unterschiedlichen Ansätzen und damit verbundenen Vor- und Nachteilen gibt. Es kostete uns relativ viel Zeit hierbei den für uns richtigen Auszuwählen. %Das ist ein bisschen gelogen...
-Als weiterer aufwändiger Schritt während der Entwicklung stellte sich das Erlernen und die korrekte Anwendung von ANTLR heraus. ANTLR bietet ein äußerst vielfaltiges Spektrum an nutzbaren Funktionen und Möglichkeiten, was sowohl die Grammatik als auch die Implementation angeht. Ein schwierige Teil hierbei war nun herauszufinden, welche Funktionen tatsächlich gebraucht würden und welche vernachlässigbar waren. %absatz
+Eine der weitreichendsten Entscheidungen war die Wahl des genutzten Frameworks. Zu Beginn des Softwareentwicklungsprozesses mussten wir zunächst einige Zeit in diese Entscheidung investieren, da es (neben ANTLR) viele verschiedene Parser-Generatoren mit sehr unterschiedlichen Ansätzen und damit verbundenen Vor- und Nachteilen gibt. Es kostete uns einige Zeit hierbei, den für uns richtigen Auszuwählen.
+Als weiterer aufwändiger Schritt während der Entwicklung stellte sich das Erlernen und die korrekte Anwendung von ANTLR heraus. ANTLR bietet ein äußerst vielfältiges Spektrum an nutzbaren Funktionen und Möglichkeiten, was sowohl die Grammatik als auch die Implementation angeht. Ein schwierige Teil hierbei war nun herauszufinden, welche Funktionen tatsächlich gebraucht würden und welche vernachlässigbar waren. %absatz
 Abschließend lässt sich sagen, dass die release Version der Software alle in Kapitel 4.1 %verlinkung zu Chapter 4.1
 genannten funktionalen und technischen Anforderungen besitzt. Dies betrifft sowohl die Bedienung  der Software als auch eine potenzieller Weiterentwicklung bzw. das Hinzufügen von neuen Features. 
 
@@ -866,7 +869,7 @@ So stellte sich unsere anfänglichen Entscheidung eine vollständige Anforderung
 
 Allerdings gibt es noch eine Menge an zusätzlichen Features, welche für eine professionelle Entwicklung unter Anwendung unseres Tools notwendig wären. Z.B. müsste es entweder eine diskrete Simulationsumgebung geben, mit der man seinen Quellcode direkt testen kann oder es müsste eine direkte Schnittstelle zu VHDL %Hier nochmal mit der Hardware-Gruppe reden! 
 entwickelt werden. Zusätzlich dazu müsste es im Rahmen der Simulationsumgebung einen Debugger geben um Probleme während der Laufzeit vernünftig behandeln zu können.
-Da Assemblercode nicht mehr zeitgemäß ist, müsste man für komplexere Programme einen Schritt weiter gehen und einen Compiler für eine existierende Hochsprache (z.B. C) implementieren oder eine eigene Hochsprache Entwickeln. Um mit einer selbst entwickelten Hochsprache vernünftig arbeiten zu können, wäre hierfür allerdings ein GUI notwendig. %Warum braucht man eine GUI?
+Da Assemblercode nicht mehr zeitgemäß ist, müsste man für komplexere Programme einen Schritt weiter gehen und einen Compiler für eine existierende Hochsprache (z.B. C) implementieren oder eine eigene Hochsprache Entwickeln. 
 
 (leonard)
 
