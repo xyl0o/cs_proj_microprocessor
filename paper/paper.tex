@@ -54,7 +54,7 @@
 
 
 \chapter{Einführung}
-Dies ist der Projektbericht zum Projekt Mikroprozessor von Andreas Mäder an der Universität Hamburg. %etw holprig
+Dies ist der Projektbericht zum Projekt Mikroprozessor von Andreas Mäder an der Universität Hamburg. %etw holprig % "Diese Arbeit ist im Rahmen des (oredntlich vorgesehenen )  Projekts ... entsatnden. 
 Das Projekt ist dazu angelegt mit einem Team von fünf bis sechs Studierenden einen Mikroprozessor in einer Pipelinearchitektur zu planen, entwerfen, einen Assembler zu schreiben und den Prozessor  auf einem FPGA zu synthetisieren.
 %war Pipeline nötig? 
 Unser Team bestand aus sechs Studierenden - zwei für den Softwareteil, vier für die Hardware.
@@ -112,39 +112,24 @@ In der Konklusion werden wir noch Bezug darauf nehmen, welche Erweiterungsmögli
 \chapter{Planungsphase}
 \label{chap:Planungsphase}
 
-Die Planungsphase beinhaltet die anfänglichen Überlegungen, die daraus resultierenden Diskussionen, sowie die entstandenen Entscheidungen, die die gesamte Gruppe getroffen hat, bevor sie sich in die Hardware und Software Gruppe aufgeteilt hat.
+Die Planungsphase beinhaltet die anfänglichen Überlegungen, die daraus resultierenden Diskussionen, sowie die entstandenen Entscheidungen, die die gesamte Gruppe getroffen hatte, bevor sie sich in die Hardware und Software Gruppe aufgeteilt hat.
 Angefangen über die gemeinsame erarbeiten des Verständnisses, welche Komponenten in einem Prozessor wie arbeiten, über das Skizzieren eines eigenen Prozessors in einem Python \enquote{Pseudocode}, bis zum Erstellen eines Befehlssatzes für diesen Prozessor.
 
 
-
-%-------------------------------------------------------------------------------------
-
-%grammatik - Zeiten
-% Die programmierte Hardware und Software soll zusammen verbunden, getestet und eventuelle Fehler behoben werden, bis keine Fehler vorhanden sind.
-% Falls noch Zeit übrig sein sollte, sind Erweiterungen des Befehlssatzes, sowie weitere Datentypen mögliche Punkte, um den Prozessor qualitativ zu verbessern.
-% Es sind einige Fragestellungen und Diskussionspunkte aufgekommen, die im Nachfolgenden genauer besprochen werden sollen.
-% Darunter finden sich auch Punkte oder Konzepte, die im Diskussionsprozess ausgeschlossen und nicht im finalen Projekt manifestiert wurden.
-% finde ich n bisschen viel vorweg genommen. einerseits denkt maan sich uh welche denn. anderer seits denke ich wovon reden die? ab: "Die programmierte Hardware und Software... " könnte alles nochmal in die richtung prozess so wie unten formuliert und was ist bei rum gekommen mäßig.
-% Diese wollen wir dennoch beleuchten.
-
-% Wasserfall ("Zuerst" "Danach" "Nachdem")
-% Besser in das Kapitel einführen (Übergang)
-
-%---------------------------------------------------------------------------------------
 
 (Paddy)
 
 \section{Was bei rumgekommen ist}
 
-Um ein Verständnis zu entwickel wie ein Prozessor funktioniert, wurden Komponenten des Prozessors und deren Verbindungen visuell festgehalten. 
+Um ein Verständnis zu entwickeln wie ein Prozessor funktioniert, wurden Komponenten des Prozessors und deren Verbindungen visuell festgehalten.
 Komponenten wurden als Vierecke dargestellt und um Datenflüsse zwischen ihnen darzustellen, wurden sie mit einer Linie verbunden.
-Nachdem sich jeder mit der Funktionsweise des Prozessors vertraut gemacht hatte, wurden für die jeweiligen Komponenten eine Klasse in einem Pythonsketch erstellt.
-% Klasse ??? %
-Diese Klassen enthalten die in- und outputs die die Komponente in dem Prozessor besitzen.
+% Bild einfügen und Satz ändern
+Nachdem sich jeder mit der Funktionsweise des Prozessors vertraut gemacht hatte, wurden für die jeweiligen Komponenten eine Funktion in einem Pythonsketch erstellt.
+Diese Funktionen enthalten die in- und outputs die die Komponente in dem Prozessor besitzen.
+%Formulierung - "Komponente" nicht wirklich definiert
 Durch die Verknüpfungen der gesamten Komponenten, entstand so die erste Vorlage für den Prozessor. 
 Problematisch war, dass der Prozessor der daraus entstanden ist, ein Bus-System besitzt, was den Projektanforderungen nicht gerecht wurde. 
-% Weil die Aufgabe war Pipelineprozessor?
-Um diesen Prozessor mit Bus-System in einem Prozessor mit Pipeline-Architektur umzuwandeln, wurden die Prozesse der jeweiligen Komponenten in Abschitten, s.g. \enquote{Stages} unterteilt.
+Um diesen Prozessor mit Bus-System in einem Prozessor mit Pipeline-Architektur umzuwandeln, wurden die Prozesse der jeweiligen Komponenten in Abschnitten, s.g. \enquote{Stages} unterteilt.
 Diese \enquote{Stages} sind Teilaufgaben eines ganzen Befehles des Prozessors. 
 Da eine Vorlage für ein Pipeline-Prozessor mit 5 \enquote{Stages} vorlag, wurde sich an dieser orientiert.
 So entstanden für die jeweiligen \enquote{Stages} Pipeline-Register, die in dem Pythonsketch als eigene Komponenten dargestellt sind.
@@ -153,17 +138,9 @@ Diese besitzen den Namen der jeweilige \enquote{Stages} und sind zwischen 2 Komp
 Nachdem eine 1 zu 1 Umsetzung von dem Pythonsketch in VHDL, durch mangelnde VHDL Kenntnis, nicht möglich war, wurde die Logik der Komponenten ausgelagert.
 
 
-
---------------------------------------------
-
-Mit diesem ersten Konzept - wobei jede CPU-Stage durch eine Pythonfunktion umgesetzt wurde - war es uns möglich Abhängigkeiten zwischen verschiedenen Komponenten und den Datenfluss selbst besser zu verstehen.
-Auf dieses werden wir im Kapitel \enquote{Planungsphase} genauer eingehen.
-
-% Interpretation der Projekt-Anforderungen + Erläuterungen
-% Warum? und Wie?
-% Historische Komponente / Prozess
+% Mehr Leben in den Text bringen
+% Mehr Pythonsketch / Bild von Pipeline erklären.
 % Stages erläutern. Welche? Warum? An der Skizze orientiert. (Zitieren)
-%%TODO Eingführung ins Chapter Instruction Set sschreiben, was wird in welcher tiefe vorgetsellt was passiert in welchen kapitel später mit deiesen infromationen, wozu ist das wichtig?
 
 (Paddy)
 
@@ -287,9 +264,13 @@ Da die Auseinandersetzung darüber als eine Entwicklung über dass gesamte Proje
 In diesem werden Arbeitsteilung und Gedankengänge ausgeführt. %???
 Anschließend wird unser Ergebnis detailliert vorgestellt, die Komponenten und ihre Funktionen besprochen. Dazu gehören die Implementierung der fünf Stages. %Dieses Kapitel ist Müll
 
+
+
 %sagen wenn english gesprochen wird dann meint es vhdl konstrukte wenn deutsch dann meinen wir daasa wwas wir saaaggenn : basp Compnennts udn Komponnenten
 
 %beim ersten mal entity VHDL-Entity saagen udn dann in italic um klar zu amchen ah neuer begriff genaausso bei architecture
+
+% nochmal stärken wwarum es hier so ein explizit historisches kapitel gibt
 
 (luca)
 
@@ -319,7 +300,7 @@ Die Bestrebung war ein System zu Entwickeln von dem wir uns versprachen das Proj
 Dazu haben wir uns auf ein "Drei-Phasen-Programm" geeinigt. In der ersten Phase haben sich alle Teammitglieder individuell mit VHDL beschäftigt.
 Vielversprechendes Material wurde im GitLab gesammelt.
 Darüber hinaus wurden Schwerpunkte vergeben zu denen unter anderem Entities, Architectures, Prozesse und mögliche Umsetzungen von Pipelining gehörten.
-Für uns lag nach den ersten Recherchen nahe für jede Komponente aus der Skizze bzw. dem Python-Scatch eine entsprechende VHDL-Komponente zu schreiben.
+Für uns lag nach den ersten Recherchen nahe für jede Komponente aus der Skizze bzw. dem Python-Sketch eine entsprechende VHDL-Komponente zu schreiben.
 %(wie in abbildung sowieso zu sehhen) 
 Der Gedanke lässt sich in etwa so zusammenfassen: Jedes elektrische Bauteil - wie ALU und der Decoder sollte eine Entsprechung als Entity mit zugehöriger Architecture erhalten.
 Die in den Entities definierten Schnittstellen sollten die Kommunikation der einzelnen Stages untereinander gewährleisten, während die jeweilige Architectures die gewünschte Datenverarbeitung übernähme.
@@ -762,7 +743,6 @@ Da unser Compiler mehrere Aufgaben erfüllen soll, die nur sequentiell erledigt 
 Eine Klasse die ein Dokument durchläuft, und diese mit Hilfe von ANTLR verarbeitet nennt sich Visitor.
 Bei jedem Durchlauf wird ein anderer Arbeitsschritt erledigt.
 Die drei Schritte sind das Ersetzen von Makros durch ihre jeweilige Implementation, das Einfügen von NOOPS zur Vermeidung von Hazards und die eigentliche Übersetzung.
-%eventuell die 3 punkte in anführungszeichne
 
 \subsubsection{Makros}
 Makros wurden von uns mit eigenen Lexer- und Parser-Rules innerhalb der Grammatik implementiert.
@@ -788,10 +768,10 @@ Die Indizes werden zusammen mit den Labels gespeichert, sodass die Labels im Üb
 Eine weitere Aufgabe innerhalb dieses Schrittes ist das Einfügen von NOOPS, um Hazards zu vermeiden.
 Um dies zu bewerkstelligen, merkt sich der Compiler für jedes Register die Anzahl der notwendigen NOOPS, die eingefügt werde müssten, falls das Register im aktuellen Befehl vorkommt.
 Ist der Wert 0 wird für das jeweilige Register der Wert auf 4 gesetzt, was der Anzahl der Pipelinestufen entspricht.
-Falls der Wert nicht 0 ist, werden entsprechend viele NOOPS eingefügt.
+Falls der Wert nicht 0 ist, werden entsprechend viele führende NOOPS eingefügt und danach der Wert auf 4 gesetzt. 
 %was heißt entsprechend viele ? 
-%anmerken dass nach jedem Schritt dekrementiert wird
-Außerdem werden generell nach jedem Sprung (\texttt{JMP}, \texttt{B}) 3 NOOPS eingefügt, da wir für den Prozessor keinen Flush implementiert haben.
+Nach jeder Opperation werden die Zähler um eins dekrementiert bis sieh wieder 0 sind.
+Außerdem werden generell nach jedem Sprung (\texttt{JMP}, \texttt{B}) 3 NOOPS eingefügt, da wir für den Prozessor keinen Flush implementiert haben. Es werden nur 3 und nicht 4 NOOPS gebraucht, da 
 % Warum nur 3 nicht 4??
 Auf diese Weise wird vermieden, dass ungewollte Befehle in die Pipeline geladen werden.
 
@@ -803,14 +783,9 @@ Die einzelnen Befehle werden je nach Befehlstyp (NOOP, TWOOP, THREEOP, Jump) unt
 Die Opcodes stehen in einer Hashmap zusammen mit den Mnemoniks für die einzelnen Befehle.
 Ist der letzte Operand ein Immediate Wert wird das Immediate-Bit wird entsprechend gesetzt.
 Die Immediates werden aus dem angegebenen Zahlensystem (binär, hexadezimal, dezimal) zu einer Binärzahl übersetzt.
-Alle Operanden werden je nach Befehlsstruktur mit einem entsprechendem Padding versehen.
-%erklären was ein padding ist, mehr ausführen, bild bei befehlswörtern?
-Anschließend wird das Befehlswort zusammengesetzt und zusammen mit einem führenden Befehlsindex zurückgegeben.
-%was ist ein führender Befehlsindex
-
-%\subsection{Probleme}
-%Die Implementation des Compilers verlief relativ Problemlos und das Ergebnis ermöglicht uns alle von uns gesetzten Ziele zu erreichen. Eine Schwäche unseres Vorgehens war jedoch die schlechte Testbarkeit des Programms, da diese von der Implementation der Hardware abhängig war. Das führte dazu, dass Fehler erst spät sichtbar wurden, da wir den compilierten Quellcode erst an dem fertigen Prozessor testen konnten (siehe Kapitel Test).
-%Simulator hätte das lösen können
+Alle Operanden werden je nach Befehlsstruktur mit einem entsprechenden 0 Padding versehen. Um die Länge und Struktur des Befehlswort zu erhalten.
+%bild bei befehlswörtern?
+Anschließend wird das Befehlswort zusammengesetzt und zusammen mit einer Befehlsnummer am Anfang zurückgegeben.
 
 (lennart)
 
@@ -854,11 +829,54 @@ Dies betrifft sowohl die Bedienung  der Software als auch eine potenzieller Weit
 
 \chapter{Konklusion und Ausblick}
 
-% bewertung eigener Prozess
-% Software: messen an gesetzten masstäben
-% Reflektiv sein
-% Bewertung des ergebniss
-% Vergleich zu vorher / planungsphase
+Es hat funktioniert.
+Wir haben das uns vorgenomme Ziel erreicht
+Wir haben erstmal fibonacci. Dh. wir können ein assembler porgramm schreiben, dass dem compiler vorwerfen und auf dem Prozessor mit ghdl simuliert laufen lassen, sodass am ende die fibbonaci zahlen bis n (hier 10) berechnet werden.
+Das hier gezeigte Programm Berechnet fibonacci zahlen in dem es einen loop durchläuft, bla blub.
+Da Pipelining / flushing nicht so ganz geht sieht man nach dem kopieren kommen noch ganz viele noops rein (opcode: 111111 ?)
+dieses Kann nun als rom geladen werden. In gtk wave ist zu sehen (siehe Abbildung) wie die verschiedenen Operationen geladen werden.
+Die loop in zeile X des programmcodes wird durch ein compg und ein branch realisiert, wie hier zu sehen.
+Guck ma hier, da sind bilder, da sieht man das.
+Der sprung funktioniert auch. Ist nämlich das comp nicht wahr passiert dass die oben zu sehen, sonst wird zum ende gesprungen.
+schaut man sich die registerbank an, nachdem der prozessor zum ende springt, kann man die 10te fibpnacci zahl sehen.
+
+% Bewertung unserer initialen ziele
+Also Fakultät haetten wir vllt auch geschafft, da muss nur wer nen programm für schreiben / es ausführen. Synthetisieren geht leider net. Wir haben das auch noch nicht auf nem fpga, laufen lassen. auch so I/O haben wir gar nicht bedacht: Input lesen, LED blinken lassen, Serielle Konsole, LCD/TFT display.
+Kein wirkliches Pipelining da überall noops einzufügen sind um hazards zu vermeiden.
+Der compiler kann aber schonmal berechnen wie viele noops benötigt werden.
+
+% Wie ist es gelaufen (Gruppenarbeit)
+Wir haben uns zu spät getroffen (hardware/software). wir hätten viele fehler früher findne können. Absprachen, wie viele noops gingen wohl schief und mussten dann noch korrigiert werden.
+Da haben wir wohl ein paar wochen an einander vorbei gearbeitet.
+
+% Was würden wir anders machen (Gruppenarbeit)
+Das könnte man beim nächsten mal konterkarieren, indem wir uns wöchentlich oder zweiwöchentlich treffen und testen.
+Hierfür wäre ein früher prototyp (vhdl/sowie compiler) hilfreich gewesen.
+Wöchentliche goals / zwischenziele setzen vllt. (sowas wie: nächste woche nen prozessor der addieren kann)
+Fail early!
+Mehr Wissenaquirierung beim Hardware team war sehr langsam.
+Sind nicht zu potte gekommen und haben sehr spät bemerkt, dass wir das alles nochmal umwerfen wollen.
+Auch ein beispiel: speicheraddressierung - bitweise oder byteweise zb
+
+Alles in allem: Mehr zusammensitzen, mehr kommunikation, mehr Koordination.
+
+Bei Software war die kommunikation einfacher weil nur 2 menschen.
+Vllt hardware in zwei teilen? (statt in 4 oder gar nicht)
+Fehlende Peer-Reviews (Hardware).
+
+% Was würden wir anders machen (Inhaltlich)
+
+Zweite alu weil compgt nicht im prozess.
+
+unit tests, da sich Korrektheit eh nicht formal beweisen lässt, sollte zumindest mit tests eine hinreichende Korrektheit erreicht werden
+
+für vhdl vllt auch gut (-> cocotb)
+
+haben uns zu sehr am sketch gehalten (haben lange gebraucht zu raffen, wie man das eig. abstrahiert/einteilt). zu sehr auf das schaubild fokussiert.
+
+% Was könnten wir noch machen (Ausblick)
+
+(hardware:) Bessere VHDL debugging tools (es war schwer zu sehen, was abgeht).
 
 Der Prozessor befindet sich in einem annähernd fertigen Zustand.
 Es fehlen noch ein OP-Code und die (richtige) Implementation des Overflow-Flags sowie des Link-Registers.
@@ -873,9 +891,11 @@ Aktuell setzen wir auch Initialwerte innerhalb von VHDL für einige Register um 
 Dies lässt sich nicht synthetisieren.
 Hier wäre es notwendig eine Alternative zu finden.
 
+Zum fetch wegfall: vllt brauchen wir die fetch stage ja doch, wenn speicher nicht so schnell ist, wie in der simulation. Das müsste man dann testen, bis zu welchem clock speed eine 4 stage cpu und/oder eine 5 stage cpu gehen würde.
+
 Abseits dieser Short-comings haben wir noch einige Ideen wie der Prozessor noch weiter zu entwickeln wäre:
 Hier wäre zuerst ein dedizierter \texttt{HLT} Befehl zu nennen.
-Zur Zeit lassen wir die Simulation nur bis zu einem Punkt laufen und brechen dann ab.
+Zur Zeit lassen wir die Simulation nur bis zu einem Punkt laufen und ignorieren alle nachfolgenden Werte.
 Würden wir die CPU synthetisieren wäre es wünschenswert den Prozessor halten zu lassen.
 
 \enquote{Pipeline Flushing} wäre ein weiteres Feature über das wir uns einige Gedanken gemacht haben.
@@ -899,9 +919,22 @@ Spätere Stages, wie Execute, Memory Access oder Write Back könnten berechnete 
 Somit stünden Ergebnisse früher bereit und könnten früher verwendet werden.
 Es müssten nicht mehr entsprechend viele NOOPS eingefügt werden, als das diese in Register geschrieben werden, um Hazards zu vermeiden.
 
+Software: code umsortieren (Instruction reordering)
+
+Mehr makros
+
+Thema Floating point: makro - das vllt auch mit hardware support?
+Sicherlich gibt's da beispiele bei anderen prozessoren. Mehrere lösungsmöglichkeiten: in software, im compiler, in hardware.
+
+LLVM Backend - Königsdisziplin für assembler / compiler.
+Damit ließe sich letztlich alles zum prozessor übersetzen.
+Man könnte zB. mips adaptieren.
+vllt ergäben sich daraus weitere requirements für unseren prozessor (fp).
+
 (max)
 
 \subsubsection{Konklusion \& Ausblick - Softwareentwicklung}
+%Wippender Panda
 Basierend auf unseren Ergebnissen lässt sich sagen, dass unser Vorgehen und die Wahl des Frameworks die richtige war.
 So stellte sich unsere anfänglichen Entscheidung eine vollständige Anforderungsanalyse zu entwickeln und insbesondere ANTLR zu nutzen im Nachhinein als sehr gut heraus.
 Denn es führte dazu, dass im Verlauf der Entwicklung des Parsers keine nennenswerten Komplikationen auftraten.
@@ -909,11 +942,13 @@ Dies wurde zusätzlich dadurch begünstigt, dass sich die grundsätzlichen funkt
 
 Allerdings gibt es noch eine Menge an zusätzlichen Features, welche für eine professionelle Entwicklung unter Anwendung unseres Tools notwendig wären.
 Z.B. müsste es entweder eine diskrete Simulationsumgebung geben, mit der man seinen Quellcode direkt testen kann oder es müsste eine direkte Schnittstelle zu VHDL
-%Hier nochmal mit der Hardware-Gruppe reden! 
+%diskrete Simulationsumgebung ergibt keinen Sinn mehr --> ghdl + debugger wäre besser
 entwickelt werden.
 Zusätzlich dazu müsste es im Rahmen der Simulationsumgebung einen Debugger geben um Probleme während der Laufzeit vernünftig behandeln zu können.
 Da Assemblercode nicht mehr zeitgemäß ist, müsste man für komplexere Programme einen Schritt weiter gehen und einen Compiler für eine existierende Hochsprache (z.B. C) implementieren oder eine eigene Hochsprache Entwickeln.
 % Den letzten Satz würd ich aber komplett streichen.
+
+% wegen corona und vnc uni rechner haben wir ghdl + gtkwave benutzt. die tools sind nicht die besten. es war teils sehr aufwendig insights zu bekommen.
 
 (leonard)
 
