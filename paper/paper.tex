@@ -112,29 +112,57 @@ In der Konklusion werden wir noch Bezug darauf nehmen, welche Erweiterungsmögli
 \chapter{Planungsphase}
 \label{chap:Planungsphase}
 
-Zuerst haben wir in einem Python Sketch die Struktur des Prozessors definiert.
-Danach wird gemeinsam über den möglichen Befehlssatz diskutiert.
+Die Planungsphase beinhaltet die anfänglichen Überlegungen, die daraus resultierenden Diskussionen, sowie die entstandenen Entscheidungen, die die gesamte Gruppe getroffen hat, bevor sie sich in die Hardware und Software Gruppe aufgeteilt hat.
+Angefangen über die gemeinsame erarbeiten des Verständnisses, welche Komponenten in einem Prozessor wie arbeiten, über das Skizzieren eines eigenen Prozessors in einem Python \enquote{Pseudocode}, bis zum Erstellen eines Befehlssatzes für diesen Prozessor.
+
+
+
+%-------------------------------------------------------------------------------------
+
 %grammatik - Zeiten
-Nachdem diese Dinge geklärt sind, haben sich die Gruppen in den jeweiligen Bereich Software und Hardware aufgeteilt, um so das Besprochene zu realisieren.
-Die programmierte Hardware und Software soll zusammen verbunden, getestet und eventuelle Fehler behoben werden, bis keine Fehler vorhanden sind.
-Falls noch Zeit übrig sein sollte, sind Erweiterungen des Befehlssatzes, sowie weitere Datentypen mögliche Punkte, um den Prozessor qualitativ zu verbessern.
-Es sind einige Fragestellungen und Diskussionspunkte aufgekommen, die im Nachfolgenden genauer besprochen werden sollen.
-Darunter finden sich auch Punkte oder Konzepte, die im Diskussionsprozess ausgeschlossen und nicht im finalen Projekt manifestiert wurden.
-%finde ich n bisschen viel vorweg genommen. einerseits denkt maan sich uh welche denn. anderer seits denke ich wovon reden die? ab: "Die programmierte Hardware und Software... " könnte alles nochmal in die richtung prozess so wie unten formuliert und was ist bei rum gekommen mäßig.
-Diese wollen wir dennoch beleuchten.
+% Die programmierte Hardware und Software soll zusammen verbunden, getestet und eventuelle Fehler behoben werden, bis keine Fehler vorhanden sind.
+% Falls noch Zeit übrig sein sollte, sind Erweiterungen des Befehlssatzes, sowie weitere Datentypen mögliche Punkte, um den Prozessor qualitativ zu verbessern.
+% Es sind einige Fragestellungen und Diskussionspunkte aufgekommen, die im Nachfolgenden genauer besprochen werden sollen.
+% Darunter finden sich auch Punkte oder Konzepte, die im Diskussionsprozess ausgeschlossen und nicht im finalen Projekt manifestiert wurden.
+% finde ich n bisschen viel vorweg genommen. einerseits denkt maan sich uh welche denn. anderer seits denke ich wovon reden die? ab: "Die programmierte Hardware und Software... " könnte alles nochmal in die richtung prozess so wie unten formuliert und was ist bei rum gekommen mäßig.
+% Diese wollen wir dennoch beleuchten.
 
 % Wasserfall ("Zuerst" "Danach" "Nachdem")
 % Besser in das Kapitel einführen (Übergang)
-% Historische Komponente / Prozess
-% Stages erläutern. Welche? Warum? An der Skizze orientiert. (Zitieren)
+
+%---------------------------------------------------------------------------------------
 
 (Paddy)
 
 \section{Was bei rumgekommen ist}
 
+Um ein Verständnis zu entwickel wie ein Prozessor funktioniert, wurden Komponenten des Prozessors und deren Verbindungen visuell festgehalten. 
+Komponenten wurden als Vierecke dargestellt und um Datenflüsse zwischen ihnen darzustellen, wurden sie mit einer Linie verbunden.
+Nachdem sich jeder mit der Funktionsweise des Prozessors vertraut gemacht hatte, wurden für die jeweiligen Komponenten eine Klasse in einem Pythonsketch erstellt.
+% Klasse ??? %
+Diese Klassen enthalten die in- und outputs die die Komponente in dem Prozessor besitzen.
+Durch die Verknüpfungen der gesamten Komponenten, entstand so die erste Vorlage für den Prozessor. 
+Problematisch war, dass der Prozessor der daraus entstanden ist, ein Bus-System besitzt, was den Projektanforderungen nicht gerecht wurde. 
+% Weil die Aufgabe war Pipelineprozessor?
+Um diesen Prozessor mit Bus-System in einem Prozessor mit Pipeline-Architektur umzuwandeln, wurden die Prozesse der jeweiligen Komponenten in Abschitten, s.g. \enquote{Stages} unterteilt.
+Diese \enquote{Stages} sind Teilaufgaben eines ganzen Befehles des Prozessors. 
+Da eine Vorlage für ein Pipeline-Prozessor mit 5 \enquote{Stages} vorlag, wurde sich an dieser orientiert.
+So entstanden für die jeweiligen \enquote{Stages} Pipeline-Register, die in dem Pythonsketch als eigene Komponenten dargestellt sind.
+Diese besitzen den Namen der jeweilige \enquote{Stages} und sind zwischen 2 Komponenten, die vorher eine direkte Datenleitung hatten, zwischengeschaltet.
+
+Nachdem eine 1 zu 1 Umsetzung von dem Pythonsketch in VHDL, durch mangelnde VHDL Kenntnis, nicht möglich war, wurde die Logik der Komponenten ausgelagert.
+
+
+
+--------------------------------------------
+
+Mit diesem ersten Konzept - wobei jede CPU-Stage durch eine Pythonfunktion umgesetzt wurde - war es uns möglich Abhängigkeiten zwischen verschiedenen Komponenten und den Datenfluss selbst besser zu verstehen.
+Auf dieses werden wir im Kapitel \enquote{Planungsphase} genauer eingehen.
+
 % Interpretation der Projekt-Anforderungen + Erläuterungen
 % Warum? und Wie?
-
+% Historische Komponente / Prozess
+% Stages erläutern. Welche? Warum? An der Skizze orientiert. (Zitieren)
 %%TODO Eingführung ins Chapter Instruction Set sschreiben, was wird in welcher tiefe vorgetsellt was passiert in welchen kapitel später mit deiesen infromationen, wozu ist das wichtig?
 
 (Paddy)
@@ -161,13 +189,11 @@ Darum wäre auch eine längere Bitzahl überflüssig gewesen.
 
 (freddy)
 
-\section{32-Bit-Code}
+\section{ 32-Bit-Code und seine Struktur}
 
-In den folgenden Kapitel wird die Struktur der 32-Bit-Codes behandelt.
+In den folgenden Kapitel wird die Struktur des 32-Bit-Codes behandelt.
 Es wird beschrieben wie der Code Unterteilt wurde und welche Denkprozesse dabei durchlaufen worden sind.
 Angefangen von der Unterteilung der Bits, über die Auswahl des Befehlssatzes und des daraus resultierenden Opcodes bis hin zu den Spezialfällen die aus den vorherige Entscheidungen heraus entstanden sind.
-
-\subsection{Struktur ( Opcode- / Register- / Immediate- Bit-Länge )}
 
 Bei den Überlegungen wie die Struktur des Codes aussehen soll kamen die folgenden Ergebnisse: 
 \begin{itemize}
@@ -178,8 +204,7 @@ Bei den Überlegungen wie die Struktur des Codes aussehen soll kamen die folgend
     Näheres wird im Kapitel Immediate-Bit erläutert.
     \item Die restlichen Bits sind für die Operanden reserviert.
     Dabei wurde sich auf einen 16-Bit langen Immediate-Wert geeinigt.
-    Dieser erleichtert für die  Softwareprogrammierung das Darstellen größerer Zahlen (bis zu 32-Bit) mit insgesamt 3 Befehlen (Zuweisung in ein Register der ersten 16 Bits, 16 Shift des Registers, Zuweisung der letzten 16 Bits in das Register).
-    % XOR mit dem Register
+    Dieser erleichtert für die  Softwareprogrammierung das Darstellen größerer Zahlen (bis zu 32-Bit) mit insgesamt 3 Befehlen (Zuweisung in ein Register der ersten 16 Bits, 16 Shift des Registers, Zuweisung der letzten 16 Bits in das Register über einen XOR Befehl).
     Durch die 5 Bits des Opcodes, 1 Bit des Immediete-Bits und 16-Bits des möglichen Immediatewertes, können aus Platzgründen nur noch 5 Bits für die Register zugewiesen werden.
     Dies ergibt eine Gesamtzahl von 32-Registern.
 \end{itemize}
@@ -190,7 +215,9 @@ Bei den Überlegungen wie die Struktur des Codes aussehen soll kamen die folgend
 \caption{Bild der Struktur}
 \end{figure}
 
-\subsection{Befehlssatz}
+Nachdem die Struktur festgelegt worden ist, musste sich auf ein Befehlssatz geeinigt werden.
+
+\section{Befehlssatz und seine Zuweisung}
 
 Um einen Überblick über mögliche Befehlssätze zu bekommen, wurde sich an dem ARM Befehlssatz orientiert\footnotemark.
 \footnotetext{//(*link zum ARM Befehlssatz)//}
@@ -198,34 +225,14 @@ Dieser wurde noch reduziert, da nicht alle Befehle für das Projekt relevant sin
 Bei der Reduzierung wurden die Befehle in 3 Kategorien unterteilt:
 \begin{itemize}
     \item \enquote{must-have}:
-    Das Minimum das nach Erachtens der Gruppe der Prozessor haben muss um die gestellten Anforderungen zu erfüllen.
+    Das Minimum das nach Erachtens der Gruppe der Prozessor haben muss um die gestellten Anforderungen zu erfüllen. In diesem konkreten Fall, alle Funktionen die benötigt werden um eine Fibonacci-Folge zu berechnen. (z.B. Zuweisungen, Addieren, Sprünge) 
     \item \enquote{nice-to-have}:
-    Funktionen die bei übrig gebliebener Zeit implementiert werden können.
+    Funktionen die bei übrig gebliebener Zeit implementiert werden können.(z.B. Multiplizieren)
     \item \enquote{irrelevant}:
     Zu komplexe oder für das Projekt irrelevante Funktionen.
 \end{itemize}
 Für den vorläufigen Befehlssatzes wurde sich zunächst auf die \enquote{must-have} Befehle fokussiert.
-% Beispiele für Befehle
-%FFür unser programm nich war
 Der somit entstandene Befehlssatz musste nun einem Opcode zugewiesen werden.
-Hierbei musste entschieden werden, ob ein Opcode bei unterschiedlichen Typen von Parametern(Immediate-Wert bzw. Register) nicht gleich ist.
-Dies hätte zur Folge, dass bei Befehlen, die einen Immediate-Wert zulassen, ein eigener Befehl erstellt werden müsste.
-Wie z.B bei einer Addition; das \texttt{ADD} müsste mit einem \texttt{ADDI} ergänzt werden.
-Eine andere Möglichkeit ist die Unterscheidung nicht im Opcode stattfinden zu lassen, sondern diese auszulagern.
-
-\subsection{Immediate-Bit}
-
-Das Immediate-Bit ist eine mögliche Lösung um diese Auslagerung zu realisieren.
-In diesem speziellen Fall wäre das ein Bit das sich nach dem Opcode befindet.
-Es ist \enquote{0}, wenn es sich in de Zuweisungen nur um Register handelt und \enquote{1}, wenn eine Zuweisung ein Immediate-Wert ist.
-Somit wird auch schon im 32-Bit-Code ersichtlich, welche Typen von Parameter zugewiesen werden.
-Eine Auslagerung und das Hinzufügen eines zusätzlichen Befehls im Befehlssatzes würden bei diesem Projekt schlussendlich zum selben 32-Bit-Code führen.
-Vorteile einer Auslagerung ist die geringere Anzahl an Befehlen die benötigt werden.
-Dadurch wird die Softwareprogrammierung vereinfacht, da sie zwischen einer direkten und indirekten Zuweisung nicht unterscheiden muss.
-Aus diesen Gründen wurde beschlossen, die Unterscheidung nicht im Opcode zu behandel, sondern ein Bit in der 32-Bit-Anweisung als \enquote{Immediate-Bit} zu deklariert.
-
-\subsection{Zuweisung des Opcodes}
-
 Die ausgewählten Befehle wurden in 3 Kategorien unterteilt, die sich in der Anzahl der angegebenen Parameter unterscheiden.
 Um diese Unterscheidung auch im Opcode erkenntlich zu zeigen, haben alle 3 Kategorien (ONEOP, TWOOP, THREEOP) unterschiedliche erste 2 Bits in ihrem Opcode.
 Sodass eine konsistente Regel ihrer Layout erstellt werden kann.
@@ -237,39 +244,38 @@ Sodass eine konsistente Regel ihrer Layout erstellt werden kann.
 \end{figure}
 
 Dies dient vor allem der Übersicht sowie einer einfacheren Decodierung, wie im Kapitel Decoder beschriebe ist. 
+Ein Diskussionnspunkt bei der Zuweisungen war, ob ein Opcode bei unterschiedlichen Typen von Parametern(Immediate-Wert bzw. Register) nicht gleich ist.
+Dies hätte zur Folge, dass bei Befehlen, die einen Immediate-Wert zulassen, ein eigener Befehl erstellt werden müsste.
+Wie z.B bei einer Addition; das \texttt{ADD} müsste mit einem \texttt{ADDI} (Addition mit einem Immediate)  ergänzt werden.
+Eine andere Möglichkeit ist die Unterscheidung nicht im Opcode stattfinden zu lassen, sondern diese auszulagern.
+
+\section{Immediate-Bit}
+
+Das Immediate-Bit ist eine mögliche Lösung um diese Auslagerung zu realisieren.
+In diesem speziellen Fall wäre das ein Bit das sich nach dem Opcode befindet.
+Es ist \enquote{0}, wenn es sich in de Zuweisungen nur um Register handelt und \enquote{1}, wenn eine Zuweisung ein Immediate-Wert ist.
+Somit wird auch schon im 32-Bit-Code ersichtlich, welche Typen von Parameter zugewiesen werden.
+Eine Auslagerung und das Hinzufügen eines zusätzlichen Befehls im Befehlssatzes würden bei diesem Projekt schlussendlich zum selben 32-Bit-Code führen.
+Vorteile einer Auslagerung ist die geringere Anzahl an Befehlen die benötigt werden.
+Dadurch wird die Softwareprogrammierung vereinfacht, da sie zwischen einer direkten und indirekten Zuweisung nicht unterscheiden muss.
+Aus diesen Gründen wurde beschlossen, die Unterscheidung nicht im Opcode zu behandel, sondern ein Bit in der 32-Bit-Anweisung als \enquote{Immediate-Bit} zu deklariert.
+
 
 \subsection{Diskussion bei Befehlen}
 
-Bei den Unterteilungen der Befehle in die Anzahl der Parameter kam es bei 3 Befehlen zu Diskussionen.
+Bei der Überlegung über das Immediate-Bit kam es bei der Zuweisungen der Befehle Diskussionen.
 Betroffen waren folgende Befehle: der \enquote{Jump}-Befehl, der \enquote{Branch}-Befehl der \enquote{Store}-Befehl und der \enquote{Load}-Befehl. 
 Bei der Diskussion ging es primär um die Frage, ob relative Zuweisungen möglich sein sollen.
 Das heißt in diesen speziellen Fällen, ob z.B. relative Sprünge zu realisieren sind.
+Relative Sprünge sind Sprünge, die relativ zur Zieladresse sind.
 Diese relativen Zuweisungen ermöglichen das Erstellen gewisser Konstrukte, wie Arrays.
 Hier müsste nur in einem Register hinterlegt werden, an welcher Speicheradresse das Array anfängt.
 Mit dieser Information kann auf einer beliebige Stelle des Arrays zugegriffen werden, obwohl die genau Speicheradresse nicht bekannt sein muss, da die Anfangsadresse des Arrays vorhanden ist.
 Ein Argument gegen eine relative Adressierung ist, dass alle Adressen dem Projektteam bekannt sind.
-Der Vorteil einer indirekten Adressierung ist, dass nicht bekannt sein muss, welche genaue Adresse angesprochen werden muss, solange man weiß, wo sich die Adresse relativ zu einer bekannten Adresse befindet.
-Dieser Vorteil ist aber hinfällig, da bei kleineren Programmen, der Entwickler die Adressen \enquote{hardcoden} kann, da ihm alle Adressen bekannt sind. 
-Da aber bei größeren Programmen, bzw. auch bei mehreren Programmen die gleichzeitig laufen, eine  \enquote{hardcodierung} durch die erhöhte Komplexität der Programme fast unmöglich ist, wurde sich für eine indirekte Zuweisung entschieden.
-Die 3 Befehle \enquote{Jump}, \enquote{Store}, \enquote{Branch} und \enquote{Load} wurden somit als Befehle mit 3 Operanten angelegt.
-%ffinde ich n bisschen holprig, es wird oft gesagt:  uns sind allee adressen bekannt, deswegen ist ess egal und wwir könne unser programm schreiben weil wir alle adsressen kennen
+Bei kleineren Programmen kann der Entwickler die Adressen, da sie ihm alle bekannt sind, \enquote{hardcoden}.
+Da aber bei größeren Programmen, bzw. auch bei mehreren Programmen die gleichzeitig laufen, eine  \enquote{hardcodierung} durch die erhöhte Komplexität der Programme fast unmöglich ist, wurde sich für eine indirekte Adressierung entschieden.
+Die 4 Befehle \enquote{Jump}, \enquote{Store}, \enquote{Branch} und \enquote{Load} wurden somit als Befehle mit 3 Operanten angelegt um relative Zuweisungen zu ermöglichen.
 
-
-% Ich würde die Struktur abändern wie folgt:
-% erste section vllt "Befehlsstruktur" eine Zusammenlegung von
-%   32-Bit-Code}
-%   Struktur ( Opcode- / Register- / Immediate- Bit-Länge )}
-%   Zuweisung des Opcodes}
-% zweite section: 
-%   Befehlssatz
-% Dritte section:
-%   Immediate handling
-% Diskussion bei Befehlen würd ich als subsection von Immediate handling begreifen
-%
-%
-%
-% Zu Diskussion bei Befehlen: Sehr stakatohaftes, pro, con, pro, con
-% relative sprünge erläutern
 
 (paddy)
 
@@ -572,8 +578,10 @@ Dies sind:
   \item [Write-Enable] Vergleichbar mit einer Flag, ist das \enquote{Write-Enable} ein 1-Bit großes Signal, das ausschließlich dafür benötigt wird, um zu bestimmen, ob ins Register geschrieben werden soll.
 \end{description}
 
-Um die Decodierung effizienter zu gestalten, wurden die ganzen \enquote{Fallunterscheidungen} der einzelnen \enquote{Opcodes} durch eine Unterscheidung ihres \enquote{Layouts} ersetzt.
+In der finalen Version des Decoders wurde die Arbeitsweise des anfänglichen Decoders effizienter gestaltet.
+Die ganzen \enquote{Fallunterscheidungen} der einzelnen \enquote{Opcodes} wurden durch eine Unterscheidung ihres \enquote{Layouts} ersetzt.
 Dadurch werden nun nicht alle 5 Bits des \enquote{Opcodes} überprüft, sondern nur die ersten 2 Bits.
+Ähnlich wie bei einem KV-Diagramm, könnte man die restlichen Bits als \enquote{don't care} behandeln.
 Diese 2 Bits sind wie im Kapitel \ref{ch:Befehlssatz} beschrieben, ausschlaggebend für das Layout des 32-Bit-Codes.
 In Abhängigkeit des \enquote{Layouts} und des Immediate-Bits werden immer bestimmte Bits des 32-Bit-Codes an die Outputs zugewiesen.
 
@@ -586,13 +594,10 @@ In Abhängigkeit des \enquote{Layouts} und des Immediate-Bits werden immer besti
 *Ausnahme ist der Move-Befehl, da dieser aus inhaltlicher Logik anders zu behandeln ist.
 
 Je nach Layout sind somit andere Bits des 32-Bit-Codes relevant bzw. andere irrelevant.
-Es wird somit nicht geprüft, was sich genau in den irrelevanten Teilen des Codes befindet.
-Ähnlich wie bei einem KV-Diagramm, könnte man diese als  \enquote{don't care} behandeln.
+Analog zum Opcode ermöglicht dies, dass nicht genau geprüft werde muss, was sich in den irrelevanten Teilen des Codes befindet.
 Dadurch wird die Logik im Decoder minimiert. 
 Ein weiterer Vorteil dieser Entscheidung ist, dass weitere Befehle so einfacher zu ergänzen sind, da sie nur der Grammatik des dazugehörigem Layout entsprechen müssen um deren Inhalt zu dekodieren.  
 
-% Don't care ermöglichen erst...
-% Vorher -> Nachher
 
 (paddy)
 
