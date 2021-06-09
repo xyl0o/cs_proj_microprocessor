@@ -846,26 +846,7 @@ Anschließend wird das Befehlswort zusammengesetzt und zusammen mit einer Befehl
 
 (lennart)
 
-\chapter{Ergebnis}
-
-\subsubsection{Ergebnis - Softwareentwicklung}
-Eine der weitreichendsten Entscheidungen war die Wahl des genutzten Frameworks.
-Zu Beginn des Softwareentwicklungsprozesses mussten wir zunächst einige Zeit in diese Entscheidung investieren, da es (neben ANTLR) viele verschiedene Parser-Generatoren mit sehr unterschiedlichen Ansätzen und damit verbundenen Vor- und Nachteilen gibt.
-Es kostete uns einige Zeit hierbei, den für uns richtigen Auszuwählen.
-Als weiterer aufwändiger Schritt während der Entwicklung stellte sich das Erlernen und die korrekte Anwendung von ANTLR heraus.
-ANTLR bietet ein äußerst vielfältiges Spektrum an nutzbaren Funktionen und Möglichkeiten, was sowohl die Grammatik als auch die Implementation angeht.
-Ein schwierige Teil hierbei war nun herauszufinden, welche Funktionen tatsächlich gebraucht würden und welche vernachlässigbar waren.
-%absatz
-Abschließend lässt sich sagen, dass die release Version der Software alle in Kapitel 4.1
-%verlinkung zu Chapter 4.1
-genannten funktionalen und technischen Anforderungen besitzt.
-Dies betrifft sowohl die Bedienung  der Software als auch eine potenzieller Weiterentwicklung bzw. das Hinzufügen von neuen Features.
-
-% TODO
-
-(leonard)
-
-\chapter{Konklusion und Ausblick - In Bearbeitung}
+\chapter{Konklusion und Ausblick}
 Zum jetzigen Stand der Entwicklung ist der Prozessor in der Lage generische Programme laufen zu lassen.
 Dies umfasst u.A. die Berechnung der Fibonacci-Zahlen sowie die Berechnung der Fakultät.
 Es existiert ein Compiler der diese, in unserem Assembler geschriebenen Programme, in Maschinencode umwandelt.
@@ -890,15 +871,13 @@ Beispielsweise gab es ein Missverständnis wie viele NOOPS genau eingefügt werd
 Da beide Gruppen ihre Arbeit nahezu fertig gestellt hatten, waren Änderungen an der Code-Basis unnötig aufwendig.
 Auch wäre ein früher Prototyp des Prozessors und Compilers hilfreich gewesen um schon erste Tests unternehmen zu können.
 Es hätte helfen können, sich Zwischenziele abzustecken.
-Generell kann man sagen hätten wir mehr Kommunizieren sollen.
-
-% Was würden wir anders machen (Inhaltlich)
+Generell kann man sagen: wir hätten mehr Kommunizieren sollen.
+Die gesamte Gruppe hat sich zu lang auf den Pythonsketch und die Abbildung aus dem Foliensatz fokussiert ohne zu verstehen wie VHDL genau funktioniert.
 
 Der Prozessor befindet sich in einem annähernd fertigen Zustand.
 Es fehlen noch ein OP-Code und die (richtige) Implementation des Overflow-Flags sowie des Link-Registers.
 All dies ist aber für die Erfüllung unseres selbstgestecken Ziels nicht erforderlich: Fibonacci-Zahlen zu berechnen.
-Zugegebenermaßen nicht das höchste aller Ziele aber es involviert alle Kern-Komponenten, die wir einer CPU zuschrieben.
-% TODO
+Dies involviert alle Kern-Komponenten, die wir einer CPU zuschreiben.
 In den Entwurf des Prozessors sind weder Überlegungen der Effizienz noch Sparsamkeit eingeflossen.
 So ist die Implementation des \texttt{COMPGT} zB. sehr simpel in VHDL zu formulieren.
 In der Synthese wird sich daraus wohl eine \enquote{ALU-artige} Struktur ergeben.
@@ -908,24 +887,10 @@ Hier wäre es notwendig eine Alternative zu finden.
 Auch haben wir keinerlei Input/Output in den Prozessor eingebaut.
 ROM und RAM stellen zur Zeit die einzige Schnittstelle dar.
 
-Zum fetch wegfall: vllt brauchen wir die fetch stage ja doch, wenn speicher nicht so schnell ist, wie in der simulation.
-Das müsste man dann testen, bis zu welchem clock speed eine 4 stage cpu und/oder eine 5 stage cpu gehen würde.
-% TODO
-
-unit tests, da sich Korrektheit eh nicht formal beweisen lässt, sollte zumindest mit tests eine hinreichende Korrektheit erreicht werden.
-% TODO
-
-für vhdl vllt auch gut (-> cocotb)
-% TODO
-
-haben uns zu sehr am sketch gehalten (haben lange gebraucht zu raffen, wie man das eig. abstrahiert/einteilt). zu sehr auf das Schaubild fokussiert.
-% TODO
-
-% Was könnten wir noch machen (Ausblick)
-
-(hardware:) Bessere VHDL debugging tools (es war schwer zu sehen, was abgeht).
-% wegen corona und vnc uni rechner haben wir ghdl + gtkwave benutzt. die tools sind nicht die besten. es war teils sehr aufwendig insights zu bekommen.
-% TODO
+Auch Timings haben wir komplett außer Acht gelassen.
+Wenn die CPU synthetisiert und mit echtem Speicher verbunden ist, mag es durchaus möglich\footnotemark sein, dass Befehlsworte nicht innerhalb eines Taktzyklus anliegen, da Speicher in der realen Welt ist nicht so schnell, wie in unserer Simulation.
+Eine dedizierte Fetch Stage mag genau hier Abhilfe schaffen.
+\footnotetext{sogar sehr wahrscheinlich}
 
 Abseits dieser Short-comings haben wir noch einige Ideen wie der Prozessor noch weiter zu entwickeln wäre:
 Hier wäre zuerst ein dedizierter \texttt{HLT} Befehl zu nennen.
@@ -939,8 +904,7 @@ Zumindest bei Branch-Befehlen ist dies nicht gerade effizient, da egal ob gespru
 Hier wäre es denkbar einfach eine Datenleitung aus der Writeback stage, wo der PC wert gesetzt wird, zu jeder anderen zu führen.
 Diese würde, falls auf 1 gezogen, dafür sorgen, dass jede Stage ein \texttt{NOOP} bit setzt.
 Jenes wiederum veranlasst alle nachfolgenden stages dazu keine Schreiboperationen mehr zuzulassen.
-Dies würde zum einen die Anzahl der Noops, die vom Compiler eingefügt werden m
-%TODO
+Dies würde die Anzahl der Noops, die vom Compiler eingefügt werden müssen reduzieren.
 
 Ein globales Reset Signal wäre auch noch wünschenswert.
 Dieses läge an allen relevanten Registern an - hauptsächlich alles was mit PC Handling zu tun hat - und würde im Falle der Aktivierung diese auf einen Initialwert setzen.
@@ -955,22 +919,12 @@ Spätere Stages, wie Execute, Memory Access oder Write Back könnten berechnete 
 Somit stünden Ergebnisse früher bereit und könnten früher verwendet werden.
 Es müssten nicht mehr entsprechend viele NOOPS eingefügt werden, als das diese in Register geschrieben werden, um Hazards zu vermeiden.
 
-Software: code umsortieren (Instruction reordering)
-% Befehle neu sortieren wenn sie das erlauben
-% TODO
+Eine weitere nützliche Erweiterung wäre das verbesserte Debugging mit VHDL. Aufgrund von Corona waren wir gezwungen uns über VNC mit den Universitätscomputern zu verbinden. Da diese Methode sehr umständlich war, haben wir stattdessen GDHL \& GTKWave zum Debugging benutzt. Diese Tools sind limitiert in ihren Möglichkeiten. Eine Möglichkeit wäre hier z.B. cocotb.
+% cite cocotb
 
-Mehr makros
-% TODO
-
-Thema Floating point: makro - das vllt auch mit hardware support?
-Sicherlich gibt's da beispiele bei anderen prozessoren. Mehrere lösungsmöglichkeiten: in software, im compiler, in hardware.
-% TODO
-
-LLVM Backend - Königsdisziplin für assembler / compiler.
-Damit ließe sich letztlich alles zum prozessor übersetzen.
-Man könnte zB. mips adaptieren.
-vllt ergäben sich daraus weitere requirements für unseren prozessor (fp).
-% TODO
+Für eine weiterführende Entwicklung des Assemblers wäre es gut JUnitTests einzuführen um, neben dem "manuellen" Debugging, einen weiteren Indikator für die Korrektheit des Assemblers zu haben. 
+Um die Ausführung von Programmen zu beschleunigen, könnte man die Befehle auf bestimmte Abhängigkeiten testen und neu organisieren, um die Anzahl der NOOPS zu verkleinern. 
+Zusätzlich ließen sich praktisch unbegrenzt viele neue Makros erstellen, wie z.B. ein Befehl für Fließkommaberechnung. Auch Hardwaresupport wäre hierfür denkbar. 
 
 (Leonard \& Max)
 
