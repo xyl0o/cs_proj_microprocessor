@@ -1,1 +1,4 @@
 processor
+processor.vcd
+*.o
+*.dat
