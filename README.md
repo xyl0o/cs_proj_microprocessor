@@ -107,11 +107,21 @@ To install it this might help:
  * `sudo pacman -S ghdl-llvm`
  * [Building GHDL from Sources](https://ghdl.readthedocs.io/en/latest/getting/index.html)
 
-In principle these three commands are necessary to build and run a entity:
+In principle these three commands are necessary to build and run an entity:
 ```bash
 ghdl -a YOURFILE.vhdl # This analyses the file(s)
 ghdl -e YOURENTITY # This creates a executable with that entity
 ghdl -r YOURENTITY --wave=wave.ghw # This simulates the entity (and outputs a wave.ghw file)
+```
+
+Or more elaborate:
+```bash
+cd vhdl/processor
+ghdl -i ./*.vhdl ../cpu/*.vhdl ../alu/*.vhdl ../decoder/*.vhdl ../sramSim/sram2.vhd
+ghdl --gen-makefile --ieee=synopsys processor > Makefile
+java -jar "../../compiler/Compiler - Executable/Compiler.jar" "../../compiler/Programs/fib.txt" "./instMem.dat"
+touch dataMem.dat
+make run GHDLRUNFLAGS="--vcd=processor.vcd"
 ```
 
 See below for cocotb integration.
