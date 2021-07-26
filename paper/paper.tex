@@ -1,52 +1,11 @@
 % !TEX program = xelatex
-% Zeitform: Vergangenheit (selten auch Gegenwart)
-% uns -> Weglassen wenn es um etwas fachliches geht
-% uns -> darf benutzt werden wenn es um die Gruppenarbeit geht
-%Requirements:
-% 
-% 1. Zeitformen anpassen
-% 2. Bilder und Referenzen
-% 3. Jeder Text fertig
-% 4. Progr.-Sprach Konstrukte mit \texttt{String} 
-% 5. TODO's raus
-% 6. bib.tex file
-% 7. citation-standard
-% 
-% TODO
-% bis nächtes mal:
-% Appendix structure in latex 
-% References
-% Konklusion simulation picture
-% Hier und da Absätze
-%
-% next meeting:
-% Abstract
-% Git durchschauen
-% Layout
-% schauen uns freddys parts an
-% abschicken
 
-%appendix:
-% Instruction Set
-% assembler source, maschine code, simulation
-% Planung und Prozess Abbildungen
-
-% todo's left:
-% appendix
-%   python code
-%   sketch ersetzen gegen svg variante
-%   fehler im decoder fixen
-% einmal durchgehen und Schreibweise angleichen
-% bild in konklusion einfügen
-
-\documentclass[paper=a4,fontsize=12pt,twocolumn]{scrreprt}
+\documentclass[paper=a4,fontsize=11pt,twocolumn]{scrreprt}
 
 \usepackage{geometry}
-\geometry{margin=2.5cm,marginparwidth=2.0cm,footskip=1.2cm}
+\geometry{margin=2.3cm,marginparwidth=2.0cm,footskip=1.4cm}
 \setlength{\columnsep}{0.4cm}
 
-
-\usepackage{fontspec}
 \usepackage{polyglossia}
 \setmainlanguage[babelshorthands=true]{german}
 
@@ -57,7 +16,6 @@
 
 \usepackage{array}
 \usepackage{multirow}
-\usepackage{multicol}
 \usepackage{hyperref}
 \usepackage{url}
 \usepackage{listings}
@@ -97,7 +55,6 @@ Wir haben mit Hilfe der Hardwarebeschreibungssprache VHDL das Verhalten des Proz
 Der Compiler erkennt mögliche Abhängigkeiten im Code, die aufgrund des Pipelings zustande kommen, und fügt entsprechen viele \texttt{NOOP}s ein, um damit verbundene Probleme zu vermeiden.
 Wir haben den Prozessor erfolgreich simuliert und einfache Programme wie die Berechnung der Fibonaccizahlen ausgeführt.
 
-
 \chapter{Einführung}
 Bei dem vorliegenden Papier handelt es sich um den Bericht zum Projekt \enquote{Realisierung eines Mikroprozessors} der Universität Hamburg, betreut durch Andreas Mäder und Bernd Schütz.
 Das Projekt war dazu angelegt mit einem Team von fünf bis sechs Studierenden einen Mikroprozessor in einer Pipelinearchitektur zu planen, entwerfen, einen Assembler zu schreiben und den Prozessor auf einem FPGA zu synthetisieren.
@@ -113,7 +70,7 @@ Hierbei beinhaltet jede Stage die Logik für einen Schritt der Befehlsabarbeitun
 Die Stages sind durch Pipelineregister abgetrennt, die die Ergebnisse einer vorherigen Stage zwischenspeichern und der nächsten bereitstellen.
 Hierbei galt es vor allen Dingen \textit{Hazards} zu vermeiden - Fehler die durch nicht berücksichtigte Datenabhängigkeiten entstehen.
 Um ein Gefühl für das grobe Konzept eines Pipelining-Prozessors zu bekommen, schrieben wir einen funktionalen Sketch in Python.
-Dieser ist unter \ref{sec:apx_python_sketch} zu finden.
+Dieser ist im GitLab \cite{gitlab_projekt} zu finden.
 Mit diesem ersten Konzept - wobei jede CPU-Stage durch eine Pythonfunktion umgesetzt wurde - war es uns möglich Abhängigkeiten zwischen verschiedenen Komponenten und den Datenfluss selbst besser zu verstehen.
 Auf dieses werden wir im Kapitel Planungsphase (\ref{ch:planungsphase}) genauer eingehen.
 
@@ -142,16 +99,12 @@ Moderne Konzepte rund um Sicherheit oder auch generelle Betriebssytemeigenschaft
 Wir haben uns in erster Linie auf eine simple Ein-Programm-Situation ohne Betriebssystem fokussiert.
 Es ist uns gelungen einen funktionsfähigen Prozessor zu formulieren und einen Compiler für unseren selbst erdachten Assembler zu schreiben.
 
-(Max)
-
 \chapter{Planungsphase}
 \label{ch:planungsphase}
 
 Die Planungsphase beinhaltet die anfänglichen Überlegungen, die daraus resultierenden Diskussionen, sowie die entstandenen Entscheidungen, die die gesamte Gruppe getroffen hatte, bevor sie sich in die Hardware- und Softwaregruppe aufgeteilt hat.
 Die erste Phase unseres Projekts bildete das Erarbeiten eines gemeinsamen grundlegenden Verständnisses über die Funktionsweise und Abläufe in einem Prozessor. 
-Daraus leiteten wir einen Python-Sketch ab und entwickelten einen für unseren Prozessor entsprechenden Befehlssatz.     
-
-(Paddy)
+Daraus leiteten wir einen Python-Sketch ab und entwickelten einen für unseren Prozessor entsprechenden Befehlssatz.
 
 \section{Planung des Prozessors}
 \label{sec:planung_des_prozessors}
@@ -182,7 +135,6 @@ Da in den Stages unabhängig voneinander gearbeitet werden kann, können so in e
 Diese Befehle befinden sich dann jeweils in unterschiedlichen Stages des Prozessors, bzw. sind in den jeweiligen Pipeline-Registern zwischengespeichert.
 Somit kann der Durchsatz an Befehlen des Prozessors im Optimalfall wesentlich erhöht werden \autocite[\ppno 1043]{rsvorlesung}.
 
-
 Für den zu entwickelnden Prozessor wurde sich auch für eine Pipeline-Architektur mit 5 Stages entschieden, da eine Vorlage schon existierte und uns diese Unterteilung ratsam erschien.
 Da einige Gruppenmitglieder mit Python vertraut sind und das Wissen über VHDL mangelte, kam die Idee auf, einen groben Sketch in Python zu schreiben.
 Aufbauend auf der Abbildung aus dem Foliensatz, wurden für die einzelnen Stages des Prozessors jeweils eine Funktion in Python erstellt.
@@ -191,8 +143,6 @@ So war es möglich einen groben Überblick über alle benötigten Komponenten un
 Nachdem jedes Projektmitglied nun eine Vorstellung hatte wie der Prozessor auszusehen hat, wurde sich nun in die zwei Gruppen aufgeteilt um an dessen Umsetzung zu arbeiten.
 
 Die Umsetzung des Pythoncodes in VHDL wird im Kapitel \ref{sec:von_der_skizze_zum_entwurf} genauer erläutert, während die Erstellung des Compilers für diesen Prozessors in Kapitel \ref{ch:software} ff. beschrieben wird.
-
-(Paddy)
 
 \section{Wortlänge und Adressmaschine}
 \label{sec:wortlaenge_und_adressmaschine}
@@ -216,8 +166,6 @@ Auch bei 16 Bit dürfen die Registeradressen und Opcodes nicht zu lang sein, dam
 
 Da nichts gegen 32 Bit lange Befehle sprach, war es auch nicht notwendig aus Platzgründen eine 2-Adressmaschine zu wählen.
 
-(max)
-
 \section{32-Bit-Code und seine Struktur}
 \label{sec:32_bit_code_und_seine_Struktur}
 
@@ -239,27 +187,26 @@ Soll ein 32 Bit Wert in ein Register geschrieben werden, so ist dies mit drei Op
 Hierzu werden zuerst die oberen 16 Bit in das Register geschrieben und danach nach links \enquote{geshifted}. Nun können die unteren 16 Bit mit einem \texttt{OR} oder \texttt{XOR} Befehl als Immediate hinzugefügt werden.
 Durch die 5 Bits des Opcodes, 1 Bit des Immediete-Bits und 16-Bits des möglichen Immediatewertes, können aus Platzgründen nur noch 5 Bits für die Register genutzt werden.
 Dies ergibt eine Gesamtzahl von 32-Registern.
+Nachdem die Struktur festgelegt worden ist, musste sich auf ein Befehlssatz geeinigt werden.
 
 \begin{figure*}[t]
-\centering
-\begin{align*}
-&\overbrace{\texttt{00000}}^\text{Opcode}
-\underbrace{\texttt{0}}_\text{I-Bit}
-\overbrace{\texttt{00000}}^\text{Reg. 1}
-\underbrace{\texttt{11111}}_\text{Reg. 2}
-\overbrace{\texttt{00000}}^\text{Reg. 3}
-\underbrace{\texttt{xxxxxxxxxxx}}_\text{Don't care}\\ 
-&\overbrace{\texttt{00000}}^\text{Opcode}
-\underbrace{\texttt{1}}_\text{I-Bit}
-\overbrace{\texttt{00000}}^\text{Reg. 1}
-\underbrace{\texttt{11111}}_\text{Reg. 2}
-\overbrace{\texttt{0000000000000000}}^\text{Immediate} 
-\end{align*}
-\caption{Befehlsstruktur mit und ohne Immediate}
-\label{fig:Befehlsstruktur}
+    \centering
+    \begin{align*}
+        &\overbrace{\texttt{00000}}^\text{Opcode}
+        \underbrace{\texttt{0}}_\text{I-Bit}
+        \overbrace{\texttt{00000}}^\text{Reg. 1}
+        \underbrace{\texttt{11111}}_\text{Reg. 2}
+        \overbrace{\texttt{00000}}^\text{Reg. 3}
+        \underbrace{\texttt{xxxxxxxxxxx}}_\text{Don't care}\\ 
+        &\overbrace{\texttt{00000}}^\text{Opcode}
+        \underbrace{\texttt{1}}_\text{I-Bit}
+        \overbrace{\texttt{00000}}^\text{Reg. 1}
+        \underbrace{\texttt{11111}}_\text{Reg. 2}
+        \overbrace{\texttt{0000000000000000}}^\text{Immediate}
+    \end{align*}
+    \caption{Befehlsstruktur mit und ohne Immediate}
+    \label{fig:Befehlsstruktur}
 \end{figure*}
-
-Nachdem die Struktur festgelegt worden ist, musste sich auf ein Befehlssatz geeinigt werden.
 
 \section{Befehlssatz und seine Zuweisung}
 \label{ch:befehlssatz_und_seine_zuweisung}
@@ -283,7 +230,7 @@ Um diese einfach zu unterscheiden haben die Befehle verschiedene zwei Bits am An
 Wir unterteilten die 5 Opcode Bits in 8 ONEOP, 8 TWOOP und 16 THREEOP Befehle.
 Die unterschiedliche Befehlsstruktur ist in \ref{fig:op_code_structure} dargestellt.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \begin{align*}
 &\texttt{ONEOP}\\
@@ -349,12 +296,11 @@ Sie sind vor allem notwendig, wenn Unterprogramme aufgerufen werden sollen z.B. 
 Relativen Zuweisungen erleichtert die Handhabung gewisser Konstrukte, wie Arrays.
 Hier muss nur in einem Register hinterlegt werden, an welcher Speicheradresse das Array anfängt.
 Mit dieser Information kann auf eine beliebige Stelle des Arrays zugegriffen werden, obwohl die genau Speicheradresse nicht bekannt sein muss.
+
 Ein Argument gegen eine relative Adressierung ist, dass alle Adressen dem Projektteam bekannt sind.
 Bei kleineren Programmen kann der Entwickler die Adressen \enquote{hardcoden}.
 Da aber bei größeren Programmen, bzw. auch bei mehreren Programmen die gleichzeitig laufen, eine  \enquote{hardcodierung} durch die erhöhte Komplexität der Programme fast unmöglich ist, wurde sich für eine indirekte Adressierung entschieden.
 Die 4 Befehle \texttt{Jump}, \texttt{Store}, \texttt{Branch} und \texttt{Load} wurden somit als Befehle mit 3 Operanten angelegt um relative Zuweisungen zu ermöglichen.
-
-(paddy)
 
 \chapter{Hardware}
 \label{ch:hardware}
@@ -365,8 +311,6 @@ Die Erkenntnisse über Syntax, Semantik vor allem aber über das geforderte Abst
 Anschließend wird unser Prozessor detailliert vorgestellt und das Verhalten besprochen und deutlich gemacht inwiefern sich der Lösungsansatz vom Entwurf und den vorangegangenen Überlegungen unterscheidet.
 Zum besseren Verständnis werden im Folgenden programmiersprachliche Konstrukte konsequent in englisch geschrieben um diese von doppeldeutigen Formulieren zu unterscheiden.
 
-(luca)
-
 \section{Von der Skizze zum Entwurf}
 \label{sec:von_der_skizze_zum_entwurf}
 
@@ -374,7 +318,7 @@ An dieser Stelle wird das Vorgehen des Hardware-Teams vorgestellt.
 Dabei sollen weniger technischen Implementationsdetails diskutiert werden, sondern die Arbeit der Gruppe von der ersten Skizze bis zum endgültigen Ergebnis umrissen werden.
 Im Fokus stehen die Herangehensweise, Fehleinschätzungen und der Prozess des Erkenntnisgewinns.
 Zeitlich betrachtet beschreibt dieses Kapitel die Arbeit des Hardwareteams im Anschluss an die gemeinsame Planungsphase.
-Auf dem Papier ist bereits an diesem Punkt eine Skizze des Prozessors und ein entsprechender Python Pseudocode entstanden \ref{sec:apx_python_sketch}.
+Auf dem Papier ist bereits an diesem Punkt eine Skizze des Prozessors und ein entsprechender Python Pseudocode entstanden\cite{gitlab_projekt}.
 
 In Verbindung mit dem Schaubild aus der Vorlesung \textcite[\ppno 1043]{rsvorlesung} musste dann nur der Python Code in funktionierenden VHDL Code umgewandelt werden.
 
@@ -436,8 +380,6 @@ Die ALU mit einem Switch-Statement für die logischen und arithmetischen Operati
 Abschließend der Decoder um die Befehlsworte aufzuschlüsseln und für die weitere Bearbeitung zu präparieren.
 Im folgenden Kapitel wird die technische Umsetzung des letztendlichen Entwurfs detailliert vorgestellt.
 
-(luca)
-
 \section{Der Aufbau des Prozessors}
 \label{sec:aufbau_des_prozessors}
 
@@ -486,8 +428,6 @@ Die \texttt{decoder} Entity erhält nur eine Instruktion als Input und ist nicht
 Die Outputs des Decoders bestimmen, welche Operation die ALU ausführt und welche Register gelesen werden.
 Im \texttt{decoder\_pkg} sind die \texttt{decoder} Component und alle Opcodes definiert.
 
-(max)
-
 \section{Input / Output}
 \label{sec:input_output}
 
@@ -499,10 +439,7 @@ Der Adress-Input dieser Speicher ist mit den jeweiligen Adress-Outputs der CPU v
 Da die Speicher nicht mit vollen 32 Bit Adressen operieren, werden die Output-Adressen der CPU \enquote{beschnitten}.
 Es ist somit nicht möglich den vollen 32 Bit Adressraum zu nutzen.
 So wird aber nicht der gesamte 32 Bit Raum beim simulieren alloziert.
-
 Des Weiteren stellt der \texttt{processor} ein \texttt{clk} Signal für Speicher und CPU bereit.
-
-(max)
 
 \section{Register}
 \label{sec:register}
@@ -543,7 +480,6 @@ Die Lösung lag darin, alle Schreibzugriffe in einem Prozess im Writeback - \tex
 Das PC Register wurde in dem Zuge auch aus der Registerbank ausgelößt. 
 Es wird nun einzig und allein durch den \texttt{wback\_pc\_set} Prozess im Writeback beschrieben.
 
-(max)
 
 \section{PC Handling und Sprünge}
 \label{sec:pc_handling_und_spruenge}
@@ -598,9 +534,6 @@ Im \texttt{writeback} wird dieser immer um eins erhöht, sofern nicht gesprungen
 Wird im \texttt{memory-access} ein Sprung festgestellt, wird ein \texttt{will-jump}-Signal vom \texttt{memory access} zum \texttt{wirteback} auf 1 gesetzt.
 Dies veranlasst die \texttt{writeback stage} nicht den \texttt{PC}-Wert um 1 zu erhöhen, sondern den Ziel  Wert als neuen PC-Wert zu setzen.
 
-
-(freddy)
-
 \section{Decoder}
 \label{sec:decoder}
 
@@ -608,7 +541,7 @@ Der Decoder ist als eine eigene VHDL-Entity definiert.
 Seine Aufgabe es ist den 32-Bit-Code von dem Instructionmemory zu interpretieren, dessen Information zu filtern und diese den entsprechenden Outputs zuzuweisen.
 Wie im Kapitel \ref{ch:befehlssatz_und_seine_zuweisung} beschrieben, werden die 32-Bit-Befehle im Decoder in die einzelnen Informationsbausteine zerlegt.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \begin{align*}
 \texttt{32-Bit} & \texttt{ Befehl}\\
@@ -635,9 +568,7 @@ Je nach Layout sind somit andere Bits des 32-Bit-Codes relevant bzw. andere irre
 Analog zum Opcode ermöglicht dies, dass nicht genau geprüft werde muss, was sich in den irrelevanten Teilen des Codes befindet.
 Dadurch wird die Logik im Decoder minimiert. 
 Ein weiterer Vorteil dieser Entscheidung ist, dass weitere Befehle so einfacher zu ergänzen sind, da sie nur der Grammatik des dazugehörigem Layout entsprechen müssen, um deren Inhalt zu dekodieren.
-Ein Beispiel der Funktionsweise des Decoders befindet sich Anhang \ref{sec:apx_beispiel_einer_decodierung}.
-
-(paddy)
+Ein Beispiel der Funktionsweise des Decoders befindet sich Anhang \ref{ch:apx_beispiel_einer_decodierung}.
 
 \section{ALU}
 \label{sec:alu}
@@ -650,17 +581,11 @@ Die \texttt{ALU} unterstützt insgesamt 14 Operationen.
 Die \texttt{Overflow}, \texttt{CarryOut} und \texttt{Compare Flags}, werden konstant berechnet.
 Ursprünglich wurde das \texttt{Flag}-Register jeden Taktzyklus geschrieben.
 Die ALU \enquote{änderte} Flags nur, sofern es nötig war.
-Dies führte zum gleichen Problem, wie auch beim PC Handling.
-Nachfolgende Befehle erhielten noch die alten Flagwerte. 
-%Die letzten zwei als einen Satz?
+Dies führte zum gleichen Problem, wie auch beim PC Handling, nachfolgende Befehle erhielten noch die alten Flagwerte.
 Da bei jedem Takt ins \texttt{Flag}-Register geschrieben wurde, überschrieb der nachfolgende Befehl die gesetzten Flags des vorherigen.
 Die Lösung bestand darin, die \texttt{Carry}- und \texttt{Overflowflags} nur bei Addition und Subtraktion zu schreiben.
 Das \texttt{Compare-flag} wurde nur entsprechend gesetzt, sofern ein \texttt{compare}-befehl in \texttt{write-back} war.
 Das \texttt{Overflow-Flag} ist nicht implementiert.
-%Zeitformen überprüfen
-%TODO hardware so beenden?
-
-(freddy)
 
 \chapter{Software}
 \label{ch:software}
@@ -680,8 +605,6 @@ Da uns die Syntax der Grammatiken wegen ihrer Ähnlichkeit zur Backus-Naur Form 
 Der zweite Schritt unserer Arbeit bestand darin sich mit ANTLR vertraut zu machen.
 Dieser Schritt nahm etwas mehr Zeit in Anspruch als erwartet, da zunächst einige technische Probleme aus der Welt geräumt werden mussten, die bei der Einrichtung des Frameworks auftraten.
 Nachdem die Technik schließlich stand und wir die Schnittstelle von ANTLR verstanden hatten war die Implementation des Compilers relativ unproblematisch. Dieser widmen wir uns im folgenden.
-
-(lennart)
 
 \section{Anforderungsanalyse}
 \label{sec:anforderungsanalyse}
@@ -738,8 +661,6 @@ Aus diesem Grund dauerte das Debugging wesentlich länger als notwendig.
 Standardmäßig gibt es im Laufe einer jeden Softwareentwicklung Entscheidungen zu signifikanten Qualitätsmerkmalen zu fällen.
 So entschieden wir uns bewusst dafür, dass die Effizienz des Programms eine sehr untergeordnete Rolle spielen sollte, da es praktisch ausgeschlossen war, dass wir große Mengen an Quellcode in sehr kurzer Zeit übersetzen müssen.
 
-(leonard)
-
 \section{ANTLR}
 \label{sec:antlr}
 
@@ -749,6 +670,7 @@ Da dies jedoch schnell relativ unübersichtlich zu werden schien und im Widerspr
 Dabei stießen wir auf ANTLR \autocite{ANTLR}.
 ANTLR (ANother Tool for Language Recognition) ist ein Parser Generator zum Lesen und Verarbeiten von strukturierten Textdateien auf der Basis von Grammatiken, der unter anderem verwendet werden kann, um eigene Programmiersprachen zu entwickeln.
 Um einen Compiler mit ANTLR zu erstellen, benötigt man zunächst eine Grammatik, in der die formalen Regeln der Sprache beschrieben werden.
+
 Die Grammatik besteht aus Parser- und Lexer-Regeln.
 Dabei stehen die Parserregeln für die Struktur der Sprache (Nonterminale) und die Lexerregeln für die tatsächlichen Zeichen/Wörter (Terminale), die die Nonterminale ersetzen können.
 Die Grammatik kann mit Hilfe von ANTLR zu Java Klassen compiliert werden.
@@ -756,9 +678,6 @@ ANTLR liefert dabei einen Lexer und einen Parser mit deren Hilfe ein Parsetree g
 Dazu wird einfach eine Datei mit dem Quellcode eingelesen und dann verarbeitet.
 Der resultierende Parsetree kann mit Hilfe von Visitors durchlaufen werden,
 welche dann die eigentliche Übersetzungsarbeit leisten.
-
-(lennart \& leonard)
-
 
 \section{Compiler Implementation}
 \label{sec:compiler_implementation}
@@ -769,15 +688,14 @@ ANTLR nutzt zum Parsen eine kontextfreie Grammatik der Form: $G = (V, T, P, S)$.
 Hierbei entspricht V der endlichen Menge der Variablen (Menge der Ableitungsregeln, bzw. Parser-Regeln), $T$ der Menge der Terminalen (Tokens), $P$ den Produktionsregeln (Parser-Regeln bzw. Ableitungsregeln und Lexer-Regeln) und $S$ der Startregel.
 Basierend auf der Grammatik existiert also eine Sprache $L(G)$. Für jeden von uns definierten Assemblerbefehl $A$ gilt also: $A \in L(G)$. 
 
-(leonard)
-
 \subsubsection{Lexer - Lexikalischer Scanner}
 Der Lexer stellt die unterste Ebene einer Grammatik dar.
 Jede Lexer-Regel definiert dabei genau einen Token.
 Ziel des Lexers ist es nun für jede mögliche Eingabe zu erkennen, um welches Token es sich handelt.
 Hierbei gilt zu beachten, dass ein Token nicht zwangsläufig exakt definiert werden muss, da die Nutzung von regulären Ausdrücken möglich ist, wie in \ref{fig:Lexer_Commands} zu sehen.
+Zu Beginn des Prozesses werden so zunächst sämtliche Eingaben in Tokens umgewandelt, welche dann von den Parser-Regeln in einen Syntax-Baum überführt werden.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \begin{lstlisting}
     MOV: 'MOV';
@@ -787,15 +705,11 @@ Hierbei gilt zu beachten, dass ein Token nicht zwangsläufig exakt definiert wer
     \label{fig:Lexer_Commands}
 \end{figure}
 
-Zu Beginn des Prozesses werden so zunächst sämtliche Eingaben in Tokens umgewandelt, welche dann von den Parser-Regeln in einen Syntax-Baum überführt werden.
-
-(leonard)
-
 \subsubsection{Parser}
 Die Parser-Regeln definieren den Ableitungsbaum der formalen Grammatik.
 Dabei entspricht jede Verzweigung einer Parser-Regel, während jeder Blattknoten einem Token entspricht.
 
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[scale=0.9]{Software_Syntax_Tree.jpg}
 \caption{Syntaxbaum des Befehls: \texttt{MOV, r10, 10;}}
@@ -806,7 +720,7 @@ wobei die Regel entweder direkt ein Token nutzt oder auf eine weitere Regel verw
 Anhand der Ableitungsregeln kann also eine Struktur erstellt werden, auf welche nun spezifisch reagiert werden kann.
 So ist es innerhalb des Programms nun möglich auf jeden Knoten des Baumes, sowie seine Eltern- und Kindknoten zuzugreifen.
 
-\begin{figure}[h]
+\begin{figure}[ht]
     \centering
     \begin{lstlisting}
     start: start command 
@@ -815,8 +729,6 @@ So ist es innerhalb des Programms nun möglich auf jeden Knoten des Baumes, sowi
     \caption{Beispielhafte Parser-Regel}
     \label{fig:Parser_Commands}
 \end{figure}
-
-(leonard)
 
 \subsection{Die Visitor Klassen}
 \label{subsec:die_visitor_klassen}
@@ -832,12 +744,11 @@ Der Compiler kümmert sich dann darum die Mnemoniks durch entsprechende Funktion
 Zum aktuellen Zeitpunkt haben wir die russische Bauernmultiplikation für positive Zahlen (\texttt{MUL}) und ein simples binäres Invertieren (\texttt{NOT}) durch Makros verwirklicht.
 Es lassen sich leicht zusätzliche Makros hinzufügen, indem diese in der Grammatik definiert und entsprechende Implementation im Compiler verwirklicht werden.
 In der Grammatik müssen die entsprechenden Regeln eingetragen werden. Im Makro Visitor muss der entsprechende Quellcode hinterlegt werden, mit dem der Makro Befehl ersetzt wird.
+
 Bei der Verwendung von Makros muss beachtet werden, dass diese nicht immer \enquote{in place} implementiert werden können.
 Es werden für ein Makro also möglicher Weise mehr Register gebraucht als die 3 Register die durch einen Three-Op Befehl zur Verfügung stehen.
 Daher ist es empfehlenswert, zu dokumentieren, welche Register von den jeweiligen Makros verwendet werden, um Inkonsistenzen zu vermeiden.
 Das Vorgehen des Makro-Visitors besteht also darin den übergebenen Quellcode größtenteils unverändert zurück zu geben und nur die Stellen, an denen ein Makro entdeckt wird, zu ersetzen.
-
-(lennart)
 
 \subsubsection{Jumplabels und NOOPs}
 Im zweiten Übersetzungsschritt werden die jump-Labels zu absoluten Zeilenangaben übersetzt und \texttt{NOOP}s eingefügt.
@@ -847,12 +758,10 @@ Die Indizes werden zusammen mit den Labels gespeichert, sodass die Labels im Üb
 Eine weitere Aufgabe innerhalb dieses Schrittes ist das Einfügen von \texttt{NOOP}s, um Hazards zu vermeiden.
 Um dies zu bewerkstelligen, merkt sich der Compiler für jedes Register die Anzahl der notwendigen \texttt{NOOP}s, die eingefügt werde müssten, falls das Register im aktuellen Befehl vorkommt.
 Ist der Zähler 0 wird für das jeweilige Register der Wert auf 4 gesetzt, was der Anzahl der Pipelinestufen entspricht.
-Falls der Wert nicht 0 ist, werden entsprechend des Zählers, führende \texttt{NOOP}s eingefügt und danach der Zähler wieder auf 4 gesetzt. 
+Falls der Wert nicht 0 ist, werden entsprechend des Zählers, führende \texttt{NOOP}s eingefügt und danach der Zähler wieder auf 4 gesetzt.
 Nach jeder Operation werden die Zähler um eins dekrementiert bis sie wieder 0 sind.
 Außerdem werden generell nach jedem Sprung (\texttt{JMP}, \texttt{B}) drei \texttt{NOOP}s eingefügt, da wir für den Prozessor keinen Flush implementiert haben. 
 Auf diese Weise ist die Pipeline zum Zeitpunkt des Jumps nur mit \texttt{NOOP}s gefüllt und es wird vermieden, dass ungewollte Befehle in die Pipeline geladen werden.
-
-(lennart)
 
 \subsubsection{Übersetzung}
 Im letzten Schritt wird der auf diese Weise modifizierte Quellcode in den Maschinencode übersetzt.
@@ -862,8 +771,6 @@ Ist der letzte Operand ein Immediate Wert wird das Immediate-Bit wird entspreche
 Die Immediates werden aus dem angegebenen Zahlensystem (binär, hexadezimal, dezimal) zu einer Binärzahl übersetzt.
 Alle Operanden werden je nach Befehlsstruktur mit einem entsprechenden 0 Padding versehen, um die Länge und Struktur des Befehlswort zu erhalten.
 Anschließend wird das Befehlswort zusammengesetzt und zusammen mit einem Befehlsindex am Anfang zurückgegeben.
-
-(lennart)
 
 \chapter{Konklusion und Ausblick}
 \label{ch:konklusion_und_ausblick}
@@ -875,8 +782,7 @@ Der Compiler fügt hierzu an den entsprechenden Stellen \texttt{NOOP}s ein.
 Die Ausgabe des Compilers ist eine \texttt{.dat} Datei.
 Diese dient als ROM.
 Simulieren wir nun mit gdhl den Prozessor, führt dieser das Programm im ROM aus.
-In Abbildung \ref{fig:gtkwave_screenshot} ist zu sehen, dass nach 400? Zyklen im Register 10? die 10. Fibonacci Zahl steht.
-% TODO: fill the blanks
+In Abbildung \ref{fig:gtkwave_screenshot} ist zu sehen, dass nach circa 210 Taktzyklen die zehnte Fibonacci-Zahl im Register 11 steht.
 
 \begin{figure*}[t]
     \centering
@@ -956,27 +862,20 @@ Für eine weiterführende Entwicklung des Assemblers wäre es gut JUnitTests ein
 Um die Ausführung von Programmen zu beschleunigen, könnte man \textit{Instruction Reordering} \autocite{instructionreordering} einführen, - also die Befehle auf bestimmte Abhängigkeiten testen und neu organisieren -, um die Anzahl der \texttt{NOOP}s zu verringern.
 Zusätzlich ließen sich praktisch unbegrenzt viele neue Makros erstellen, wie z.B. ein Befehl für Fließkommaberechnung.
 Auch Hardwaresupport wäre hierfür denkbar.
-(Leonard \& Max)
-
-\printbibliography
 
 \onecolumn
+\printbibliography
+
 \appendix
 
 \chapter{Entwurfsphase}
 
-\section{Komponenten Und Datenströme}
-\label{sec:apx_komponenten_und_datenstroeme}
-
-\begin{figure*}[h]
+\begin{figure*}[ht]
     \centering
-    \includegraphics[scale=0.8]{Komponeten und Datenstörme.png}
+    \includegraphics[width = \textwidth]{images/pc_schaubild.png}
     \caption{Komponenten und Datenströme}
     \label{fig:komponenten_und_datenstroeme}
 \end{figure*}
-
-\section{Pipeline-Architektur mit 5 Stages}
-\label{sec:apx_pipeline_architektur_mit_5_stages}
 
 \begin{figure*}
     \centering
@@ -985,54 +884,32 @@ Auch Hardwaresupport wäre hierfür denkbar.
     \label{fig:pipeline_architektur_mit_5_stages}
 \end{figure*}
 
-\section{Python Sketch}
-\label{sec:apx_python_sketch}
+\chapter{Beispiel einer Decodierung}
+\label{ch:apx_beispiel_einer_decodierung}
 
-\lstinputlisting[language=Python]{cpi_sketch.py}
-
-\chapter{VHDL}
-
-\section{Beispiel einer Decodierung}
-\label{sec:apx_beispiel_einer_decodierung}
-
-\begin{figure*}[h]
-    \centering
-    \begin{align*}
-        &\text{In dem folgenden Beispiel soll der Inhalt des Registers 3 mit 1 addiert}\\
-        &\text{und das Ergebnis in Register 2 hineingeschrieben werden.}\\
-        &\text{Der Decoder bekommt also den Code der nachkommenden dargestellt Code als Input.}\\
-        &\text{\newline}\\
-        &\texttt{10010100010000110000000000000001}\\
-        &\text{\newline}\\
-        &\text{Der nächste Schritt ist heraus zu finden, welches Layout dieser Code besitzt.}\\
-        &\text{Dabei werden die ersten 2 Stelle des Codes angeschaut.}\\
-        &\text{\newline}\\
-        &\underbrace{\texttt{10}}_\text{Layout}\texttt{010100010000110000000000000001}\\
-        &\text{\newline}\\
-        &\text{Nun wird geprüft,}\\
-        &\text{ob es sich bei dem Code um eine Direktzuweisung per Immediate-Wert handelt.}\\
-        &\text{\newline}\\
-        &\texttt{10010}\underbrace{\texttt{1}}_\text{Immediate}\texttt{00010000110000000000000001}\\
-        &\text{\newline}\\
-        &\text{Mit diesen 2 Informationen setzt der Decoder}\\
-        &\text{die Outputs des Zieles der Operation, sowie deren Operanten.}\\
-        &\text{\newline}\\
-        &\texttt{100101}
-            \overbrace{\texttt{00010}}^\text{Zielregister}
-            \underbrace{\texttt{00011}}_\text{Operant 1}
-            \underbrace{\texttt{0000000000000001}}_\text{Operant 2}\\
-        &\text{\newline}\\   
-        &\text{Zum Schluss wird nach dem Opcode geschaut,}\\
-        &\text{um der Alu die entsprechende Information zu geben,}\\
-        &\text{welche Operation sie durchzuführen hat.}\\
-        &\text{\newline}\\
-        &\underbrace{\texttt{10010}}_\text{Opcode}\texttt{000110000000000000001}\\
-        &\text{\newline}\\
-        &\text{So wurden nun alle Informationen decodiert um diese Operation durchzuführen.}
-        &\text{\newline}\\
-    \end{align*}
-    \caption{Beispiel einer Decodierung}
-    \label{fig:beispiel_einer_decodierung}
-\end{figure*}
+In dem folgenden Beispiel soll der Inhalt des Registers 3 mit 1 addiert und das Ergebnis in Register 2 hineingeschrieben werden. Der Decoder bekommt also den Code der nachkommenden dargestellt Code als Input.
+\begin{align*}
+    &\texttt{10010100010000110000000000000001}
+\end{align*}
+Der nächste Schritt ist heraus zu finden, welches Layout dieser Code besitzt. Dabei werden die ersten 2 Stelle des Codes angeschaut.
+\begin{align*}
+    &\underbrace{\texttt{10}}_\text{Layout}\texttt{010100010000110000000000000001}
+\end{align*}
+Nun wird geprüft, ob es sich bei dem Code um eine Direktzuweisung per Immediate-Wert handelt.
+\begin{align*}
+    &\texttt{10010}\underbrace{\texttt{1}}_\text{Immediate}\texttt{00010000110000000000000001}
+\end{align*}
+Mit diesen 2 Informationen setzt der Decoder die Outputs des Zieles der Operation, sowie deren Operanten.
+\begin{align*}
+    &\texttt{100101}
+        \overbrace{\texttt{00010}}^\text{Zielregister}
+        \underbrace{\texttt{00011}}_\text{Operant 1}
+        \underbrace{\texttt{0000000000000001}}_\text{Operant 2}
+\end{align*}
+Zum Schluss wird nach dem Opcode geschaut, um der Alu die entsprechende Information zu geben, welche Operation sie durchzuführen hat.
+\begin{align*}
+    &\underbrace{\texttt{10010}}_\text{Opcode}\texttt{000110000000000000001}
+\end{align*}
+So wurden nun alle Informationen decodiert um diese Operation durchzuführen.
 
 \end{document}
